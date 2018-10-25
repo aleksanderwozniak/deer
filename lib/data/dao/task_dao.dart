@@ -15,24 +15,25 @@ class TaskDao {
     _loadFromDisk();
   }
 
-  void _loadFromDisk() async {
+  Future<void> _loadFromDisk() async {
     var tasksFromDisk = List<TaskEntity>();
 
     final prefs = await SharedPreferences.getInstance();
     final amount = prefs.getInt('amountOfTasks') ?? 0;
-
+    print('amount: $amount');
     try {
       for (var i = 0; i < amount; i++) {
         final data = prefs.getString('task$i');
+        print('data: $data');
         final taskJson = TaskJson.parse(json.decode(data));
-
+        print('taskJson: $taskJson');
         tasksFromDisk.add(TaskMapper.fromJson(taskJson));
       }
     } catch (e) {
       print('LoadFromDisk error: $e');
     }
 
-    final list = BuiltList(tasksFromDisk);
+    final list = BuiltList<TaskEntity>(tasksFromDisk);
     _data.add(list);
     _data.seedValue = list;
   }
@@ -42,9 +43,10 @@ class TaskDao {
     final data = _data.value.toList();
     final amount = data.length ?? 0;
 
-    _cleanPrefs(prefs);
+    _cleanPrefs(instance: prefs);
 
     try {
+      prefs.setInt('amountOfTasks', amount);
       for (var i = 0; i < amount; i++) {
         final taskJson = TaskMapper.toJson(data[i]);
         final task = json.encode(taskJson.encode());
@@ -55,7 +57,7 @@ class TaskDao {
     }
   }
 
-  void _cleanPrefs(SharedPreferences instance) async {
+  void _cleanPrefs({SharedPreferences instance}) async {
     final prefs = instance ?? await SharedPreferences.getInstance();
     final amount = prefs.getInt('amountOfTasks') ?? 0;
 

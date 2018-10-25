@@ -40,12 +40,6 @@ class _$TaskEntity extends TaskEntity {
     if (description == null) {
       throw new BuiltValueNullFieldError('TaskEntity', 'description');
     }
-    if (addedDate == null) {
-      throw new BuiltValueNullFieldError('TaskEntity', 'addedDate');
-    }
-    if (dueDate == null) {
-      throw new BuiltValueNullFieldError('TaskEntity', 'dueDate');
-    }
   }
 
   @override

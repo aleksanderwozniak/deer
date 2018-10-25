@@ -7,7 +7,9 @@ part 'task_entity.g.dart';
 abstract class TaskEntity implements Built<TaskEntity, TaskEntityBuilder> {
   String get name;
   String get description;
+  @nullable
   DateTime get addedDate;
+  @nullable
   DateTime get dueDate;
 
   TaskEntity._();

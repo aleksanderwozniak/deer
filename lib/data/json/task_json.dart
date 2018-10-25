@@ -19,7 +19,7 @@ class TaskJson {
       name: json['name'],
       description: json['description'],
       addedDate: DateTime.parse(json['addedDate']),
-      dueDate: DateTime.parse(json['dueDate']),
+      dueDate: json['dueDate'] != null ? DateTime.parse(json['dueDate']) : null,
     );
   }
 
@@ -27,8 +27,8 @@ class TaskJson {
     return {
       'name': name,
       'description': description,
-      'addedDate': addedDate,
-      'dueDate': dueDate,
+      'addedDate': addedDate.toIso8601String(),
+      'dueDate': dueDate?.toIso8601String(),
     };
   }
 }
