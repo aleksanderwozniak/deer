@@ -12,10 +12,10 @@ class TaskDao {
   final _data = InMemory<BuiltList<TaskEntity>>();
 
   TaskDao() {
-    loadFromDisk();
+    _loadFromDisk();
   }
 
-  void loadFromDisk() async {
+  void _loadFromDisk() async {
     var tasksFromDisk = List<TaskEntity>();
 
     final prefs = await SharedPreferences.getInstance();
@@ -37,7 +37,7 @@ class TaskDao {
     _data.seedValue = list;
   }
 
-  void saveToDisk() async {
+  void _saveToDisk() async {
     final prefs = await SharedPreferences.getInstance();
     final data = _data.value.toList();
     final amount = data.length ?? 0;
@@ -74,7 +74,7 @@ class TaskDao {
     taskBuilder.remove(task);
 
     _data.add(taskBuilder.build());
-    saveToDisk();
+    _saveToDisk();
   }
 
   void add(TaskEntity task) {
@@ -82,6 +82,6 @@ class TaskDao {
     taskBuilder.add(task);
 
     _data.add(taskBuilder.build());
-    saveToDisk();
+    _saveToDisk();
   }
 }
