@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tasking/domain/entity/task_entity.dart';
 
 import 'task_list_actions.dart';
 import 'task_list_bloc.dart';
@@ -54,29 +55,32 @@ class _TaskListScreenState extends State<TaskListScreen> {
 
   Widget _buildUI(TaskListState state) {
     // Build your root view here
-    return Material(
-      child: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Text('Username: '),
-            Text(
-              state.username,
-              style: TextStyle(fontSize: 20.0, color: Colors.red),
-            ),
-            SizedBox(height: 40.0),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 36.0),
-              child: TextField(controller: _textController),
-            ),
-            SizedBox(height: 20.0),
-            RaisedButton(
-              child: Text('submit'),
-              onPressed: submit,
-            ),
-          ],
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: _buildBody(state),
+    );
+  }
+
+  Widget _buildBody(TaskListState state) {
+    return ListView(
+      children: state.tasks.map((task) => _buildTile(task)).toList(),
+    );
+  }
+
+  Widget _buildTile(TaskEntity task) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            width: 0.0,
+            color: Colors.grey[800],
+          ),
         ),
       ),
+      padding: const EdgeInsets.all(12.0),
+      child: Text(task.name),
     );
   }
 }
