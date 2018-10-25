@@ -37,9 +37,51 @@ class TaskDao {
     _data.seedValue = list;
   }
 
-  void saveToDisk() async {}
+  void saveToDisk() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = _data.value.toList();
+    final amount = data.length ?? 0;
 
-  void remove() {}
+    _cleanPrefs(prefs);
 
-  void add() {}
+    try {
+      for (var i = 0; i < amount; i++) {
+        final taskJson = TaskMapper.toJson(data[i]);
+        final task = json.encode(taskJson.encode());
+        prefs.setString('task$i', task);
+      }
+    } catch (e) {
+      print('SaveToDisk error: $e');
+    }
+  }
+
+  void _cleanPrefs(SharedPreferences instance) async {
+    final prefs = instance ?? await SharedPreferences.getInstance();
+    final amount = prefs.getInt('amountOfTasks') ?? 0;
+
+    try {
+      prefs.remove('amountOfTasks');
+      for (var i = 0; i < amount; i++) {
+        prefs.remove('task$i');
+      }
+    } catch (e) {
+      print('CleanPrefs error: $e');
+    }
+  }
+
+  void remove(TaskEntity task) {
+    final taskBuilder = _data.value.toBuilder();
+    taskBuilder.remove(task);
+
+    _data.add(taskBuilder.build());
+    saveToDisk();
+  }
+
+  void add(TaskEntity task) {
+    final taskBuilder = _data.value.toBuilder();
+    taskBuilder.add(task);
+
+    _data.add(taskBuilder.build());
+    saveToDisk();
+  }
 }
