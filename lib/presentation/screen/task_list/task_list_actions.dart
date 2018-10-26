@@ -1,13 +1,23 @@
 import 'package:flutter/foundation.dart';
+import 'package:tasking/domain/entity/task_entity.dart';
 
-class UpdateField {
-  UpdateField({
-    @required this.field,
-    @required this.value,
-  }) : assert(field != null);
+class PerformOnTask {
+  final TaskEntity task;
+  final Operation operation;
 
-  final Field field;
-  final dynamic value;
+  PerformOnTask({
+    @required this.task,
+    @required this.operation,
+  })  : assert(task != null),
+        assert(operation != null);
 }
 
-enum Field { username }
+enum Operation { add, remove }
+
+// class RemoveTask {
+//   final TaskEntity task;
+
+//   RemoveTask({
+//     @required this.task,
+//   }) : assert(task != null);
+// }

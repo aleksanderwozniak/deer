@@ -4,6 +4,7 @@ import 'package:built_collection/built_collection.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:tasking/domain/entity/task_entity.dart';
 import 'package:tasking/presentation/app.dart';
+import 'package:tasking/presentation/screen/task_list/task_list_actions.dart';
 
 import 'task_list_state.dart';
 
@@ -22,10 +23,9 @@ class TaskListBloc {
   TaskListBloc() {
     _actions.stream.listen((action) {
       switch (action.runtimeType) {
-        // example, change for your use case
-        // case UpdateField:
-        // _onUpdateField(action);
-        // break;
+        case PerformOnTask:
+          _onPerform(action);
+          break;
         default:
           assert(false);
       }
@@ -38,6 +38,26 @@ class TaskListBloc {
       ));
     });
   }
+
+  void _onPerform(PerformOnTask action) {
+    final task = action.task;
+    final operation = action.operation;
+
+    switch (operation) {
+      case Operation.add:
+        dependencies.taskInteractor.add(task);
+        break;
+      case Operation.remove:
+        dependencies.taskInteractor.remove(task);
+        break;
+    }
+  }
+
+  // void _onRemoveTask(RemoveTask action) {
+  //   final task = action.task;
+
+  //   dependencies.taskInteractor.remove(task);
+  // }
 
   void dispose() {
     _actions.close();

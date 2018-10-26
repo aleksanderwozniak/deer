@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tasking/domain/entity/task_entity.dart';
+import 'package:tasking/presentation/screen/task_list/task_list_actions.dart';
 
-import 'task_list_actions.dart';
 import 'task_list_bloc.dart';
 import 'task_list_state.dart';
 
@@ -35,11 +35,13 @@ class _TaskListScreenState extends State<TaskListScreen> {
   }
 
   // Place methods here
-  void submit() {
-    _bloc.actions.add(UpdateField(
-      field: Field.username,
-      value: _textController.text,
-    ));
+  void _removeTask(TaskEntity task) {
+    _bloc.actions.add(PerformOnTask(operation: Operation.remove, task: task));
+  }
+
+  void _addMockTask() {
+    final mockTask = TaskEntity(name: 'MockTask', addedDate: DateTime.now());
+    _bloc.actions.add(PerformOnTask(operation: Operation.add, task: mockTask));
   }
 
   @override
@@ -64,23 +66,56 @@ class _TaskListScreenState extends State<TaskListScreen> {
   }
 
   Widget _buildBody(TaskListState state) {
-    return ListView(
-      children: state.tasks.map((task) => _buildTile(task)).toList(),
-    );
-  }
-
-  Widget _buildTile(TaskEntity task) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            width: 0.0,
-            color: Colors.grey[800],
+    return Column(
+      children: <Widget>[
+        Expanded(
+          child: ListView(
+            children: state.tasks
+                .map((task) => _TaskTile(
+                      task: task,
+                      onTap: () => _removeTask(task),
+                    ))
+                .toList(),
           ),
         ),
+        RaisedButton(
+          child: Text('Add'),
+          onPressed: _addMockTask,
+        ),
+        const SizedBox(height: 20.0),
+      ],
+    );
+  }
+}
+
+class _TaskTile extends StatelessWidget {
+  final TaskEntity task;
+  final VoidCallback onTap;
+
+  _TaskTile({
+    Key key,
+    @required this.task,
+    @required this.onTap,
+  })  : assert(task != null),
+        assert(onTap != null),
+        super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              width: 0.0,
+              color: Colors.grey[800],
+            ),
+          ),
+        ),
+        padding: const EdgeInsets.all(12.0),
+        child: Text(task.name),
       ),
-      padding: const EdgeInsets.all(12.0),
-      child: Text(task.name),
     );
   }
 }
