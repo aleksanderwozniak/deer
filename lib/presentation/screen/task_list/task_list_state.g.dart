@@ -21,14 +21,14 @@ part of task_list_state;
 
 class _$TaskListState extends TaskListState {
   @override
-  final String username;
+  final BuiltList<TaskEntity> tasks;
 
   factory _$TaskListState([void updates(TaskListStateBuilder b)]) =>
       (new TaskListStateBuilder()..update(updates)).build();
 
-  _$TaskListState._({this.username}) : super._() {
-    if (username == null) {
-      throw new BuiltValueNullFieldError('TaskListState', 'username');
+  _$TaskListState._({this.tasks}) : super._() {
+    if (tasks == null) {
+      throw new BuiltValueNullFieldError('TaskListState', 'tasks');
     }
   }
 
@@ -42,18 +42,17 @@ class _$TaskListState extends TaskListState {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is TaskListState && username == other.username;
+    return other is TaskListState && tasks == other.tasks;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, username.hashCode));
+    return $jf($jc(0, tasks.hashCode));
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('TaskListState')
-          ..add('username', username))
+    return (newBuiltValueToStringHelper('TaskListState')..add('tasks', tasks))
         .toString();
   }
 }
@@ -62,15 +61,16 @@ class TaskListStateBuilder
     implements Builder<TaskListState, TaskListStateBuilder> {
   _$TaskListState _$v;
 
-  String _username;
-  String get username => _$this._username;
-  set username(String username) => _$this._username = username;
+  ListBuilder<TaskEntity> _tasks;
+  ListBuilder<TaskEntity> get tasks =>
+      _$this._tasks ??= new ListBuilder<TaskEntity>();
+  set tasks(ListBuilder<TaskEntity> tasks) => _$this._tasks = tasks;
 
   TaskListStateBuilder();
 
   TaskListStateBuilder get _$this {
     if (_$v != null) {
-      _username = _$v.username;
+      _tasks = _$v.tasks?.toBuilder();
       _$v = null;
     }
     return this;
@@ -91,7 +91,20 @@ class TaskListStateBuilder
 
   @override
   _$TaskListState build() {
-    final _$result = _$v ?? new _$TaskListState._(username: username);
+    _$TaskListState _$result;
+    try {
+      _$result = _$v ?? new _$TaskListState._(tasks: tasks.build());
+    } catch (_) {
+      String _$failedField;
+      try {
+        _$failedField = 'tasks';
+        tasks.build();
+      } catch (e) {
+        throw new BuiltValueNestedFieldError(
+            'TaskListState', _$failedField, e.toString());
+      }
+      rethrow;
+    }
     replace(_$result);
     return _$result;
   }
