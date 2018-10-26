@@ -17,18 +17,19 @@ class TaskDao {
 
   Future<void> _loadFromDisk() async {
     var tasksFromDisk = List<TaskEntity>();
-
     final prefs = await SharedPreferences.getInstance();
-    final amount = prefs.getInt('amountOfTasks') ?? 0;
-    print('amount: $amount');
+
     try {
-      for (var i = 0; i < amount; i++) {
-        final data = prefs.getString('task$i');
-        print('data: $data');
-        final taskJson = TaskJson.parse(json.decode(data));
-        print('taskJson: $taskJson');
-        tasksFromDisk.add(TaskMapper.fromJson(taskJson));
+      final data = prefs.getStringList('tasks');
+
+      if (data != null) {
+        tasksFromDisk = data.map((task) {
+          final taskJson = TaskJson.parse(json.decode(task));
+          return TaskMapper.fromJson(taskJson);
+        }).toList();
       }
+
+      print(tasksFromDisk);
     } catch (e) {
       print('LoadFromDisk error: $e');
     }
@@ -41,32 +42,28 @@ class TaskDao {
   Future<void> _saveToDisk() async {
     final prefs = await SharedPreferences.getInstance();
     final data = _data.value.toList();
-    final amount = data.length ?? 0;
-
-    _cleanPrefs(instance: prefs);
 
     try {
-      prefs.setInt('amountOfTasks', amount);
-      for (var i = 0; i < amount; i++) {
-        final taskJson = TaskMapper.toJson(data[i]);
-        final task = json.encode(taskJson.encode());
-        prefs.setString('task$i', task);
-      }
+      final jsonList = data.map((task) {
+        final taskJson = TaskMapper.toJson(task);
+        return json.encode(taskJson.encode());
+      }).toList();
+
+      prefs.setStringList('tasks', jsonList);
     } catch (e) {
       print('SaveToDisk error: $e');
     }
   }
 
-  Future<void> _cleanPrefs({SharedPreferences instance}) async {
+  // Unused for now
+  Future<void> _cleanPrefs({
+    SharedPreferences instance,
+    bool cleanAll = false,
+  }) async {
     final prefs = instance ?? await SharedPreferences.getInstance();
-    final amount = prefs.getInt('amountOfTasks') ?? 0;
 
     try {
-      prefs.remove('amountOfTasks');
-      for (var i = 0; i < amount; i++) {
-        prefs.remove('task$i');
-        print('task$i removed');
-      }
+      cleanAll ? prefs.clear() : prefs.remove('tasks');
     } catch (e) {
       print('CleanPrefs error: $e');
     }

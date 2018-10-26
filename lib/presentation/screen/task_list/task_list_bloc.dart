@@ -32,7 +32,6 @@ class TaskListBloc {
     });
 
     _tasks = dependencies.taskInteractor.tasks.listen((tasks) {
-      print(tasks);
       _state.add(_state.value.rebuild(
         (b) => b..tasks = ListBuilder(tasks),
       ));
