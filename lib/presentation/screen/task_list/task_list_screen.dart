@@ -19,13 +19,13 @@ class TaskListScreen extends StatefulWidget {
 class _TaskListScreenState extends State<TaskListScreen> {
   // Place variables here
   TaskListBloc _bloc;
-  TextEditingController _textController;
+  TextEditingController _taskNameController;
 
   @override
   void initState() {
     super.initState();
     _bloc = TaskListBloc();
-    _textController = TextEditingController();
+    _taskNameController = TextEditingController();
   }
 
   @override
@@ -39,9 +39,8 @@ class _TaskListScreenState extends State<TaskListScreen> {
     _bloc.actions.add(PerformOnTask(operation: Operation.remove, task: task));
   }
 
-  void _addMockTask() {
-    final mockTask = TaskEntity(name: 'MockTask', addedDate: DateTime.now());
-    _bloc.actions.add(PerformOnTask(operation: Operation.add, task: mockTask));
+  void _addTask(TaskEntity task) {
+    _bloc.actions.add(PerformOnTask(operation: Operation.add, task: task));
   }
 
   @override
@@ -78,11 +77,10 @@ class _TaskListScreenState extends State<TaskListScreen> {
                 .toList(),
           ),
         ),
-        RaisedButton(
-          child: Text('Add'),
-          onPressed: _addMockTask,
+        _TaskAdder(
+          taskNameController: _taskNameController,
+          onAdd: _addTask,
         ),
-        const SizedBox(height: 20.0),
       ],
     );
   }
@@ -92,7 +90,7 @@ class _TaskTile extends StatelessWidget {
   final TaskEntity task;
   final VoidCallback onTap;
 
-  _TaskTile({
+  const _TaskTile({
     Key key,
     @required this.task,
     @required this.onTap,
@@ -119,3 +117,52 @@ class _TaskTile extends StatelessWidget {
     );
   }
 }
+
+class _TaskAdder extends StatelessWidget {
+  final TextEditingController taskNameController;
+  final AddTaskCallback onAdd;
+
+  const _TaskAdder({
+    Key key,
+    @required this.taskNameController,
+    @required this.onAdd,
+  })  : assert(taskNameController != null),
+        assert(onAdd != null),
+        super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          Expanded(
+            child: TextField(
+              controller: taskNameController,
+              onSubmitted: (_) {
+                onAdd(_buildTask());
+                taskNameController.clear();
+              },
+            ),
+          ),
+          const SizedBox(width: 16.0),
+          FlatButton(
+            child: Text('Add'),
+            color: Colors.green[300],
+            onPressed: () => onAdd(_buildTask()),
+          ),
+        ],
+      ),
+    );
+  }
+
+  TaskEntity _buildTask() {
+    return TaskEntity(
+      name: taskNameController.text,
+      addedDate: DateTime.now(),
+    );
+  }
+}
+
+typedef void AddTaskCallback(TaskEntity task);

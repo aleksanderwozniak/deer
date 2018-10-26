@@ -13,21 +13,7 @@ class TaskDao {
 
   TaskDao() {
     _loadFromDisk();
-    // _init();
   }
-
-  // Mocks for quick testing:
-  // Future<void> _init() async {
-  //   await _cleanPrefs();
-  //   await _loadFromDisk();
-  //   final task1 = TaskEntity(name: 'Add 1', addedDate: DateTime.now());
-  //   final task2 = TaskEntity(name: 'Add 2', addedDate: DateTime.now());
-  //   final task3 = TaskEntity(name: 'Add 3', addedDate: DateTime.now());
-  //   add(task1);
-  //   add(task2);
-  //   add(task3);
-  //   remove(task2);
-  // }
 
   Future<void> _loadFromDisk() async {
     var tasksFromDisk = List<TaskEntity>();

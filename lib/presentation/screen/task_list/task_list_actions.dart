@@ -13,11 +13,3 @@ class PerformOnTask {
 }
 
 enum Operation { add, remove }
-
-// class RemoveTask {
-//   final TaskEntity task;
-
-//   RemoveTask({
-//     @required this.task,
-//   }) : assert(task != null);
-// }

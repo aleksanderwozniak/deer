@@ -53,12 +53,6 @@ class TaskListBloc {
     }
   }
 
-  // void _onRemoveTask(RemoveTask action) {
-  //   final task = action.task;
-
-  //   dependencies.taskInteractor.remove(task);
-  // }
-
   void dispose() {
     _actions.close();
     _state.close();
