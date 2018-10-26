@@ -13,7 +13,21 @@ class TaskDao {
 
   TaskDao() {
     _loadFromDisk();
+    // _init();
   }
+
+  // Mocks for quick testing:
+  // Future<void> _init() async {
+  //   await _cleanPrefs();
+  //   await _loadFromDisk();
+  //   final task1 = TaskEntity(name: 'Add 1', addedDate: DateTime.now());
+  //   final task2 = TaskEntity(name: 'Add 2', addedDate: DateTime.now());
+  //   final task3 = TaskEntity(name: 'Add 3', addedDate: DateTime.now());
+  //   add(task1);
+  //   add(task2);
+  //   add(task3);
+  //   remove(task2);
+  // }
 
   Future<void> _loadFromDisk() async {
     var tasksFromDisk = List<TaskEntity>();
@@ -38,7 +52,7 @@ class TaskDao {
     _data.seedValue = list;
   }
 
-  void _saveToDisk() async {
+  Future<void> _saveToDisk() async {
     final prefs = await SharedPreferences.getInstance();
     final data = _data.value.toList();
     final amount = data.length ?? 0;
@@ -57,7 +71,7 @@ class TaskDao {
     }
   }
 
-  void _cleanPrefs({SharedPreferences instance}) async {
+  Future<void> _cleanPrefs({SharedPreferences instance}) async {
     final prefs = instance ?? await SharedPreferences.getInstance();
     final amount = prefs.getInt('amountOfTasks') ?? 0;
 
@@ -65,6 +79,7 @@ class TaskDao {
       prefs.remove('amountOfTasks');
       for (var i = 0; i < amount; i++) {
         prefs.remove('task$i');
+        print('task$i removed');
       }
     } catch (e) {
       print('CleanPrefs error: $e');
