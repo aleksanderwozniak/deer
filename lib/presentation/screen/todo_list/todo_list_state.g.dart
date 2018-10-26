@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of task_list_state;
+part of todo_list_state;
 
 // **************************************************************************
 // BuiltValueGenerator
@@ -19,89 +19,89 @@ part of task_list_state;
 // ignore_for_file: unnecessary_new
 // ignore_for_file: test_types_in_equals
 
-class _$TaskListState extends TaskListState {
+class _$TodoListState extends TodoListState {
   @override
-  final BuiltList<TaskEntity> tasks;
+  final BuiltList<TodoEntity> todos;
 
-  factory _$TaskListState([void updates(TaskListStateBuilder b)]) =>
-      (new TaskListStateBuilder()..update(updates)).build();
+  factory _$TodoListState([void updates(TodoListStateBuilder b)]) =>
+      (new TodoListStateBuilder()..update(updates)).build();
 
-  _$TaskListState._({this.tasks}) : super._() {
-    if (tasks == null) {
-      throw new BuiltValueNullFieldError('TaskListState', 'tasks');
+  _$TodoListState._({this.todos}) : super._() {
+    if (todos == null) {
+      throw new BuiltValueNullFieldError('TodoListState', 'todos');
     }
   }
 
   @override
-  TaskListState rebuild(void updates(TaskListStateBuilder b)) =>
+  TodoListState rebuild(void updates(TodoListStateBuilder b)) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  TaskListStateBuilder toBuilder() => new TaskListStateBuilder()..replace(this);
+  TodoListStateBuilder toBuilder() => new TodoListStateBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is TaskListState && tasks == other.tasks;
+    return other is TodoListState && todos == other.todos;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, tasks.hashCode));
+    return $jf($jc(0, todos.hashCode));
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('TaskListState')..add('tasks', tasks))
+    return (newBuiltValueToStringHelper('TodoListState')..add('todos', todos))
         .toString();
   }
 }
 
-class TaskListStateBuilder
-    implements Builder<TaskListState, TaskListStateBuilder> {
-  _$TaskListState _$v;
+class TodoListStateBuilder
+    implements Builder<TodoListState, TodoListStateBuilder> {
+  _$TodoListState _$v;
 
-  ListBuilder<TaskEntity> _tasks;
-  ListBuilder<TaskEntity> get tasks =>
-      _$this._tasks ??= new ListBuilder<TaskEntity>();
-  set tasks(ListBuilder<TaskEntity> tasks) => _$this._tasks = tasks;
+  ListBuilder<TodoEntity> _todos;
+  ListBuilder<TodoEntity> get todos =>
+      _$this._todos ??= new ListBuilder<TodoEntity>();
+  set todos(ListBuilder<TodoEntity> todos) => _$this._todos = todos;
 
-  TaskListStateBuilder();
+  TodoListStateBuilder();
 
-  TaskListStateBuilder get _$this {
+  TodoListStateBuilder get _$this {
     if (_$v != null) {
-      _tasks = _$v.tasks?.toBuilder();
+      _todos = _$v.todos?.toBuilder();
       _$v = null;
     }
     return this;
   }
 
   @override
-  void replace(TaskListState other) {
+  void replace(TodoListState other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$TaskListState;
+    _$v = other as _$TodoListState;
   }
 
   @override
-  void update(void updates(TaskListStateBuilder b)) {
+  void update(void updates(TodoListStateBuilder b)) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$TaskListState build() {
-    _$TaskListState _$result;
+  _$TodoListState build() {
+    _$TodoListState _$result;
     try {
-      _$result = _$v ?? new _$TaskListState._(tasks: tasks.build());
+      _$result = _$v ?? new _$TodoListState._(todos: todos.build());
     } catch (_) {
       String _$failedField;
       try {
-        _$failedField = 'tasks';
-        tasks.build();
+        _$failedField = 'todos';
+        todos.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
-            'TaskListState', _$failedField, e.toString());
+            'TodoListState', _$failedField, e.toString());
       }
       rethrow;
     }

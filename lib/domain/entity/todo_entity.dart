@@ -1,10 +1,10 @@
-library task_entity;
+library todo_entity;
 
 import 'package:built_value/built_value.dart';
 
-part 'task_entity.g.dart';
+part 'todo_entity.g.dart';
 
-abstract class TaskEntity implements Built<TaskEntity, TaskEntityBuilder> {
+abstract class TodoEntity implements Built<TodoEntity, TodoEntityBuilder> {
   String get name;
   String get description;
   @nullable
@@ -12,14 +12,14 @@ abstract class TaskEntity implements Built<TaskEntity, TaskEntityBuilder> {
   @nullable
   DateTime get dueDate;
 
-  TaskEntity._();
-  factory TaskEntity({
+  TodoEntity._();
+  factory TodoEntity({
     String name = '',
     String description = '',
     DateTime addedDate,
     DateTime dueDate,
   }) =>
-      _$TaskEntity._(
+      _$TodoEntity._(
         name: name,
         description: description,
         addedDate: addedDate,

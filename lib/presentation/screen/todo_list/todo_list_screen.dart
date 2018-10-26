@@ -1,30 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:tasking/domain/entity/task_entity.dart';
-import 'package:tasking/presentation/screen/task_list/task_list_actions.dart';
+import 'package:tasking/domain/entity/todo_entity.dart';
+import 'package:tasking/presentation/screen/todo_list/todo_list_actions.dart';
 
-import 'task_list_bloc.dart';
-import 'task_list_state.dart';
+import 'todo_list_bloc.dart';
+import 'todo_list_state.dart';
 
-class TaskListScreen extends StatefulWidget {
+class TodoListScreen extends StatefulWidget {
   final String title;
 
-  const TaskListScreen({Key key, this.title})
+  const TodoListScreen({Key key, this.title})
       : assert(title != null),
         super(key: key);
 
   @override
-  _TaskListScreenState createState() => _TaskListScreenState();
+  _TodoListScreenState createState() => _TodoListScreenState();
 }
 
-class _TaskListScreenState extends State<TaskListScreen> {
+class _TodoListScreenState extends State<TodoListScreen> {
   // Place variables here
-  TaskListBloc _bloc;
+  TodoListBloc _bloc;
   TextEditingController _taskNameController;
 
   @override
   void initState() {
     super.initState();
-    _bloc = TaskListBloc();
+    _bloc = TodoListBloc();
     _taskNameController = TextEditingController();
   }
 
@@ -35,12 +35,12 @@ class _TaskListScreenState extends State<TaskListScreen> {
   }
 
   // Place methods here
-  void _removeTask(TaskEntity task) {
-    _bloc.actions.add(PerformOnTask(operation: Operation.remove, task: task));
+  void _removeTodo(TodoEntity todo) {
+    _bloc.actions.add(PerformOnTodo(operation: Operation.remove, todo: todo));
   }
 
-  void _addTask(TaskEntity task) {
-    _bloc.actions.add(PerformOnTask(operation: Operation.add, task: task));
+  void _addTask(TodoEntity todo) {
+    _bloc.actions.add(PerformOnTodo(operation: Operation.add, todo: todo));
   }
 
   @override
@@ -54,7 +54,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
     );
   }
 
-  Widget _buildUI(TaskListState state) {
+  Widget _buildUI(TodoListState state) {
     // Build your root view here
     return Scaffold(
       appBar: AppBar(
@@ -64,15 +64,15 @@ class _TaskListScreenState extends State<TaskListScreen> {
     );
   }
 
-  Widget _buildBody(TaskListState state) {
+  Widget _buildBody(TodoListState state) {
     return Column(
       children: <Widget>[
         Expanded(
           child: ListView(
-            children: state.tasks
+            children: state.todos
                 .map((task) => _TaskTile(
                       task: task,
-                      onTap: () => _removeTask(task),
+                      onTap: () => _removeTodo(task),
                     ))
                 .toList(),
           ),
@@ -87,7 +87,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
 }
 
 class _TaskTile extends StatelessWidget {
-  final TaskEntity task;
+  final TodoEntity task;
   final VoidCallback onTap;
 
   const _TaskTile({
@@ -157,12 +157,12 @@ class _TaskAdder extends StatelessWidget {
     );
   }
 
-  TaskEntity _buildTask() {
-    return TaskEntity(
+  TodoEntity _buildTask() {
+    return TodoEntity(
       name: taskNameController.text,
       addedDate: DateTime.now(),
     );
   }
 }
 
-typedef void AddTaskCallback(TaskEntity task);
+typedef void AddTaskCallback(TodoEntity task);
