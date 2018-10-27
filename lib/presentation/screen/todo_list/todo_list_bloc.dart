@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:built_collection/built_collection.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:tasking/domain/entity/todo_entity.dart';
+import 'package:tasking/domain/interactor/task.dart';
 import 'package:tasking/presentation/app.dart';
 import 'package:tasking/presentation/screen/todo_list/todo_list_actions.dart';
 
@@ -19,6 +20,7 @@ class TodoListBloc {
   );
 
   StreamSubscription<List<TodoEntity>> _todos;
+  StreamSubscription<Task> _diskAccessTask;
 
   TodoListBloc() {
     _actions.stream.listen((action) {
@@ -44,10 +46,16 @@ class TodoListBloc {
 
     switch (operation) {
       case Operation.add:
-        dependencies.todoInteractor.add(todo);
+        _diskAccessTask?.cancel();
+        _diskAccessTask = dependencies.todoInteractor.add(todo).listen((task) {
+          _state.add(_state.value.rebuild((b) => b..diskAccessTask = task));
+        });
         break;
       case Operation.remove:
-        dependencies.todoInteractor.remove(todo);
+        _diskAccessTask?.cancel();
+        _diskAccessTask = dependencies.todoInteractor.remove(todo).listen((task) {
+          _state.add(_state.value.rebuild((b) => b..diskAccessTask = task));
+        });
         break;
     }
   }
@@ -57,5 +65,6 @@ class TodoListBloc {
     _state.close();
 
     _todos?.cancel();
+    _diskAccessTask?.cancel();
   }
 }

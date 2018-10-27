@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tasking/domain/entity/todo_entity.dart';
+import 'package:tasking/domain/interactor/task.dart';
 import 'package:tasking/presentation/screen/todo_list/todo_list_actions.dart';
 
 import 'todo_list_bloc.dart';
@@ -60,7 +61,17 @@ class _TodoListScreenState extends State<TodoListScreen> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: _buildBody(state),
+      body: state.diskAccessTask == Task.running() ? _buildProgressIndicator() : _buildBody(state),
+    );
+  }
+
+  Widget _buildProgressIndicator() {
+    return Center(
+      child: SizedBox(
+        width: 80.0,
+        height: 80.0,
+        child: CircularProgressIndicator(),
+      ),
     );
   }
 

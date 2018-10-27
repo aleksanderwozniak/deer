@@ -22,13 +22,18 @@ part of todo_list_state;
 class _$TodoListState extends TodoListState {
   @override
   final BuiltList<TodoEntity> todos;
+  @override
+  final Task diskAccessTask;
 
   factory _$TodoListState([void updates(TodoListStateBuilder b)]) =>
       (new TodoListStateBuilder()..update(updates)).build();
 
-  _$TodoListState._({this.todos}) : super._() {
+  _$TodoListState._({this.todos, this.diskAccessTask}) : super._() {
     if (todos == null) {
       throw new BuiltValueNullFieldError('TodoListState', 'todos');
+    }
+    if (diskAccessTask == null) {
+      throw new BuiltValueNullFieldError('TodoListState', 'diskAccessTask');
     }
   }
 
@@ -42,17 +47,21 @@ class _$TodoListState extends TodoListState {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is TodoListState && todos == other.todos;
+    return other is TodoListState &&
+        todos == other.todos &&
+        diskAccessTask == other.diskAccessTask;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, todos.hashCode));
+    return $jf($jc($jc(0, todos.hashCode), diskAccessTask.hashCode));
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('TodoListState')..add('todos', todos))
+    return (newBuiltValueToStringHelper('TodoListState')
+          ..add('todos', todos)
+          ..add('diskAccessTask', diskAccessTask))
         .toString();
   }
 }
@@ -66,11 +75,17 @@ class TodoListStateBuilder
       _$this._todos ??= new ListBuilder<TodoEntity>();
   set todos(ListBuilder<TodoEntity> todos) => _$this._todos = todos;
 
+  Task _diskAccessTask;
+  Task get diskAccessTask => _$this._diskAccessTask;
+  set diskAccessTask(Task diskAccessTask) =>
+      _$this._diskAccessTask = diskAccessTask;
+
   TodoListStateBuilder();
 
   TodoListStateBuilder get _$this {
     if (_$v != null) {
       _todos = _$v.todos?.toBuilder();
+      _diskAccessTask = _$v.diskAccessTask;
       _$v = null;
     }
     return this;
@@ -93,7 +108,9 @@ class TodoListStateBuilder
   _$TodoListState build() {
     _$TodoListState _$result;
     try {
-      _$result = _$v ?? new _$TodoListState._(todos: todos.build());
+      _$result = _$v ??
+          new _$TodoListState._(
+              todos: todos.build(), diskAccessTask: diskAccessTask);
     } catch (_) {
       String _$failedField;
       try {

@@ -11,7 +11,7 @@ class Dependencies {
   });
 
   static Dependencies standard() {
-    final todoRepository = TodoRepository(todoDao: TodoDao());
+    final todoRepository = TodoRepository(dao: TodoDao());
 
     return Dependencies(
       todoInteractor: TodoInteractor(todoRepository: todoRepository),

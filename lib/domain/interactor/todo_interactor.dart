@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:tasking/data/repository/todo_repository.dart';
 import 'package:tasking/domain/entity/todo_entity.dart';
+import 'package:tasking/domain/interactor/task.dart';
 
 class TodoInteractor {
   final TodoRepository todoRepository;
@@ -11,11 +13,16 @@ class TodoInteractor {
 
   Stream<List<TodoEntity>> get todos => todoRepository.todos;
 
-  void add(TodoEntity todo) {
-    todoRepository.add(todo);
+  // Unused, uncomment if SwipeToRefresh or CircularProgressIndicator is needed
+  // Stream<Task> load() {
+  //   return Observable.fromFuture(todoRepository.load()).startWith(Task.running());
+  // }
+
+  Stream<Task> add(TodoEntity todo) {
+    return Observable.fromFuture(todoRepository.add(todo)).startWith(Task.running());
   }
 
-  void remove(TodoEntity todo) {
-    todoRepository.remove(todo);
+  Stream<Task> remove(TodoEntity todo) {
+    return Observable.fromFuture(todoRepository.remove(todo)).startWith(Task.running());
   }
 }

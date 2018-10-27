@@ -15,6 +15,7 @@ class TodoDao {
     _loadFromDisk();
   }
 
+  // Make it public if SwipeToRefresh is needed
   Future<void> _loadFromDisk() async {
     var todosFromDisk = List<TodoEntity>();
     final prefs = await SharedPreferences.getInstance();
@@ -28,8 +29,6 @@ class TodoDao {
           return TodoMapper.fromJson(todoJson);
         }).toList();
       }
-
-      print(todosFromDisk);
     } catch (e) {
       print('LoadFromDisk error: $e');
     }
@@ -39,9 +38,10 @@ class TodoDao {
     _data.seedValue = list;
   }
 
-  Future<void> _saveToDisk() async {
+  Future<bool> _saveToDisk() async {
+    var result = false;
     final prefs = await SharedPreferences.getInstance();
-    final data = _data.value.toList();
+    final data = _data?.value?.toList();
 
     try {
       final jsonList = data.map((todo) {
@@ -49,39 +49,30 @@ class TodoDao {
         return json.encode(todoJson.encode());
       }).toList();
 
-      prefs.setStringList('todos', jsonList);
+      result = await prefs.setStringList('todos', jsonList);
     } catch (e) {
       print('SaveToDisk error: $e');
     }
+
+    return result;
   }
 
   // Unused for now
-  Future<void> _cleanPrefs({
-    SharedPreferences instance,
-    bool cleanAll = false,
-  }) async {
-    final prefs = instance ?? await SharedPreferences.getInstance();
+  // Future<void> _cleanPrefs({
+  //   SharedPreferences instance,
+  //   bool cleanAll = false,
+  // }) async {
+  //   final prefs = instance ?? await SharedPreferences.getInstance();
+  //
+  //   try {
+  //     cleanAll ? prefs.clear() : prefs.remove('todos');
+  //   } catch (e) {
+  //     print('CleanPrefs error: $e');
+  //   }
+  // }
 
-    try {
-      cleanAll ? prefs.clear() : prefs.remove('todos');
-    } catch (e) {
-      print('CleanPrefs error: $e');
-    }
-  }
-
-  void remove(TodoEntity todo) {
-    final todoBuilder = _data.value.toBuilder();
-    todoBuilder.remove(todo);
-
-    _data.add(todoBuilder.build());
-    _saveToDisk();
-  }
-
-  void add(TodoEntity todo) {
-    final todoBuilder = _data.value.toBuilder();
-    todoBuilder.add(todo);
-
-    _data.add(todoBuilder.build());
-    _saveToDisk();
+  Future<bool> save(List<TodoEntity> todos) {
+    _data.add(BuiltList(todos));
+    return _saveToDisk();
   }
 }
