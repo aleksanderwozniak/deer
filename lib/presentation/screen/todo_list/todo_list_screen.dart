@@ -61,7 +61,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: state.diskAccessTask == Task.running() ? _buildProgressIndicator() : _buildBody(state),
+      body: state.diskAccessTask == Task.running() ? _buildProgressIndicator() : _buildBodyStack(state),
     );
   }
 
@@ -91,6 +91,30 @@ class _TodoListScreenState extends State<TodoListScreen> {
         _TaskAdder(
           taskNameController: _taskNameController,
           onAdd: _addTask,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBodyStack(TodoListState state) {
+    return Stack(
+      children: <Widget>[
+        Positioned.fill(
+          child: ListView(
+            children: state.todos
+                .map((task) => _TaskTile(
+                      task: task,
+                      onTap: () => _removeTodo(task),
+                    ))
+                .toList(),
+          ),
+        ),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: _TaskAdder(
+            taskNameController: _taskNameController,
+            onAdd: _addTask,
+          ),
         ),
       ],
     );
@@ -143,27 +167,37 @@ class _TaskAdder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          Expanded(
-            child: TextField(
-              controller: taskNameController,
-              onSubmitted: (_) {
-                onAdd(_buildTask());
-                taskNameController.clear();
-              },
+    return Material(
+      color: Colors.green,
+      elevation: 8.0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(24.0),
+          topRight: Radius.circular(24.0),
+        ),
+      ),
+      child: Container(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            Expanded(
+              child: TextField(
+                controller: taskNameController,
+                onSubmitted: (_) {
+                  onAdd(_buildTask());
+                  taskNameController.clear();
+                },
+              ),
             ),
-          ),
-          const SizedBox(width: 16.0),
-          FlatButton(
-            child: Text('Add'),
-            color: Colors.green[300],
-            onPressed: () => onAdd(_buildTask()),
-          ),
-        ],
+            const SizedBox(width: 16.0),
+            FlatButton(
+              child: Text('Add'),
+              color: Colors.green[300],
+              onPressed: () => onAdd(_buildTask()),
+            ),
+          ],
+        ),
       ),
     );
   }
