@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:tasking/domain/entity/todo_entity.dart';
 import 'package:tasking/domain/interactor/task.dart';
+import 'package:tasking/presentation/screen/todo_detail/todo_detail_screen.dart';
 import 'package:tasking/presentation/screen/todo_list/todo_list_actions.dart';
+import 'package:tasking/presentation/widgets/todo_avatar.dart';
 
 import 'todo_list_bloc.dart';
 import 'todo_list_state.dart';
@@ -44,6 +46,12 @@ class _TodoListScreenState extends State<TodoListScreen> {
     _bloc.actions.add(PerformOnTodo(operation: Operation.add, todo: todo));
   }
 
+  void _showDetails(TodoEntity todo) {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => TodoDetailScreen(todo: todo),
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
@@ -61,7 +69,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: state.diskAccessTask == Task.running() ? _buildProgressIndicator() : _buildBodyStack(state),
+      body: state.diskAccessTask == Task.running() ? _buildProgressIndicator() : _buildBody(state),
     );
   }
 
@@ -83,7 +91,8 @@ class _TodoListScreenState extends State<TodoListScreen> {
             children: state.todos
                 .map((task) => _TaskTile(
                       task: task,
-                      onTap: () => _removeTodo(task),
+                      onTap: () => _showDetails(task),
+                      // onTap: () => _removeTodo(task),
                     ))
                 .toList(),
           ),
@@ -104,7 +113,8 @@ class _TodoListScreenState extends State<TodoListScreen> {
             children: state.todos
                 .map((task) => _TaskTile(
                       task: task,
-                      onTap: () => _removeTodo(task),
+                      // onTap: () => _removeTodo(task),
+                      onTap: () => _showDetails(task),
                     ))
                 .toList(),
           ),
@@ -135,19 +145,27 @@ class _TaskTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final children = [
+      const SizedBox(width: 12.0),
+      Text(task.name),
+      const SizedBox(width: 12.0),
+    ];
+
+    if (task.name.isNotEmpty) {
+      children.insertAll(1, [
+        TodoAvatar(text: task.name),
+        const SizedBox(width: 8.0),
+      ]);
+    }
+
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              width: 0.0,
-              color: Colors.grey[800],
-            ),
-          ),
+      behavior: HitTestBehavior.opaque,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        child: Row(
+          children: children,
         ),
-        padding: const EdgeInsets.all(12.0),
-        child: Text(task.name),
       ),
     );
   }
@@ -168,16 +186,16 @@ class _TaskAdder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.green,
       elevation: 8.0,
       shape: RoundedRectangleBorder(
+        side: BorderSide(width: 1.0, color: Colors.grey[700]),
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(24.0),
           topRight: Radius.circular(24.0),
         ),
       ),
       child: Container(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0, top: 12.0),
         child: Row(
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
@@ -194,7 +212,10 @@ class _TaskAdder extends StatelessWidget {
             FlatButton(
               child: Text('Add'),
               color: Colors.green[300],
-              onPressed: () => onAdd(_buildTask()),
+              onPressed: () {
+                onAdd(_buildTask());
+                taskNameController.clear();
+              },
             ),
           ],
         ),
