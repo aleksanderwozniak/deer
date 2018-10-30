@@ -88,13 +88,23 @@ class _TodoListScreenState extends State<TodoListScreen> {
       children: <Widget>[
         Expanded(
           child: ListView(
-            children: state.todos
-                .map((task) => _TaskTile(
-                      task: task,
-                      onTap: () => _showDetails(task),
-                      // onTap: () => _removeTodo(task),
-                    ))
-                .toList(),
+            children: state.todos.map((task) {
+              return Dismissible(
+                key: Key(task.addedDate.toIso8601String()),
+                background: Container(color: Colors.red),
+                onDismissed: (direction) {
+                  _removeTodo(task);
+
+                  // Scaffold.of(contextx).showSnackBar(SnackBar(
+                  // content: Text('${task.name} removed'),
+                  // ));
+                },
+                child: _TaskTile(
+                  task: task,
+                  onTap: () => _showDetails(task),
+                ),
+              );
+            }).toList(),
           ),
         ),
         _TaskAdder(
