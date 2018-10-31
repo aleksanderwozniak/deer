@@ -42,7 +42,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
     _bloc.actions.add(PerformOnTodo(operation: Operation.remove, todo: todo));
   }
 
-  void _addTask(TodoEntity todo) {
+  void _addTodo(TodoEntity todo) {
     _bloc.actions.add(PerformOnTodo(operation: Operation.add, todo: todo));
   }
 
@@ -69,8 +69,23 @@ class _TodoListScreenState extends State<TodoListScreen> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: state.diskAccessTask == Task.running() ? _buildProgressIndicator() : _buildBody(state),
+      // body: state.diskAccessTask == Task.running() ? _buildProgressIndicator() : _buildBody(state),
+      body: _buildBody(state),
+      // body: _buildTaskBody(state),
     );
+  }
+
+  Widget _buildTaskBody(TodoListState state) {
+    if (state.diskAccessTask == Task.running()) {
+      return Stack(
+        children: <Widget>[
+          _buildBody(state),
+          _buildProgressIndicator(),
+        ],
+      );
+    } else {
+      return _buildBody(state);
+    }
   }
 
   Widget _buildProgressIndicator() {
@@ -87,69 +102,40 @@ class _TodoListScreenState extends State<TodoListScreen> {
     return Column(
       children: <Widget>[
         Expanded(
-          child: ListView(
-            children: state.todos.map((task) {
+          child: ListView.builder(
+            itemCount: state.todos.length,
+            itemBuilder: (context, index) {
+              final todo = state.todos[index];
               return Dismissible(
-                key: Key(task.addedDate.toIso8601String()),
-                background: Container(color: Colors.red),
-                onDismissed: (direction) {
-                  _removeTodo(task);
-
-                  // Scaffold.of(contextx).showSnackBar(SnackBar(
-                  // content: Text('${task.name} removed'),
-                  // ));
-                },
-                child: _TaskTile(
-                  task: task,
-                  onTap: () => _showDetails(task),
+                key: Key(todo.addedDate.toIso8601String()),
+                background: Container(color: Colors.green[700]),
+                onDismissed: (_) => _removeTodo(todo),
+                child: _TodoTile(
+                  todo: todo,
+                  onTap: () => _showDetails(todo),
                 ),
               );
-            }).toList(),
+            },
           ),
         ),
-        _TaskAdder(
-          taskNameController: _taskNameController,
-          onAdd: _addTask,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildBodyStack(TodoListState state) {
-    return Stack(
-      children: <Widget>[
-        Positioned.fill(
-          child: ListView(
-            children: state.todos
-                .map((task) => _TaskTile(
-                      task: task,
-                      // onTap: () => _removeTodo(task),
-                      onTap: () => _showDetails(task),
-                    ))
-                .toList(),
-          ),
-        ),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: _TaskAdder(
-            taskNameController: _taskNameController,
-            onAdd: _addTask,
-          ),
+        _TodoAdder(
+          todoNameController: _taskNameController,
+          onAdd: _addTodo,
         ),
       ],
     );
   }
 }
 
-class _TaskTile extends StatelessWidget {
-  final TodoEntity task;
+class _TodoTile extends StatelessWidget {
+  final TodoEntity todo;
   final VoidCallback onTap;
 
-  const _TaskTile({
+  const _TodoTile({
     Key key,
-    @required this.task,
+    @required this.todo,
     @required this.onTap,
-  })  : assert(task != null),
+  })  : assert(todo != null),
         assert(onTap != null),
         super(key: key);
 
@@ -157,13 +143,19 @@ class _TaskTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final children = [
       const SizedBox(width: 12.0),
-      Text(task.name),
+      Expanded(
+        child: Text(
+          todo.name,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
       const SizedBox(width: 12.0),
     ];
 
-    if (task.name.isNotEmpty) {
+    if (todo.name.isNotEmpty) {
       children.insertAll(1, [
-        TodoAvatar(text: task.name),
+        TodoAvatar(text: todo.name),
         const SizedBox(width: 8.0),
       ]);
     }
@@ -181,28 +173,27 @@ class _TaskTile extends StatelessWidget {
   }
 }
 
-class _TaskAdder extends StatelessWidget {
-  final TextEditingController taskNameController;
+class _TodoAdder extends StatelessWidget {
+  final TextEditingController todoNameController;
   final AddTaskCallback onAdd;
 
-  const _TaskAdder({
+  const _TodoAdder({
     Key key,
-    @required this.taskNameController,
+    @required this.todoNameController,
     @required this.onAdd,
-  })  : assert(taskNameController != null),
+  })  : assert(todoNameController != null),
         assert(onAdd != null),
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Material(
-      elevation: 8.0,
-      shape: RoundedRectangleBorder(
-        side: BorderSide(width: 1.0, color: Colors.grey[700]),
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(24.0),
-          topRight: Radius.circular(24.0),
-        ),
+      elevation: 4.0,
+      type: MaterialType.card,
+      shadowColor: Colors.black,
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(24.0),
+        topRight: Radius.circular(24.0),
       ),
       child: Container(
         padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0, top: 12.0),
@@ -211,10 +202,10 @@ class _TaskAdder extends StatelessWidget {
           children: <Widget>[
             Expanded(
               child: TextField(
-                controller: taskNameController,
+                controller: todoNameController,
                 onSubmitted: (_) {
                   onAdd(_buildTask());
-                  taskNameController.clear();
+                  todoNameController.clear();
                 },
               ),
             ),
@@ -224,7 +215,7 @@ class _TaskAdder extends StatelessWidget {
               color: Colors.green[300],
               onPressed: () {
                 onAdd(_buildTask());
-                taskNameController.clear();
+                todoNameController.clear();
               },
             ),
           ],
@@ -235,7 +226,7 @@ class _TaskAdder extends StatelessWidget {
 
   TodoEntity _buildTask() {
     return TodoEntity(
-      name: taskNameController.text,
+      name: todoNameController.text,
       addedDate: DateTime.now(),
     );
   }
