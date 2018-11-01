@@ -110,7 +110,11 @@ class _TodoListScreenState extends State<TodoListScreen> {
               final todo = state.todos[index];
               return Dismissible(
                 key: Key(todo.addedDate.toIso8601String()),
-                background: Container(color: AppColors.grey2),
+                background: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(colors: [AppColors.white1, AppColors.grey2]),
+                  ),
+                ),
                 onDismissed: (_) => _removeTodo(todo),
                 child: _TodoTile(
                   todo: todo,
