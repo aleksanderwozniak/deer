@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tasking/dependencies.dart';
 import 'package:tasking/presentation/screen/todo_list/todo_list_screen.dart';
+import 'package:tasking/presentation/shared/themes.dart';
 
 Dependencies _sharedDependencies;
 Dependencies get dependencies => _sharedDependencies;
@@ -20,9 +21,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: _title,
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-      ),
+      theme: Themes.main,
       home: TodoListScreen(title: _title),
     );
   }

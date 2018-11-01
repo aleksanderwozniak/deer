@@ -3,7 +3,9 @@ import 'package:tasking/domain/entity/todo_entity.dart';
 import 'package:tasking/domain/interactor/task.dart';
 import 'package:tasking/presentation/screen/todo_detail/todo_detail_screen.dart';
 import 'package:tasking/presentation/screen/todo_list/todo_list_actions.dart';
-import 'package:tasking/presentation/widgets/todo_avatar.dart';
+import 'package:tasking/presentation/shared/resources.dart';
+import 'package:tasking/presentation/shared/widgets/buttons.dart';
+import 'package:tasking/presentation/shared/widgets/todo_avatar.dart';
 
 import 'todo_list_bloc.dart';
 import 'todo_list_state.dart';
@@ -108,7 +110,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
               final todo = state.todos[index];
               return Dismissible(
                 key: Key(todo.addedDate.toIso8601String()),
-                background: Container(color: Colors.green[700]),
+                background: Container(color: AppColors.grey2),
                 onDismissed: (_) => _removeTodo(todo),
                 child: _TodoTile(
                   todo: todo,
@@ -187,39 +189,37 @@ class _TodoAdder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      elevation: 4.0,
-      type: MaterialType.card,
-      shadowColor: Colors.black,
-      borderRadius: BorderRadius.only(
-        topLeft: Radius.circular(24.0),
-        topRight: Radius.circular(24.0),
+    return Container(
+      decoration: BoxDecoration(
+        boxShadow: [BoxShadow(color: AppColors.black1, blurRadius: 4.0)],
+        color: AppColors.grey1,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(24.0),
+          topRight: Radius.circular(24.0),
+        ),
       ),
-      child: Container(
-        padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0, top: 12.0),
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-            Expanded(
-              child: TextField(
-                controller: todoNameController,
-                onSubmitted: (_) {
-                  onAdd(_buildTask());
-                  todoNameController.clear();
-                },
-              ),
-            ),
-            const SizedBox(width: 16.0),
-            FlatButton(
-              child: Text('Add'),
-              color: Colors.green[300],
-              onPressed: () {
+      padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0, top: 12.0),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          Expanded(
+            child: TextField(
+              controller: todoNameController,
+              onSubmitted: (_) {
                 onAdd(_buildTask());
                 todoNameController.clear();
               },
             ),
-          ],
-        ),
+          ),
+          const SizedBox(width: 16.0),
+          RoundButton(
+            text: 'Add',
+            onPressed: () {
+              onAdd(_buildTask());
+              todoNameController.clear();
+            },
+          ),
+        ],
       ),
     );
   }
