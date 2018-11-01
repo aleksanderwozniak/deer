@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tasking/domain/entity/todo_entity.dart';
 import 'package:tasking/presentation/screen/todo_detail/todo_edit_screen.dart';
 import 'package:tasking/presentation/shared/helper/date_formatter.dart';
+import 'package:tasking/presentation/shared/widgets/buttons.dart';
 import 'package:tasking/presentation/shared/widgets/todo_avatar.dart';
 
 class TodoDetailScreen extends StatefulWidget {
@@ -45,7 +46,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
               const SizedBox(height: 16.0),
-              TodoAvatar(text: todo.name),
+              TodoAvatar(text: todo.name, isLarge: true),
               const SizedBox(height: 16.0),
               Text(
                 'Title:',
@@ -72,8 +73,8 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
               Text('Due by: ${DateFormatter.formatSimple(todo.dueDate)}'),
               const SizedBox(height: 16.0),
               Expanded(child: Container()),
-              RaisedButton(
-                child: Text('Edit'),
+              RoundButton(
+                text: 'Edit',
                 onPressed: () => _edit(todo),
               ),
               const SizedBox(height: 16.0),

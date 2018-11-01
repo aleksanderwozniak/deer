@@ -18,7 +18,7 @@ class RoundButton extends StatelessWidget {
     return FlatButton(
       child: Text(text),
       onPressed: onPressed,
-      color: AppColors.grey2,
+      color: AppColors.grey1,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.0),
         side: BorderSide(color: AppColors.grey4),

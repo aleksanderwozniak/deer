@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:tasking/presentation/shared/resources.dart';
 
 class TodoAvatar extends StatelessWidget {
   final String text;
+  final bool isLarge;
 
   const TodoAvatar({
     Key key,
-    this.text,
+    @required this.text,
+    this.isLarge = false,
   })  : assert(text != null),
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final diameter = 40.0;
+    final diameter = isLarge ? 64.0 : 40.0;
 
     return Container(
       width: diameter,
@@ -20,7 +23,7 @@ class TodoAvatar extends StatelessWidget {
         shape: BoxShape.circle,
         border: Border.all(
           width: 1.0,
-          color: Colors.grey[700],
+          color: AppColors.grey4,
         ),
       ),
       child: Center(child: _buildContentInCircle()),
@@ -28,6 +31,11 @@ class TodoAvatar extends StatelessWidget {
   }
 
   Widget _buildContentInCircle() {
-    return Text(text[0].toUpperCase());
+    final fontSize = isLarge ? 28.0 : 16.0;
+
+    return Text(
+      text[0].toUpperCase(),
+      style: TextStyle().copyWith(fontSize: fontSize),
+    );
   }
 }

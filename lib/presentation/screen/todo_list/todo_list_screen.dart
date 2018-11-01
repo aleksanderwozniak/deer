@@ -72,7 +72,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
         title: Text(widget.title),
       ),
       // body: state.diskAccessTask == Task.running() ? _buildProgressIndicator() : _buildBody(state),
-      body: _buildBody(state),
+      body: SafeArea(top: true, bottom: true, child: _buildBody(state)),
       // body: _buildTaskBody(state),
     );
   }
@@ -191,8 +191,10 @@ class _TodoAdder extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        boxShadow: [BoxShadow(color: AppColors.black1, blurRadius: 4.0)],
-        color: AppColors.grey1,
+        // boxShadow: [BoxShadow(color: AppColors.black1, blurRadius: 4.0)],
+        boxShadow: [BoxShadow(color: Colors.black54, blurRadius: 10.0)],
+        // color: AppColors.grey1,
+        color: AppColors.white1,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(24.0),
           topRight: Radius.circular(24.0),
