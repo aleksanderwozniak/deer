@@ -52,6 +52,7 @@ class TodoListBloc {
         });
         break;
       case Operation.archive:
+        // TODO: merge (?)
         dependencies.archiveInteractor.archive(todo);
 
         _diskAccessTask?.cancel();

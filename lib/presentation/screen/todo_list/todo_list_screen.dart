@@ -5,7 +5,7 @@ import 'package:tasking/presentation/screen/todo_detail/todo_detail_screen.dart'
 import 'package:tasking/presentation/screen/todo_list/todo_list_actions.dart';
 import 'package:tasking/presentation/shared/resources.dart';
 import 'package:tasking/presentation/shared/widgets/buttons.dart';
-import 'package:tasking/presentation/shared/widgets/todo_avatar.dart';
+import 'package:tasking/presentation/shared/widgets/tile.dart';
 
 import 'todo_list_bloc.dart';
 import 'todo_list_state.dart';
@@ -50,7 +50,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
 
   void _showDetails(TodoEntity todo) {
     Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => TodoDetailScreen(todo: todo),
+      builder: (context) => TodoDetailScreen(todo: todo, editable: true),
     ));
   }
 
@@ -79,7 +79,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
         // TODO: [WIP] go to Archive UI
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.add),
+            icon: Icon(Icons.archive),
             onPressed: _showArchive,
           ),
         ],
@@ -93,6 +93,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
       children: <Widget>[
         Expanded(
           child: ListView.builder(
+            padding: const EdgeInsets.symmetric(vertical: 4.0),
             itemCount: state.todos.length,
             itemBuilder: (context, index) {
               final todo = state.todos[index];
@@ -101,7 +102,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
                 background: _buildDismissibleBackground(leftToRight: true),
                 secondaryBackground: _buildDismissibleBackground(leftToRight: false),
                 onDismissed: (_) => _archiveTodo(todo),
-                child: _TodoTile(
+                child: TodoTile(
                   todo: todo,
                   onTap: () => _showDetails(todo),
                 ),
@@ -130,52 +131,6 @@ class _TodoListScreenState extends State<TodoListScreen> {
       alignment: alignment,
       decoration: BoxDecoration(
         gradient: LinearGradient(colors: colors),
-      ),
-    );
-  }
-}
-
-class _TodoTile extends StatelessWidget {
-  final TodoEntity todo;
-  final VoidCallback onTap;
-
-  const _TodoTile({
-    Key key,
-    @required this.todo,
-    @required this.onTap,
-  })  : assert(todo != null),
-        assert(onTap != null),
-        super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final children = [
-      const SizedBox(width: 12.0),
-      Expanded(
-        child: Text(
-          todo.name,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-      ),
-      const SizedBox(width: 12.0),
-    ];
-
-    if (todo.name.isNotEmpty) {
-      children.insertAll(1, [
-        TodoAvatar(text: todo.name),
-        const SizedBox(width: 8.0),
-      ]);
-    }
-
-    return GestureDetector(
-      onTap: onTap,
-      behavior: HitTestBehavior.opaque,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
-        child: Row(
-          children: children,
-        ),
       ),
     );
   }

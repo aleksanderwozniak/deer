@@ -11,11 +11,14 @@ import 'todo_detail_state.dart';
 
 class TodoDetailScreen extends StatefulWidget {
   final TodoEntity todo;
+  final bool editable;
 
   const TodoDetailScreen({
     Key key,
     @required this.todo,
+    @required this.editable,
   })  : assert(todo != null),
+        assert(editable != null),
         super(key: key);
 
   @override
@@ -47,6 +50,11 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
     if (updatedTodo != null) {
       _bloc.actions.add(PushTodo(oldTodo: todo, newTodo: updatedTodo));
     }
+  }
+
+  void _restore(TodoEntity todo) {
+    _bloc.actions.add(RestoreTodo(todo: todo));
+    Navigator.of(context).pop();
   }
 
   @override
@@ -120,12 +128,23 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
               ],
             ),
           ),
-          BottomButton(
-            text: 'Edit',
-            onPressed: () => _edit(state.todo),
-          ),
+          _buildBottom(state),
         ],
       ),
     );
+  }
+
+  Widget _buildBottom(TodoDetailState state) {
+    if (widget.editable) {
+      return BottomButton(
+        text: 'Edit',
+        onPressed: () => _edit(state.todo),
+      );
+    } else {
+      return BottomButton(
+        text: 'Restore',
+        onPressed: () => _restore(state.todo),
+      );
+    }
   }
 }

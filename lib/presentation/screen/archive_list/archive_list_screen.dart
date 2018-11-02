@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:tasking/domain/entity/todo_entity.dart';
 import 'package:tasking/domain/interactor/task.dart';
 import 'package:tasking/presentation/screen/archive_list/archive_list_actions.dart';
+import 'package:tasking/presentation/screen/todo_detail/todo_detail_screen.dart';
 import 'package:tasking/presentation/shared/widgets/buttons.dart';
+import 'package:tasking/presentation/shared/widgets/tile.dart';
 
 import 'archive_list_bloc.dart';
 import 'archive_list_state.dart';
@@ -28,6 +31,12 @@ class _ArchiveListScreenState extends State<ArchiveListScreen> {
   }
 
   // Place methods here
+  void _showDetails(TodoEntity todo) {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => TodoDetailScreen(todo: todo, editable: false),
+    ));
+  }
+
   void _clearArchive() {
     _bloc.actions.add(ClearArchive());
   }
@@ -62,7 +71,7 @@ class _ArchiveListScreenState extends State<ArchiveListScreen> {
         children: <Widget>[
           Expanded(
             child: ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              padding: const EdgeInsets.symmetric(vertical: 4.0),
               itemCount: state.archivedTodos.length,
               itemBuilder: (context, index) {
                 final todo = state.archivedTodos[index];
@@ -76,7 +85,11 @@ class _ArchiveListScreenState extends State<ArchiveListScreen> {
                 //     onTap: () => _showDetails(todo),
                 //   ),
                 // );
-                return Text(todo.name);
+                // return Text(todo.name);
+                return TodoTile(
+                  todo: todo,
+                  onTap: () => _showDetails(todo),
+                );
               },
             ),
           ),

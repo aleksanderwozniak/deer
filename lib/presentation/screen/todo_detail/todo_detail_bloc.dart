@@ -30,6 +30,9 @@ class TodoDetailBloc {
         case PushTodo:
           _onPushTodo(action);
           break;
+        case RestoreTodo:
+          _onRestoreTodo(action);
+          break;
         default:
           assert(false);
       }
@@ -57,5 +60,11 @@ class TodoDetailBloc {
     _state.add(_state.value.rebuild(
       (b) => b..todo = newTodo.toBuilder(),
     ));
+  }
+
+  void _onRestoreTodo(RestoreTodo action) {
+    // TODO: merge (?)
+    dependencies.archiveInteractor.restore(action.todo);
+    dependencies.todoInteractor.add(action.todo);
   }
 }

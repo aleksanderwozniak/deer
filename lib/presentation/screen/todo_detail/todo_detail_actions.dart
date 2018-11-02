@@ -11,3 +11,11 @@ class PushTodo {
   })  : assert(oldTodo != null),
         assert(newTodo != null);
 }
+
+class RestoreTodo {
+  final TodoEntity todo;
+
+  const RestoreTodo({
+    @required this.todo,
+  }) : assert(todo != null);
+}
