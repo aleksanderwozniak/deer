@@ -44,7 +44,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
       builder: (context) => TodoEditScreen(todo: todo),
     ));
 
-    _bloc.actions.add(PushTodo(todo: updatedTodo));
+    _bloc.actions.add(PushTodo(oldTodo: todo, newTodo: updatedTodo));
   }
 
   @override

@@ -38,12 +38,23 @@ class TodoDetailBloc {
     _state.close();
   }
 
+  // void _onPushTodo(PushTodo action) {
+  //   final todo = action.todo;
+  //   dependencies.todoInteractor.replace(todo);
+
+  //   _state.add(_state.value.rebuild(
+  //     (b) => b..todo = todo.toBuilder(),
+  //   ));
+  // }
+
   void _onPushTodo(PushTodo action) {
-    final todo = action.todo;
-    dependencies.todoInteractor.replace(todo);
+    final oldTodo = action.oldTodo;
+    final newTodo = action.newTodo;
+
+    dependencies.todoInteractor.replace(oldTodo: oldTodo, newTodo: newTodo);
 
     _state.add(_state.value.rebuild(
-      (b) => b..todo = todo.toBuilder(),
+      (b) => b..todo = newTodo.toBuilder(),
     ));
   }
 }

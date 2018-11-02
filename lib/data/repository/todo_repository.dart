@@ -33,10 +33,23 @@ class TodoRepository {
     return result ? Task.successful() : Task.failed();
   }
 
-  Future<Task> replace(TodoEntity todo) async {
+  // Future<Task> replace(TodoEntity todo) async {
+  //   var list = await todos.first;
+  //   list.removeWhere((e) => e.addedDate.compareTo(todo.addedDate) == 0);
+  //   list.add(todo);
+
+  //   final result = await dao.save(list);
+  //   return result ? Task.successful() : Task.failed();
+  // }
+
+  Future<Task> replace({
+    @required TodoEntity oldTodo,
+    @required TodoEntity newTodo,
+  }) async {
     var list = await todos.first;
-    list.removeWhere((e) => e.addedDate.compareTo(todo.addedDate) == 0);
-    list.add(todo);
+    final index = list.indexOf(oldTodo);
+    list.removeAt(index);
+    list.insert(index, newTodo);
 
     final result = await dao.save(list);
     return result ? Task.successful() : Task.failed();
