@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of task_entity;
+part of todo_entity;
 
 // **************************************************************************
 // BuiltValueGenerator
@@ -19,7 +19,7 @@ part of task_entity;
 // ignore_for_file: unnecessary_new
 // ignore_for_file: test_types_in_equals
 
-class _$TaskEntity extends TaskEntity {
+class _$TodoEntity extends TodoEntity {
   @override
   final String name;
   @override
@@ -29,30 +29,30 @@ class _$TaskEntity extends TaskEntity {
   @override
   final DateTime dueDate;
 
-  factory _$TaskEntity([void updates(TaskEntityBuilder b)]) =>
-      (new TaskEntityBuilder()..update(updates)).build();
+  factory _$TodoEntity([void updates(TodoEntityBuilder b)]) =>
+      (new TodoEntityBuilder()..update(updates)).build();
 
-  _$TaskEntity._({this.name, this.description, this.addedDate, this.dueDate})
+  _$TodoEntity._({this.name, this.description, this.addedDate, this.dueDate})
       : super._() {
     if (name == null) {
-      throw new BuiltValueNullFieldError('TaskEntity', 'name');
+      throw new BuiltValueNullFieldError('TodoEntity', 'name');
     }
     if (description == null) {
-      throw new BuiltValueNullFieldError('TaskEntity', 'description');
+      throw new BuiltValueNullFieldError('TodoEntity', 'description');
     }
   }
 
   @override
-  TaskEntity rebuild(void updates(TaskEntityBuilder b)) =>
+  TodoEntity rebuild(void updates(TodoEntityBuilder b)) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  TaskEntityBuilder toBuilder() => new TaskEntityBuilder()..replace(this);
+  TodoEntityBuilder toBuilder() => new TodoEntityBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is TaskEntity &&
+    return other is TodoEntity &&
         name == other.name &&
         description == other.description &&
         addedDate == other.addedDate &&
@@ -69,7 +69,7 @@ class _$TaskEntity extends TaskEntity {
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('TaskEntity')
+    return (newBuiltValueToStringHelper('TodoEntity')
           ..add('name', name)
           ..add('description', description)
           ..add('addedDate', addedDate)
@@ -78,8 +78,8 @@ class _$TaskEntity extends TaskEntity {
   }
 }
 
-class TaskEntityBuilder implements Builder<TaskEntity, TaskEntityBuilder> {
-  _$TaskEntity _$v;
+class TodoEntityBuilder implements Builder<TodoEntity, TodoEntityBuilder> {
+  _$TodoEntity _$v;
 
   String _name;
   String get name => _$this._name;
@@ -97,9 +97,9 @@ class TaskEntityBuilder implements Builder<TaskEntity, TaskEntityBuilder> {
   DateTime get dueDate => _$this._dueDate;
   set dueDate(DateTime dueDate) => _$this._dueDate = dueDate;
 
-  TaskEntityBuilder();
+  TodoEntityBuilder();
 
-  TaskEntityBuilder get _$this {
+  TodoEntityBuilder get _$this {
     if (_$v != null) {
       _name = _$v.name;
       _description = _$v.description;
@@ -111,22 +111,22 @@ class TaskEntityBuilder implements Builder<TaskEntity, TaskEntityBuilder> {
   }
 
   @override
-  void replace(TaskEntity other) {
+  void replace(TodoEntity other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$TaskEntity;
+    _$v = other as _$TodoEntity;
   }
 
   @override
-  void update(void updates(TaskEntityBuilder b)) {
+  void update(void updates(TodoEntityBuilder b)) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$TaskEntity build() {
+  _$TodoEntity build() {
     final _$result = _$v ??
-        new _$TaskEntity._(
+        new _$TodoEntity._(
             name: name,
             description: description,
             addedDate: addedDate,
