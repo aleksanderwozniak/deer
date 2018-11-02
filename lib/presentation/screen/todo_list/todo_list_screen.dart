@@ -110,11 +110,8 @@ class _TodoListScreenState extends State<TodoListScreen> {
               final todo = state.todos[index];
               return Dismissible(
                 key: Key(todo.addedDate.toIso8601String()),
-                background: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(colors: [AppColors.white1, AppColors.grey2]),
-                  ),
-                ),
+                background: _buildDismissibleBackground(leftToRight: true),
+                secondaryBackground: _buildDismissibleBackground(leftToRight: false),
                 onDismissed: (_) => _removeTodo(todo),
                 child: _TodoTile(
                   todo: todo,
@@ -129,6 +126,23 @@ class _TodoListScreenState extends State<TodoListScreen> {
           onAdd: _addTodo,
         ),
       ],
+    );
+  }
+
+  Widget _buildDismissibleBackground({@required bool leftToRight}) {
+    final alignment = leftToRight ? Alignment.centerLeft : Alignment.centerRight;
+    final colors = leftToRight ? [AppColors.grey3, AppColors.white1] : [AppColors.white1, AppColors.grey3];
+
+    return Container(
+      child: Text(
+        'Done',
+        style: TextStyle().copyWith(color: AppColors.white1, fontSize: 20.0),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      alignment: alignment,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(colors: colors),
+      ),
     );
   }
 }
