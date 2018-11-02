@@ -126,6 +126,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
       bottom: true,
       child: Column(
         mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Expanded(
             child: ListView(
@@ -169,12 +170,10 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
               ],
             ),
           ),
-          const SizedBox(height: 16.0),
-          RoundButton(
+          BottomButton(
             text: 'Edit',
             onPressed: () => _edit(state.todo),
           ),
-          const SizedBox(height: 16.0),
         ],
       ),
     );

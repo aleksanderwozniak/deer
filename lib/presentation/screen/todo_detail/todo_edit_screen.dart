@@ -86,12 +86,10 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
             ],
           ),
         ),
-        const SizedBox(height: 16.0),
-        RoundButton(
+        BottomButton(
           text: 'Save',
           onPressed: _submit,
         ),
-        const SizedBox(height: 16.0),
       ],
     );
   }
