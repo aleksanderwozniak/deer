@@ -12,4 +12,4 @@ class PerformOnTodo {
         assert(operation != null);
 }
 
-enum Operation { add, remove }
+enum Operation { add, archive }

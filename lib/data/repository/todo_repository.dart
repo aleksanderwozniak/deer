@@ -18,7 +18,7 @@ class TodoRepository {
   //   return Task.successful();
   // }
   Future<Task> add(TodoEntity todo) async {
-    var list = await todos.first;
+    var list = await todos.first ?? List<TodoEntity>();
     list.add(todo);
 
     final result = await dao.save(list);

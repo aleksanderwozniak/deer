@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tasking/domain/entity/todo_entity.dart';
 import 'package:tasking/domain/interactor/task.dart';
+import 'package:tasking/presentation/screen/archive_list/archive_list_screen.dart';
 import 'package:tasking/presentation/screen/todo_detail/todo_detail_screen.dart';
 import 'package:tasking/presentation/screen/todo_list/todo_list_actions.dart';
 import 'package:tasking/presentation/shared/resources.dart';
@@ -40,8 +41,8 @@ class _TodoListScreenState extends State<TodoListScreen> {
   }
 
   // Place methods here
-  void _removeTodo(TodoEntity todo) {
-    _bloc.actions.add(PerformOnTodo(operation: Operation.remove, todo: todo));
+  void _archiveTodo(TodoEntity todo) {
+    _bloc.actions.add(PerformOnTodo(operation: Operation.archive, todo: todo));
   }
 
   void _addTodo(TodoEntity todo) {
@@ -51,6 +52,12 @@ class _TodoListScreenState extends State<TodoListScreen> {
   void _showDetails(TodoEntity todo) {
     Navigator.of(context).push(MaterialPageRoute(
       builder: (context) => TodoDetailScreen(todo: todo),
+    ));
+  }
+
+  void _showArchive() {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => ArchiveListScreen(),
     ));
   }
 
@@ -70,6 +77,13 @@ class _TodoListScreenState extends State<TodoListScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        // TODO: [WIP] go to Archive UI
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: _showArchive,
+          ),
+        ],
       ),
       // body: state.diskAccessTask == Task.running() ? _buildProgressIndicator() : _buildBody(state),
       body: SafeArea(top: true, bottom: true, child: _buildBody(state)),
@@ -112,7 +126,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
                 key: Key(todo.addedDate.toIso8601String()),
                 background: _buildDismissibleBackground(leftToRight: true),
                 secondaryBackground: _buildDismissibleBackground(leftToRight: false),
-                onDismissed: (_) => _removeTodo(todo),
+                onDismissed: (_) => _archiveTodo(todo),
                 child: _TodoTile(
                   todo: todo,
                   onTap: () => _showDetails(todo),
