@@ -22,13 +22,18 @@ part of archive_list_state;
 class _$ArchiveListState extends ArchiveListState {
   @override
   final BuiltList<TodoEntity> archivedTodos;
+  @override
+  final Task clearTask;
 
   factory _$ArchiveListState([void updates(ArchiveListStateBuilder b)]) =>
       (new ArchiveListStateBuilder()..update(updates)).build();
 
-  _$ArchiveListState._({this.archivedTodos}) : super._() {
+  _$ArchiveListState._({this.archivedTodos, this.clearTask}) : super._() {
     if (archivedTodos == null) {
       throw new BuiltValueNullFieldError('ArchiveListState', 'archivedTodos');
+    }
+    if (clearTask == null) {
+      throw new BuiltValueNullFieldError('ArchiveListState', 'clearTask');
     }
   }
 
@@ -43,18 +48,21 @@ class _$ArchiveListState extends ArchiveListState {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is ArchiveListState && archivedTodos == other.archivedTodos;
+    return other is ArchiveListState &&
+        archivedTodos == other.archivedTodos &&
+        clearTask == other.clearTask;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, archivedTodos.hashCode));
+    return $jf($jc($jc(0, archivedTodos.hashCode), clearTask.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('ArchiveListState')
-          ..add('archivedTodos', archivedTodos))
+          ..add('archivedTodos', archivedTodos)
+          ..add('clearTask', clearTask))
         .toString();
   }
 }
@@ -69,11 +77,16 @@ class ArchiveListStateBuilder
   set archivedTodos(ListBuilder<TodoEntity> archivedTodos) =>
       _$this._archivedTodos = archivedTodos;
 
+  Task _clearTask;
+  Task get clearTask => _$this._clearTask;
+  set clearTask(Task clearTask) => _$this._clearTask = clearTask;
+
   ArchiveListStateBuilder();
 
   ArchiveListStateBuilder get _$this {
     if (_$v != null) {
       _archivedTodos = _$v.archivedTodos?.toBuilder();
+      _clearTask = _$v.clearTask;
       _$v = null;
     }
     return this;
@@ -96,8 +109,9 @@ class ArchiveListStateBuilder
   _$ArchiveListState build() {
     _$ArchiveListState _$result;
     try {
-      _$result =
-          _$v ?? new _$ArchiveListState._(archivedTodos: archivedTodos.build());
+      _$result = _$v ??
+          new _$ArchiveListState._(
+              archivedTodos: archivedTodos.build(), clearTask: clearTask);
     } catch (_) {
       String _$failedField;
       try {

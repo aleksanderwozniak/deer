@@ -12,11 +12,6 @@ class TodoRepository {
 
   Stream<List<TodoEntity>> get todos => dao.todos;
 
-  // Unused; for SwipeToRefresh
-  // Future<Task> load() async {
-  //   await dao.loadFromDisk();
-  //   return Task.successful();
-  // }
   Future<Task> add(TodoEntity todo) async {
     var list = await todos.first ?? List<TodoEntity>();
     list.add(todo);
@@ -32,15 +27,6 @@ class TodoRepository {
     final result = await dao.save(list);
     return result ? Task.successful() : Task.failed();
   }
-
-  // Future<Task> replace(TodoEntity todo) async {
-  //   var list = await todos.first;
-  //   list.removeWhere((e) => e.addedDate.compareTo(todo.addedDate) == 0);
-  //   list.add(todo);
-
-  //   final result = await dao.save(list);
-  //   return result ? Task.successful() : Task.failed();
-  // }
 
   Future<Task> replace({
     @required TodoEntity oldTodo,

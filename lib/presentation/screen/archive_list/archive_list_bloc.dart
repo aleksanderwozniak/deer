@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:built_collection/built_collection.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:tasking/domain/entity/todo_entity.dart';
+import 'package:tasking/domain/interactor/task.dart';
 import 'package:tasking/presentation/app.dart';
 
 import 'archive_list_actions.dart';
@@ -19,6 +20,7 @@ class ArchiveListBloc {
   );
 
   StreamSubscription<List<TodoEntity>> _archivedTodos;
+  StreamSubscription<Task> _clearTask;
 
   ArchiveListBloc() {
     _actions.stream.listen((action) {
@@ -44,9 +46,19 @@ class ArchiveListBloc {
     _state.close();
 
     _archivedTodos?.cancel();
+    _clearTask?.cancel();
   }
 
   void _onClearArchive() {
-    dependencies.archiveInteractor.clearArchive();
+    if (_state.value.clearTask == Task.running()) {
+      return;
+    }
+
+    _clearTask?.cancel();
+    _clearTask = dependencies.archiveInteractor.clearArchive().listen((task) {
+      _state.add(_state.value.rebuild(
+        (b) => b..clearTask = task,
+      ));
+    });
   }
 }

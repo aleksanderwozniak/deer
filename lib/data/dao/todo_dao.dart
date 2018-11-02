@@ -15,8 +15,7 @@ class TodoDao {
     _loadFromDisk();
   }
 
-  // Make it public if SwipeToRefresh is needed
-  Future<void> _loadFromDisk() async {
+  void _loadFromDisk() async {
     var todosFromDisk = List<TodoEntity>();
     final prefs = await SharedPreferences.getInstance();
 
@@ -56,20 +55,6 @@ class TodoDao {
 
     return result;
   }
-
-  // Unused for now
-  // Future<void> _cleanPrefs({
-  //   SharedPreferences instance,
-  //   bool cleanAll = false,
-  // }) async {
-  //   final prefs = instance ?? await SharedPreferences.getInstance();
-  //
-  //   try {
-  //     cleanAll ? prefs.clear() : prefs.remove('todos');
-  //   } catch (e) {
-  //     print('CleanPrefs error: $e');
-  //   }
-  // }
 
   Future<bool> save(List<TodoEntity> todos) {
     _data.add(BuiltList(todos));

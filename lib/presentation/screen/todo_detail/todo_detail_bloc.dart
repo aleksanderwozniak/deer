@@ -43,15 +43,6 @@ class TodoDetailBloc {
     _updateTask?.cancel();
   }
 
-  // void _onPushTodo(PushTodo action) {
-  //   final todo = action.todo;
-  //   dependencies.todoInteractor.replace(todo);
-
-  //   _state.add(_state.value.rebuild(
-  //     (b) => b..todo = todo.toBuilder(),
-  //   ));
-  // }
-
   void _onPushTodo(PushTodo action) {
     final oldTodo = action.oldTodo;
     final newTodo = action.newTodo;
@@ -62,7 +53,6 @@ class TodoDetailBloc {
         (b) => b..updateTask = task,
       ));
     });
-    // dependencies.todoInteractor.replace(oldTodo: oldTodo, newTodo: newTodo);
 
     _state.add(_state.value.rebuild(
       (b) => b..todo = newTodo.toBuilder(),

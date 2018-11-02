@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:tasking/domain/entity/todo_entity.dart';
-import 'package:tasking/domain/interactor/task.dart';
 import 'package:tasking/presentation/screen/archive_list/archive_list_screen.dart';
 import 'package:tasking/presentation/screen/todo_detail/todo_detail_screen.dart';
 import 'package:tasking/presentation/screen/todo_list/todo_list_actions.dart';
@@ -85,32 +84,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
           ),
         ],
       ),
-      // body: state.diskAccessTask == Task.running() ? _buildProgressIndicator() : _buildBody(state),
       body: SafeArea(top: true, bottom: true, child: _buildBody(state)),
-      // body: _buildTaskBody(state),
-    );
-  }
-
-  Widget _buildTaskBody(TodoListState state) {
-    if (state.diskAccessTask == Task.running()) {
-      return Stack(
-        children: <Widget>[
-          _buildBody(state),
-          _buildProgressIndicator(),
-        ],
-      );
-    } else {
-      return _buildBody(state);
-    }
-  }
-
-  Widget _buildProgressIndicator() {
-    return Center(
-      child: SizedBox(
-        width: 80.0,
-        height: 80.0,
-        child: CircularProgressIndicator(),
-      ),
     );
   }
 
@@ -225,7 +199,6 @@ class _TodoAdder extends StatelessWidget {
       decoration: BoxDecoration(
         // boxShadow: [BoxShadow(color: AppColors.black1, blurRadius: 4.0)],
         boxShadow: [BoxShadow(color: Colors.black54, blurRadius: 10.0)],
-        // color: AppColors.grey1,
         color: AppColors.white1,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(24.0),

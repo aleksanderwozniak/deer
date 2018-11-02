@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tasking/domain/interactor/task.dart';
 import 'package:tasking/presentation/screen/archive_list/archive_list_actions.dart';
 import 'package:tasking/presentation/shared/widgets/buttons.dart';
 
@@ -48,7 +49,7 @@ class _ArchiveListScreenState extends State<ArchiveListScreen> {
       appBar: AppBar(
         title: Text('Archived tasks'),
       ),
-      body: _buildBody(state),
+      body: state.clearTask != Task.running() ? _buildBody(state) : Center(child: CircularProgressIndicator()),
     );
   }
 

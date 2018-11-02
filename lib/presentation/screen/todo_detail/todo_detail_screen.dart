@@ -70,56 +70,6 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
     );
   }
 
-  // Widget _buildBody(TodoDetailState state) {
-  //   return SafeArea(
-  //     top: true,
-  //     bottom: true,
-  //     child: Center(
-  //       child: Padding(
-  //         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-  //         child: Column(
-  //           mainAxisSize: MainAxisSize.max,
-  //           children: <Widget>[
-  //             const SizedBox(height: 16.0),
-  //             TodoAvatar(text: state.todo.name, isLarge: true),
-  //             const SizedBox(height: 16.0),
-  //             Text(
-  //               'Title:',
-  //               style: TextStyle().copyWith(fontSize: 20.0),
-  //             ),
-  //             const SizedBox(height: 8.0),
-  //             Text(
-  //               state.todo.name,
-  //               textAlign: TextAlign.center,
-  //             ),
-  //             const SizedBox(height: 16.0),
-  //             Text(
-  //               'Description:',
-  //               style: TextStyle().copyWith(fontSize: 20.0),
-  //             ),
-  //             const SizedBox(height: 8.0),
-  //             Text(
-  //               state.todo.description,
-  //               textAlign: TextAlign.center,
-  //             ),
-  //             const SizedBox(height: 16.0),
-  //             Text('Added on: ${DateFormatter.formatSimple(state.todo.addedDate)}'),
-  //             const SizedBox(height: 8.0),
-  //             Text('Due by: ${DateFormatter.formatSimple(state.todo.dueDate)}'),
-  //             const SizedBox(height: 16.0),
-  //             Expanded(child: Container()),
-  //             RoundButton(
-  //               text: 'Edit',
-  //               onPressed: () => _edit(state.todo),
-  //             ),
-  //             const SizedBox(height: 16.0),
-  //           ],
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
-
   Widget _buildBody(TodoDetailState state) {
     return SafeArea(
       top: true,
