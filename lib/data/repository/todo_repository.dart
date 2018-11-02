@@ -17,6 +17,13 @@ class TodoRepository {
   //   await dao.loadFromDisk();
   //   return Task.successful();
   // }
+  Future<Task> add(TodoEntity todo) async {
+    var list = await todos.first;
+    list.add(todo);
+
+    final result = await dao.save(list);
+    return result ? Task.successful() : Task.failed();
+  }
 
   Future<Task> remove(TodoEntity todo) async {
     final list = await todos.first;
@@ -26,8 +33,9 @@ class TodoRepository {
     return result ? Task.successful() : Task.failed();
   }
 
-  Future<Task> add(TodoEntity todo) async {
+  Future<Task> replace(TodoEntity todo) async {
     var list = await todos.first;
+    list.removeWhere((e) => e.addedDate.compareTo(todo.addedDate) == 0);
     list.add(todo);
 
     final result = await dao.save(list);

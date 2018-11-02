@@ -25,4 +25,8 @@ class TodoInteractor {
   Stream<Task> remove(TodoEntity todo) {
     return Observable.fromFuture(todoRepository.remove(todo)).startWith(Task.running());
   }
+
+  Stream<Task> replace(TodoEntity todo) {
+    return Observable.fromFuture(todoRepository.replace(todo)).startWith(Task.running());
+  }
 }

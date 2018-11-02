@@ -5,6 +5,10 @@ import 'package:tasking/presentation/shared/helper/date_formatter.dart';
 import 'package:tasking/presentation/shared/widgets/buttons.dart';
 import 'package:tasking/presentation/shared/widgets/todo_avatar.dart';
 
+import 'todo_detail_actions.dart';
+import 'todo_detail_bloc.dart';
+import 'todo_detail_state.dart';
+
 class TodoDetailScreen extends StatefulWidget {
   final TodoEntity todo;
 
@@ -19,23 +23,52 @@ class TodoDetailScreen extends StatefulWidget {
 }
 
 class _TodoDetailScreenState extends State<TodoDetailScreen> {
-  void _edit(TodoEntity todo) {
-    Navigator.of(context).push(MaterialPageRoute(
+  // Place variables here
+  TodoDetailBloc _bloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _bloc = TodoDetailBloc(todo: widget.todo);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _bloc.dispose();
+  }
+
+  // Place methods here
+  void _edit(TodoEntity todo) async {
+    final updatedTodo = await Navigator.of(context).push<TodoEntity>(MaterialPageRoute(
       builder: (context) => TodoEditScreen(todo: todo),
     ));
+
+    _bloc.actions.add(PushTodo(todo: updatedTodo));
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Task Details'),
-      ),
-      body: _buildBody(widget.todo),
+    return StreamBuilder(
+      initialData: _bloc.initialState,
+      stream: _bloc.state,
+      builder: (context, snapshot) {
+        return _buildUI(snapshot.data);
+      },
     );
   }
 
-  Widget _buildBody(TodoEntity todo) {
+  Widget _buildUI(TodoDetailState state) {
+    // Build your root view here
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Task details'),
+      ),
+      body: _buildBody(state),
+    );
+  }
+
+  Widget _buildBody(TodoDetailState state) {
     return SafeArea(
       top: true,
       bottom: true,
@@ -46,7 +79,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
               const SizedBox(height: 16.0),
-              TodoAvatar(text: todo.name, isLarge: true),
+              TodoAvatar(text: state.todo.name, isLarge: true),
               const SizedBox(height: 16.0),
               Text(
                 'Title:',
@@ -54,7 +87,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
               ),
               const SizedBox(height: 8.0),
               Text(
-                todo.name,
+                state.todo.name,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 16.0),
@@ -64,18 +97,18 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
               ),
               const SizedBox(height: 8.0),
               Text(
-                todo.description,
+                state.todo.description,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 16.0),
-              Text('Added on: ${DateFormatter.formatSimple(todo.addedDate)}'),
+              Text('Added on: ${DateFormatter.formatSimple(state.todo.addedDate)}'),
               const SizedBox(height: 8.0),
-              Text('Due by: ${DateFormatter.formatSimple(todo.dueDate)}'),
+              Text('Due by: ${DateFormatter.formatSimple(state.todo.dueDate)}'),
               const SizedBox(height: 16.0),
               Expanded(child: Container()),
               RoundButton(
                 text: 'Edit',
-                onPressed: () => _edit(todo),
+                onPressed: () => _edit(state.todo),
               ),
               const SizedBox(height: 16.0),
             ],
