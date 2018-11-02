@@ -22,13 +22,18 @@ part of todo_detail_state;
 class _$TodoDetailState extends TodoDetailState {
   @override
   final TodoEntity todo;
+  @override
+  final Task updateTask;
 
   factory _$TodoDetailState([void updates(TodoDetailStateBuilder b)]) =>
       (new TodoDetailStateBuilder()..update(updates)).build();
 
-  _$TodoDetailState._({this.todo}) : super._() {
+  _$TodoDetailState._({this.todo, this.updateTask}) : super._() {
     if (todo == null) {
       throw new BuiltValueNullFieldError('TodoDetailState', 'todo');
+    }
+    if (updateTask == null) {
+      throw new BuiltValueNullFieldError('TodoDetailState', 'updateTask');
     }
   }
 
@@ -43,17 +48,21 @@ class _$TodoDetailState extends TodoDetailState {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is TodoDetailState && todo == other.todo;
+    return other is TodoDetailState &&
+        todo == other.todo &&
+        updateTask == other.updateTask;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, todo.hashCode));
+    return $jf($jc($jc(0, todo.hashCode), updateTask.hashCode));
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('TodoDetailState')..add('todo', todo))
+    return (newBuiltValueToStringHelper('TodoDetailState')
+          ..add('todo', todo)
+          ..add('updateTask', updateTask))
         .toString();
   }
 }
@@ -66,11 +75,16 @@ class TodoDetailStateBuilder
   TodoEntityBuilder get todo => _$this._todo ??= new TodoEntityBuilder();
   set todo(TodoEntityBuilder todo) => _$this._todo = todo;
 
+  Task _updateTask;
+  Task get updateTask => _$this._updateTask;
+  set updateTask(Task updateTask) => _$this._updateTask = updateTask;
+
   TodoDetailStateBuilder();
 
   TodoDetailStateBuilder get _$this {
     if (_$v != null) {
       _todo = _$v.todo?.toBuilder();
+      _updateTask = _$v.updateTask;
       _$v = null;
     }
     return this;
@@ -93,7 +107,8 @@ class TodoDetailStateBuilder
   _$TodoDetailState build() {
     _$TodoDetailState _$result;
     try {
-      _$result = _$v ?? new _$TodoDetailState._(todo: todo.build());
+      _$result = _$v ??
+          new _$TodoDetailState._(todo: todo.build(), updateTask: updateTask);
     } catch (_) {
       String _$failedField;
       try {

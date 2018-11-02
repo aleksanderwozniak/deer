@@ -51,7 +51,10 @@ class TodoListBloc {
           _state.add(_state.value.rebuild((b) => b..diskAccessTask = task));
         });
         break;
-      case Operation.remove:
+      case Operation.archive:
+        // TODO: merge (?)
+        dependencies.archiveInteractor.archive(todo);
+
         _diskAccessTask?.cancel();
         _diskAccessTask = dependencies.todoInteractor.remove(todo).listen((task) {
           _state.add(_state.value.rebuild((b) => b..diskAccessTask = task));

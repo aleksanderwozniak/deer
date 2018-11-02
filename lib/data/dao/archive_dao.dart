@@ -7,11 +7,11 @@ import 'package:tasking/data/json/todo_json.dart';
 import 'package:tasking/data/mapper/todo_mapper.dart';
 import 'package:tasking/domain/entity/todo_entity.dart';
 
-class TodoDao {
+class ArchiveDao {
   Stream<List<TodoEntity>> get todos => _data.stream().map((it) => it.toList());
   final _data = InMemory<BuiltList<TodoEntity>>();
 
-  TodoDao() {
+  ArchiveDao() {
     _loadFromDisk();
   }
 
@@ -20,9 +20,9 @@ class TodoDao {
     final prefs = await SharedPreferences.getInstance();
 
     try {
-      final data = prefs.getStringList('todos');
+      final data = prefs.getStringList('todos-archive');
 
-      if (data != null) {
+      if (data != null && data.length > 0) {
         todosFromDisk = data.map((task) {
           final todoJson = TodoJson.parse(json.decode(task));
           return TodoMapper.fromJson(todoJson);
@@ -40,7 +40,7 @@ class TodoDao {
   Future<bool> _saveToDisk() async {
     var result = false;
     final prefs = await SharedPreferences.getInstance();
-    final data = _data?.value?.toList();
+    final data = await todos.first;
 
     try {
       final jsonList = data.map((todo) {
@@ -48,7 +48,7 @@ class TodoDao {
         return json.encode(todoJson.encode());
       }).toList();
 
-      result = await prefs.setStringList('todos', jsonList);
+      result = await prefs.setStringList('todos-archive', jsonList);
     } catch (e) {
       print('SaveToDisk error: $e');
     }
@@ -58,6 +58,15 @@ class TodoDao {
 
   Future<bool> save(List<TodoEntity> todos) {
     _data.add(BuiltList(todos));
+    _data.seedValue = BuiltList(todos);
     return _saveToDisk();
+  }
+
+  Future<bool> clear() async {
+    _data.add(BuiltList());
+    _data.seedValue = BuiltList();
+
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.remove('todos-archive');
   }
 }

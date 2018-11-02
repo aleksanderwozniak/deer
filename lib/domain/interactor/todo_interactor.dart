@@ -13,11 +13,6 @@ class TodoInteractor {
 
   Stream<List<TodoEntity>> get todos => todoRepository.todos;
 
-  // Unused, uncomment if SwipeToRefresh or CircularProgressIndicator is needed
-  // Stream<Task> load() {
-  //   return Observable.fromFuture(todoRepository.load()).startWith(Task.running());
-  // }
-
   Stream<Task> add(TodoEntity todo) {
     return Observable.fromFuture(todoRepository.add(todo)).startWith(Task.running());
   }
@@ -25,10 +20,6 @@ class TodoInteractor {
   Stream<Task> remove(TodoEntity todo) {
     return Observable.fromFuture(todoRepository.remove(todo)).startWith(Task.running());
   }
-
-  // Stream<Task> replace(TodoEntity todo) {
-  //   return Observable.fromFuture(todoRepository.replace(todo)).startWith(Task.running());
-  // }
 
   Stream<Task> replace({
     @required TodoEntity oldTodo,

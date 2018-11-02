@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:tasking/domain/entity/todo_entity.dart';
-import 'package:tasking/domain/interactor/task.dart';
+import 'package:tasking/presentation/screen/archive_list/archive_list_screen.dart';
 import 'package:tasking/presentation/screen/todo_detail/todo_detail_screen.dart';
 import 'package:tasking/presentation/screen/todo_list/todo_list_actions.dart';
 import 'package:tasking/presentation/shared/resources.dart';
 import 'package:tasking/presentation/shared/widgets/buttons.dart';
-import 'package:tasking/presentation/shared/widgets/todo_avatar.dart';
+import 'package:tasking/presentation/shared/widgets/tile.dart';
 
 import 'todo_list_bloc.dart';
 import 'todo_list_state.dart';
@@ -40,8 +40,8 @@ class _TodoListScreenState extends State<TodoListScreen> {
   }
 
   // Place methods here
-  void _removeTodo(TodoEntity todo) {
-    _bloc.actions.add(PerformOnTodo(operation: Operation.remove, todo: todo));
+  void _archiveTodo(TodoEntity todo) {
+    _bloc.actions.add(PerformOnTodo(operation: Operation.archive, todo: todo));
   }
 
   void _addTodo(TodoEntity todo) {
@@ -50,7 +50,13 @@ class _TodoListScreenState extends State<TodoListScreen> {
 
   void _showDetails(TodoEntity todo) {
     Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => TodoDetailScreen(todo: todo),
+      builder: (context) => TodoDetailScreen(todo: todo, editable: true),
+    ));
+  }
+
+  void _showArchive() {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => ArchiveListScreen(),
     ));
   }
 
@@ -70,33 +76,15 @@ class _TodoListScreenState extends State<TodoListScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
-      ),
-      // body: state.diskAccessTask == Task.running() ? _buildProgressIndicator() : _buildBody(state),
-      body: SafeArea(top: true, bottom: true, child: _buildBody(state)),
-      // body: _buildTaskBody(state),
-    );
-  }
-
-  Widget _buildTaskBody(TodoListState state) {
-    if (state.diskAccessTask == Task.running()) {
-      return Stack(
-        children: <Widget>[
-          _buildBody(state),
-          _buildProgressIndicator(),
+        // TODO: [WIP] go to Archive UI
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.archive),
+            onPressed: _showArchive,
+          ),
         ],
-      );
-    } else {
-      return _buildBody(state);
-    }
-  }
-
-  Widget _buildProgressIndicator() {
-    return Center(
-      child: SizedBox(
-        width: 80.0,
-        height: 80.0,
-        child: CircularProgressIndicator(),
       ),
+      body: SafeArea(top: true, bottom: true, child: _buildBody(state)),
     );
   }
 
@@ -105,18 +93,16 @@ class _TodoListScreenState extends State<TodoListScreen> {
       children: <Widget>[
         Expanded(
           child: ListView.builder(
+            padding: const EdgeInsets.symmetric(vertical: 4.0),
             itemCount: state.todos.length,
             itemBuilder: (context, index) {
               final todo = state.todos[index];
               return Dismissible(
                 key: Key(todo.addedDate.toIso8601String()),
-                background: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(colors: [AppColors.white1, AppColors.grey2]),
-                  ),
-                ),
-                onDismissed: (_) => _removeTodo(todo),
-                child: _TodoTile(
+                background: _buildDismissibleBackground(leftToRight: true),
+                secondaryBackground: _buildDismissibleBackground(leftToRight: false),
+                onDismissed: (_) => _archiveTodo(todo),
+                child: TodoTile(
                   todo: todo,
                   onTap: () => _showDetails(todo),
                 ),
@@ -131,49 +117,20 @@ class _TodoListScreenState extends State<TodoListScreen> {
       ],
     );
   }
-}
 
-class _TodoTile extends StatelessWidget {
-  final TodoEntity todo;
-  final VoidCallback onTap;
+  Widget _buildDismissibleBackground({@required bool leftToRight}) {
+    final alignment = leftToRight ? Alignment.centerLeft : Alignment.centerRight;
+    final colors = leftToRight ? [AppColors.grey3, AppColors.white1] : [AppColors.white1, AppColors.grey3];
 
-  const _TodoTile({
-    Key key,
-    @required this.todo,
-    @required this.onTap,
-  })  : assert(todo != null),
-        assert(onTap != null),
-        super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final children = [
-      const SizedBox(width: 12.0),
-      Expanded(
-        child: Text(
-          todo.name,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
+    return Container(
+      child: Text(
+        'Done',
+        style: TextStyle().copyWith(color: AppColors.white1, fontSize: 20.0),
       ),
-      const SizedBox(width: 12.0),
-    ];
-
-    if (todo.name.isNotEmpty) {
-      children.insertAll(1, [
-        TodoAvatar(text: todo.name),
-        const SizedBox(width: 8.0),
-      ]);
-    }
-
-    return GestureDetector(
-      onTap: onTap,
-      behavior: HitTestBehavior.opaque,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
-        child: Row(
-          children: children,
-        ),
+      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      alignment: alignment,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(colors: colors),
       ),
     );
   }
@@ -197,14 +154,14 @@ class _TodoAdder extends StatelessWidget {
       decoration: BoxDecoration(
         // boxShadow: [BoxShadow(color: AppColors.black1, blurRadius: 4.0)],
         boxShadow: [BoxShadow(color: Colors.black54, blurRadius: 10.0)],
-        // color: AppColors.grey1,
         color: AppColors.white1,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(24.0),
           topRight: Radius.circular(24.0),
         ),
       ),
-      padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0, top: 12.0),
+      // padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0, top: 12.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
       child: Row(
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[

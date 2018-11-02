@@ -11,11 +11,14 @@ import 'todo_detail_state.dart';
 
 class TodoDetailScreen extends StatefulWidget {
   final TodoEntity todo;
+  final bool editable;
 
   const TodoDetailScreen({
     Key key,
     @required this.todo,
+    @required this.editable,
   })  : assert(todo != null),
+        assert(editable != null),
         super(key: key);
 
   @override
@@ -44,7 +47,14 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
       builder: (context) => TodoEditScreen(todo: todo),
     ));
 
-    _bloc.actions.add(PushTodo(oldTodo: todo, newTodo: updatedTodo));
+    if (updatedTodo != null) {
+      _bloc.actions.add(PushTodo(oldTodo: todo, newTodo: updatedTodo));
+    }
+  }
+
+  void _restore(TodoEntity todo) {
+    _bloc.actions.add(RestoreTodo(todo: todo));
+    Navigator.of(context).pop();
   }
 
   @override
@@ -72,49 +82,69 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
     return SafeArea(
       top: true,
       bottom: true,
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              const SizedBox(height: 16.0),
-              TodoAvatar(text: state.todo.name, isLarge: true),
-              const SizedBox(height: 16.0),
-              Text(
-                'Title:',
-                style: TextStyle().copyWith(fontSize: 20.0),
-              ),
-              const SizedBox(height: 8.0),
-              Text(
-                state.todo.name,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16.0),
-              Text(
-                'Description:',
-                style: TextStyle().copyWith(fontSize: 20.0),
-              ),
-              const SizedBox(height: 8.0),
-              Text(
-                state.todo.description,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16.0),
-              Text('Added on: ${DateFormatter.formatSimple(state.todo.addedDate)}'),
-              const SizedBox(height: 8.0),
-              Text('Due by: ${DateFormatter.formatSimple(state.todo.dueDate)}'),
-              const SizedBox(height: 16.0),
-              Expanded(child: Container()),
-              RoundButton(
-                text: 'Edit',
-                onPressed: () => _edit(state.todo),
-              ),
-              const SizedBox(height: 16.0),
-            ],
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              children: <Widget>[
+                const SizedBox(height: 16.0),
+                TodoAvatar(text: state.todo.name, isLarge: true),
+                const SizedBox(height: 16.0),
+                Text(
+                  'Title:',
+                  textAlign: TextAlign.center,
+                  style: TextStyle().copyWith(fontSize: 20.0),
+                ),
+                const SizedBox(height: 8.0),
+                Text(
+                  state.todo.name,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16.0),
+                Text(
+                  'Description:',
+                  textAlign: TextAlign.center,
+                  style: TextStyle().copyWith(fontSize: 20.0),
+                ),
+                const SizedBox(height: 8.0),
+                Text(
+                  state.todo.description,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16.0),
+                Text(
+                  'Added on: ${DateFormatter.formatSimple(state.todo.addedDate)}',
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 8.0),
+                Text(
+                  'Due by: ${DateFormatter.formatSimple(state.todo.dueDate)}',
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16.0),
+              ],
+            ),
           ),
-        ),
+          _buildBottom(state),
+        ],
       ),
     );
+  }
+
+  Widget _buildBottom(TodoDetailState state) {
+    if (widget.editable) {
+      return BottomButton(
+        text: 'Edit',
+        onPressed: () => _edit(state.todo),
+      );
+    } else {
+      return BottomButton(
+        text: 'Restore',
+        onPressed: () => _restore(state.todo),
+      );
+    }
   }
 }
