@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:tasking/domain/entity/todo_entity.dart';
+import 'package:tasking/domain/interactor/task.dart';
 import 'package:tasking/presentation/app.dart';
 
 import 'todo_detail_actions.dart';
@@ -15,6 +16,8 @@ class TodoDetailBloc {
   TodoDetailState get initialState => _state.value;
   Stream<TodoDetailState> get state => _state.stream.distinct();
   final BehaviorSubject<TodoDetailState> _state;
+
+  StreamSubscription<Task> _updateTask;
 
   TodoDetailBloc({@required TodoEntity todo})
       : _state = BehaviorSubject<TodoDetailState>(
@@ -36,6 +39,8 @@ class TodoDetailBloc {
   void dispose() {
     _actions.close();
     _state.close();
+
+    _updateTask?.cancel();
   }
 
   // void _onPushTodo(PushTodo action) {
@@ -51,7 +56,13 @@ class TodoDetailBloc {
     final oldTodo = action.oldTodo;
     final newTodo = action.newTodo;
 
-    dependencies.todoInteractor.replace(oldTodo: oldTodo, newTodo: newTodo);
+    _updateTask?.cancel();
+    _updateTask = dependencies.todoInteractor.replace(oldTodo: oldTodo, newTodo: newTodo).listen((task) {
+      _state.add(_state.value.rebuild(
+        (b) => b..updateTask = task,
+      ));
+    });
+    // dependencies.todoInteractor.replace(oldTodo: oldTodo, newTodo: newTodo);
 
     _state.add(_state.value.rebuild(
       (b) => b..todo = newTodo.toBuilder(),
