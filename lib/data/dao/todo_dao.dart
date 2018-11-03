@@ -63,10 +63,21 @@ class TodoDao {
     return result;
   }
 
-  // Future<bool> save(List<TodoEntity> todos) {
-  //   _data.add(BuiltList(todos));
-  //   return _saveToDisk();
-  // }
+  Future<bool> add(TodoEntity todo) {
+    final data = _data.value.toBuilder();
+    data.add(todo);
+    _data.add(data.build());
+
+    return _saveToDisk();
+  }
+
+  Future<bool> remove(TodoEntity todo) {
+    final data = _data.value.toBuilder();
+    data.remove(todo);
+    _data.add(data.build());
+
+    return _saveToDisk();
+  }
 
   Future<bool> update(TodoEntity todo) async {
     if (_data.value == null) {
@@ -81,22 +92,6 @@ class TodoDao {
 
     final data = _data.value.toBuilder();
     data[_data.value.indexOf(current.first)] = todo;
-    _data.add(data.build());
-
-    return _saveToDisk();
-  }
-
-  Future<bool> add(TodoEntity todo) {
-    final data = _data.value.toBuilder();
-    data.add(todo);
-    _data.add(data.build());
-
-    return _saveToDisk();
-  }
-
-  Future<bool> remove(TodoEntity todo) {
-    final data = _data.value.toBuilder();
-    data.remove(todo);
     _data.add(data.build());
 
     return _saveToDisk();

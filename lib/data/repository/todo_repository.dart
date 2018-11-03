@@ -14,22 +14,6 @@ class TodoRepository {
   Stream<List<TodoEntity>> get unassigned => dao.unassigned;
   Stream<List<TodoEntity>> get finished => dao.finished;
 
-  // Future<Task> add(TodoEntity todo) async {
-  //   var list = await all.first ?? List<TodoEntity>();
-  //   list.add(todo);
-
-  //   final result = await dao.save(list);
-  //   return result ? Task.successful() : Task.failed();
-  // }
-
-  // Future<Task> remove(TodoEntity todo) async {
-  //   final list = await all.first;
-  //   list.remove(todo);
-
-  //   final result = await dao.save(list);
-  //   return result ? Task.successful() : Task.failed();
-  // }
-
   Future<Task> add(TodoEntity todo) async {
     final result = await dao.add(todo);
     return result ? Task.successful() : Task.failed();
@@ -49,17 +33,4 @@ class TodoRepository {
     final result = await dao.clearFinished();
     return result ? Task.successful() : Task.failed();
   }
-
-  // Future<Task> replace({
-  //   @required TodoEntity oldTodo,
-  //   @required TodoEntity newTodo,
-  // }) async {
-  //   var list = await all.first;
-  //   final index = list.indexOf(oldTodo);
-  //   list.removeAt(index);
-  //   list.insert(index, newTodo);
-
-  //   final result = await dao.save(list);
-  //   return result ? Task.successful() : Task.failed();
-  // }
 }

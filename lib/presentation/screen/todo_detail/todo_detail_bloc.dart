@@ -27,11 +27,8 @@ class TodoDetailBloc {
         ) {
     _actions.stream.listen((action) {
       switch (action.runtimeType) {
-        case UpdateTodo:
-          _onUpdateTodo(action);
-          break;
-        case RestoreTodo:
-          _onRestoreTodo(action);
+        case PerformOnTodo:
+          _onPerform(action);
           break;
         default:
           assert(false);
@@ -46,9 +43,20 @@ class TodoDetailBloc {
     _updateTask?.cancel();
   }
 
-  void _onUpdateTodo(UpdateTodo action) {
-    final todo = action.todo;
+  void _onPerform(PerformOnTodo action) {
+    switch (action.operation) {
+      case Operation.update:
+        _onUpdateTodo(action.todo);
+        break;
+      case Operation.restore:
+        _onRestoreTodo(action.todo);
+        break;
+      default:
+        assert(false);
+    }
+  }
 
+  void _onUpdateTodo(TodoEntity todo) {
     _updateTask?.cancel();
     _updateTask = dependencies.todoInteractor.update(todo).listen((task) {
       _state.add(_state.value.rebuild(
@@ -61,8 +69,8 @@ class TodoDetailBloc {
     ));
   }
 
-  void _onRestoreTodo(RestoreTodo action) {
-    final todo = action.todo.rebuild((b) => b..status = TodoStatus.unassigned);
-    dependencies.todoInteractor.update(todo);
+  void _onRestoreTodo(TodoEntity todo) {
+    final updatedTodo = todo.rebuild((b) => b..status = TodoStatus.unassigned);
+    dependencies.todoInteractor.update(updatedTodo);
   }
 }

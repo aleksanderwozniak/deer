@@ -30,16 +30,4 @@ class TodoInteractor {
   Stream<Task> clearArchive() {
     return Observable.fromFuture(todoRepository.clearArchive()).startWith(Task.running());
   }
-
-  // Stream<Task> replace({
-  //   @required TodoEntity oldTodo,
-  //   @required TodoEntity newTodo,
-  // }) {
-  //   return Observable.fromFuture(
-  //     todoRepository.replace(
-  //       oldTodo: oldTodo,
-  //       newTodo: newTodo,
-  //     ),
-  //   ).startWith(Task.running());
-  // }
 }
