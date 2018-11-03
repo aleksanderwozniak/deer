@@ -51,6 +51,9 @@ class TodoDetailBloc {
       case Operation.restore:
         _onRestoreTodo(action.todo);
         break;
+      case Operation.delete:
+        _onDeleteTodo(action.todo);
+        break;
       default:
         assert(false);
     }
@@ -72,5 +75,9 @@ class TodoDetailBloc {
   void _onRestoreTodo(TodoEntity todo) {
     final updatedTodo = todo.rebuild((b) => b..status = TodoStatus.unassigned);
     dependencies.todoInteractor.update(updatedTodo);
+  }
+
+  void _onDeleteTodo(TodoEntity todo) {
+    dependencies.todoInteractor.remove(todo);
   }
 }

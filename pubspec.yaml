@@ -27,6 +27,9 @@ dependencies:
   # platform
   shared_preferences:
 
+  # util
+  tuple:
+
 dependency_overrides:
   analyzer: 
 

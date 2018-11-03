@@ -4,6 +4,7 @@ import 'package:tasking/presentation/screen/todo_detail/todo_edit_screen.dart';
 import 'package:tasking/presentation/shared/helper/date_formatter.dart';
 import 'package:tasking/presentation/shared/widgets/buttons.dart';
 import 'package:tasking/presentation/shared/widgets/todo_avatar.dart';
+import 'package:tuple/tuple.dart';
 
 import 'todo_detail_actions.dart';
 import 'todo_detail_bloc.dart';
@@ -54,6 +55,11 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
 
   void _restore(TodoEntity todo) {
     _bloc.actions.add(PerformOnTodo(operation: Operation.restore, todo: todo));
+    Navigator.of(context).pop();
+  }
+
+  void _delete(TodoEntity todo) {
+    _bloc.actions.add(PerformOnTodo(operation: Operation.delete, todo: todo));
     Navigator.of(context).pop();
   }
 
@@ -141,9 +147,11 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
         onPressed: () => _edit(state.todo),
       );
     } else {
-      return BottomButton(
-        text: 'Restore',
-        onPressed: () => _restore(state.todo),
+      return BottomButtonRow(
+        buttonsData: [
+          Tuple2('Restore', () => _restore(state.todo)),
+          Tuple2('Delete', () => _delete(state.todo)),
+        ],
       );
     }
   }
