@@ -71,21 +71,9 @@ class _ArchiveListScreenState extends State<ArchiveListScreen> {
         children: <Widget>[
           Expanded(
             child: ListView.builder(
-              padding: const EdgeInsets.symmetric(vertical: 4.0),
               itemCount: state.archivedTodos.length,
               itemBuilder: (context, index) {
                 final todo = state.archivedTodos[index];
-                // return Dismissible(
-                //   key: Key(todo.addedDate.toIso8601String()),
-                //   background: _buildDismissibleBackground(leftToRight: true),
-                //   secondaryBackground: _buildDismissibleBackground(leftToRight: false),
-                //   onDismissed: (_) => _removeTodo(todo),
-                //   child: _TodoTile(
-                //     todo: todo,
-                //     onTap: () => _showDetails(todo),
-                //   ),
-                // );
-                // return Text(todo.name);
                 return TodoTile(
                   todo: todo,
                   onTap: () => _showDetails(todo),

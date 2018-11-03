@@ -11,7 +11,9 @@ class TodoInteractor {
     @required this.todoRepository,
   }) : assert(todoRepository != null);
 
-  Stream<List<TodoEntity>> get todos => todoRepository.todos;
+  Stream<List<TodoEntity>> get all => todoRepository.all;
+  Stream<List<TodoEntity>> get unassigned => todoRepository.unassigned;
+  Stream<List<TodoEntity>> get finished => todoRepository.finished;
 
   Stream<Task> add(TodoEntity todo) {
     return Observable.fromFuture(todoRepository.add(todo)).startWith(Task.running());
@@ -21,15 +23,11 @@ class TodoInteractor {
     return Observable.fromFuture(todoRepository.remove(todo)).startWith(Task.running());
   }
 
-  Stream<Task> replace({
-    @required TodoEntity oldTodo,
-    @required TodoEntity newTodo,
-  }) {
-    return Observable.fromFuture(
-      todoRepository.replace(
-        oldTodo: oldTodo,
-        newTodo: newTodo,
-      ),
-    ).startWith(Task.running());
+  Stream<Task> update(TodoEntity todo) {
+    return Observable.fromFuture(todoRepository.update(todo)).startWith(Task.running());
+  }
+
+  Stream<Task> clearArchive() {
+    return Observable.fromFuture(todoRepository.clearArchive()).startWith(Task.running());
   }
 }

@@ -25,7 +25,6 @@ class ArchiveListBloc {
   ArchiveListBloc() {
     _actions.stream.listen((action) {
       switch (action.runtimeType) {
-        // example, change for your use case
         case ClearArchive:
           _onClearArchive();
           break;
@@ -34,7 +33,7 @@ class ArchiveListBloc {
       }
     });
 
-    _archivedTodos = dependencies.archiveInteractor.todos.listen((todos) {
+    _archivedTodos = dependencies.todoInteractor.finished.listen((todos) {
       _state.add(_state.value.rebuild(
         (b) => b..archivedTodos = ListBuilder(todos),
       ));
@@ -55,7 +54,7 @@ class ArchiveListBloc {
     }
 
     _clearTask?.cancel();
-    _clearTask = dependencies.archiveInteractor.clearArchive().listen((task) {
+    _clearTask = dependencies.todoInteractor.clearArchive().listen((task) {
       _state.add(_state.value.rebuild(
         (b) => b..clearTask = task,
       ));

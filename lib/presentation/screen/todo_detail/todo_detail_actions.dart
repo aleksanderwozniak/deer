@@ -1,21 +1,15 @@
 import 'package:flutter/foundation.dart';
 import 'package:tasking/domain/entity/todo_entity.dart';
 
-class PushTodo {
-  final TodoEntity oldTodo;
-  final TodoEntity newTodo;
-
-  const PushTodo({
-    @required this.oldTodo,
-    @required this.newTodo,
-  })  : assert(oldTodo != null),
-        assert(newTodo != null);
-}
-
-class RestoreTodo {
+class PerformOnTodo {
   final TodoEntity todo;
+  final Operation operation;
 
-  const RestoreTodo({
+  PerformOnTodo({
     @required this.todo,
-  }) : assert(todo != null);
+    @required this.operation,
+  })  : assert(todo != null),
+        assert(operation != null);
 }
+
+enum Operation { update, restore, delete }
