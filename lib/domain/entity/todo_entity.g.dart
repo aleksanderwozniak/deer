@@ -25,6 +25,8 @@ class _$TodoEntity extends TodoEntity {
   @override
   final String description;
   @override
+  final TodoStatus status;
+  @override
   final DateTime addedDate;
   @override
   final DateTime dueDate;
@@ -32,13 +34,17 @@ class _$TodoEntity extends TodoEntity {
   factory _$TodoEntity([void updates(TodoEntityBuilder b)]) =>
       (new TodoEntityBuilder()..update(updates)).build();
 
-  _$TodoEntity._({this.name, this.description, this.addedDate, this.dueDate})
+  _$TodoEntity._(
+      {this.name, this.description, this.status, this.addedDate, this.dueDate})
       : super._() {
     if (name == null) {
       throw new BuiltValueNullFieldError('TodoEntity', 'name');
     }
     if (description == null) {
       throw new BuiltValueNullFieldError('TodoEntity', 'description');
+    }
+    if (status == null) {
+      throw new BuiltValueNullFieldError('TodoEntity', 'status');
     }
   }
 
@@ -55,6 +61,7 @@ class _$TodoEntity extends TodoEntity {
     return other is TodoEntity &&
         name == other.name &&
         description == other.description &&
+        status == other.status &&
         addedDate == other.addedDate &&
         dueDate == other.dueDate;
   }
@@ -62,7 +69,9 @@ class _$TodoEntity extends TodoEntity {
   @override
   int get hashCode {
     return $jf($jc(
-        $jc($jc($jc(0, name.hashCode), description.hashCode),
+        $jc(
+            $jc($jc($jc(0, name.hashCode), description.hashCode),
+                status.hashCode),
             addedDate.hashCode),
         dueDate.hashCode));
   }
@@ -72,6 +81,7 @@ class _$TodoEntity extends TodoEntity {
     return (newBuiltValueToStringHelper('TodoEntity')
           ..add('name', name)
           ..add('description', description)
+          ..add('status', status)
           ..add('addedDate', addedDate)
           ..add('dueDate', dueDate))
         .toString();
@@ -89,6 +99,10 @@ class TodoEntityBuilder implements Builder<TodoEntity, TodoEntityBuilder> {
   String get description => _$this._description;
   set description(String description) => _$this._description = description;
 
+  TodoStatus _status;
+  TodoStatus get status => _$this._status;
+  set status(TodoStatus status) => _$this._status = status;
+
   DateTime _addedDate;
   DateTime get addedDate => _$this._addedDate;
   set addedDate(DateTime addedDate) => _$this._addedDate = addedDate;
@@ -103,6 +117,7 @@ class TodoEntityBuilder implements Builder<TodoEntity, TodoEntityBuilder> {
     if (_$v != null) {
       _name = _$v.name;
       _description = _$v.description;
+      _status = _$v.status;
       _addedDate = _$v.addedDate;
       _dueDate = _$v.dueDate;
       _$v = null;
@@ -129,6 +144,7 @@ class TodoEntityBuilder implements Builder<TodoEntity, TodoEntityBuilder> {
         new _$TodoEntity._(
             name: name,
             description: description,
+            status: status,
             addedDate: addedDate,
             dueDate: dueDate);
     replace(_$result);

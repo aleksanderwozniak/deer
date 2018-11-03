@@ -48,7 +48,8 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
     ));
 
     if (updatedTodo != null) {
-      _bloc.actions.add(PushTodo(oldTodo: todo, newTodo: updatedTodo));
+      // _bloc.actions.add(PushTodo(oldTodo: todo, newTodo: updatedTodo));
+      _bloc.actions.add(UpdateTodo(todo: updatedTodo));
     }
   }
 

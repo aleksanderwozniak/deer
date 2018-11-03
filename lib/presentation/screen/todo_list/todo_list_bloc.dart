@@ -19,7 +19,7 @@ class TodoListBloc {
     seedValue: TodoListState(),
   );
 
-  StreamSubscription<List<TodoEntity>> _todos;
+  StreamSubscription<List<TodoEntity>> _unassignedTodos;
   StreamSubscription<Task> _diskAccessTask;
 
   TodoListBloc() {
@@ -33,7 +33,7 @@ class TodoListBloc {
       }
     });
 
-    _todos = dependencies.todoInteractor.todos.listen((todos) {
+    _unassignedTodos = dependencies.todoInteractor.unassigned.listen((todos) {
       _state.add(_state.value.rebuild(
         (b) => b..todos = ListBuilder(todos),
       ));
@@ -52,11 +52,27 @@ class TodoListBloc {
         });
         break;
       case Operation.archive:
-        // TODO: merge (?)
-        dependencies.archiveInteractor.archive(todo);
+        // // TODO: merge (?)
+        // dependencies.archiveInteractor.archive(todo);
+
+        // _diskAccessTask?.cancel();
+        // _diskAccessTask = dependencies.todoInteractor.remove(todo).listen((task) {
+        //   _state.add(_state.value.rebuild((b) => b..diskAccessTask = task));
+        // });
+
+        // [WIP]
+        // final archivedTodo = todo.rebuild((b) => b..status = TodoStatus.finished);
+
+        // _diskAccessTask?.cancel();
+        // _diskAccessTask = dependencies.todoInteractor.replace(oldTodo: todo, newTodo: archivedTodo).listen((task) {
+        //   _state.add(_state.value.rebuild((b) => b..diskAccessTask = task));
+        // });
+
+        final todoBuilder = todo.toBuilder();
+        todoBuilder.status = TodoStatus.finished;
 
         _diskAccessTask?.cancel();
-        _diskAccessTask = dependencies.todoInteractor.remove(todo).listen((task) {
+        _diskAccessTask = dependencies.todoInteractor.update(todoBuilder.build()).listen((task) {
           _state.add(_state.value.rebuild((b) => b..diskAccessTask = task));
         });
         break;
@@ -67,7 +83,7 @@ class TodoListBloc {
     _actions.close();
     _state.close();
 
-    _todos?.cancel();
+    _unassignedTodos?.cancel();
     _diskAccessTask?.cancel();
   }
 }

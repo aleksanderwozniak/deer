@@ -8,7 +8,14 @@ import 'package:tasking/data/mapper/todo_mapper.dart';
 import 'package:tasking/domain/entity/todo_entity.dart';
 
 class TodoDao {
-  Stream<List<TodoEntity>> get todos => _data.stream().map((it) => it.toList());
+  Stream<List<TodoEntity>> get all => _data.stream().map((it) => it.toList());
+  Stream<List<TodoEntity>> get unassigned => _data.stream().map(
+        (it) => it.where((e) => e.status == TodoStatus.unassigned).toList(),
+      );
+  Stream<List<TodoEntity>> get finished => _data.stream().map(
+        (it) => it.where((e) => e.status == TodoStatus.finished).toList(),
+      );
+
   final _data = InMemory<BuiltList<TodoEntity>>();
 
   TodoDao() {
@@ -56,8 +63,50 @@ class TodoDao {
     return result;
   }
 
-  Future<bool> save(List<TodoEntity> todos) {
-    _data.add(BuiltList(todos));
+  // Future<bool> save(List<TodoEntity> todos) {
+  //   _data.add(BuiltList(todos));
+  //   return _saveToDisk();
+  // }
+
+  Future<bool> update(TodoEntity todo) async {
+    if (_data.value == null) {
+      return false;
+    }
+
+    // TODO: better id system
+    final current = _data.value.where((it) => it.name == todo.name);
+    if (current.isEmpty) {
+      return false;
+    }
+
+    final data = _data.value.toBuilder();
+    data[_data.value.indexOf(current.first)] = todo;
+    _data.add(data.build());
+
+    return _saveToDisk();
+  }
+
+  Future<bool> add(TodoEntity todo) {
+    final data = _data.value.toBuilder();
+    data.add(todo);
+    _data.add(data.build());
+
+    return _saveToDisk();
+  }
+
+  Future<bool> remove(TodoEntity todo) {
+    final data = _data.value.toBuilder();
+    data.remove(todo);
+    _data.add(data.build());
+
+    return _saveToDisk();
+  }
+
+  Future<bool> clearFinished() {
+    final data = _data.value.toBuilder();
+    data.removeWhere((e) => e.status == TodoStatus.finished);
+    _data.add(data.build());
+
     return _saveToDisk();
   }
 }
