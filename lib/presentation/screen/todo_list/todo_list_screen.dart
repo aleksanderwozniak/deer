@@ -93,7 +93,6 @@ class _TodoListScreenState extends State<TodoListScreen> {
       children: <Widget>[
         Expanded(
           child: ListView.builder(
-            padding: const EdgeInsets.symmetric(vertical: 4.0),
             itemCount: state.todos.length,
             itemBuilder: (context, index) {
               final todo = state.todos[index];

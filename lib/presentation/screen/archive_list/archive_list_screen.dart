@@ -71,7 +71,6 @@ class _ArchiveListScreenState extends State<ArchiveListScreen> {
         children: <Widget>[
           Expanded(
             child: ListView.builder(
-              padding: const EdgeInsets.symmetric(vertical: 4.0),
               itemCount: state.archivedTodos.length,
               itemBuilder: (context, index) {
                 final todo = state.archivedTodos[index];

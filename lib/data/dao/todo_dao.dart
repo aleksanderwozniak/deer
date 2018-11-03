@@ -84,8 +84,8 @@ class TodoDao {
       return false;
     }
 
-    // TODO: better id system
-    final current = _data.value.where((it) => it.name == todo.name);
+    // addedDate serves as a unique key here
+    final current = _data.value.where((it) => it.addedDate.compareTo(todo.addedDate) == 0);
     if (current.isEmpty) {
       return false;
     }
