@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tasking/domain/entity/todo_entity.dart';
+import 'package:tasking/presentation/shared/resources.dart';
 import 'package:tasking/presentation/shared/widgets/buttons.dart';
 
 class TodoEditScreen extends StatefulWidget {
@@ -16,6 +17,7 @@ class TodoEditScreen extends StatefulWidget {
 class _TodoEditScreenState extends State<TodoEditScreen> {
   TextEditingController _nameController;
   TextEditingController _descriptionController;
+  DateTime _dueDate;
   FocusNode _nameFocusNode;
   FocusNode _descriptionFocusNode;
 
@@ -29,12 +31,26 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
     _descriptionFocusNode = FocusNode();
   }
 
+  void _selectDate() async {
+    final date = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1970),
+      lastDate: DateTime(2050),
+    );
+
+    // TODO: Bloc
+    setState(() {
+      _dueDate = date;
+    });
+  }
+
   void _submit() {
     final updatedTodo = TodoEntity(
       name: _nameController.text,
       addedDate: widget.todo.addedDate,
       description: _descriptionController.text,
-      dueDate: widget.todo.dueDate,
+      dueDate: _dueDate ?? widget.todo.dueDate,
     );
 
     Navigator.of(context).pop(updatedTodo);
@@ -80,6 +96,22 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
                 decoration: InputDecoration(
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(16.0)),
                   hintText: 'Task description',
+                ),
+              ),
+              const SizedBox(height: 12.0),
+              GestureDetector(
+                onTap: _selectDate,
+                behavior: HitTestBehavior.opaque,
+                child: Container(
+                  height: 60.0,
+                  alignment: Alignment.centerLeft,
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: AppColors.grey4),
+                    borderRadius: BorderRadius.circular(16.0),
+                  ),
+                  // TODO: apply DateFormat
+                  child: Text(_dueDate?.toString() ?? widget.todo.dueDate.toString()) ?? '',
                 ),
               ),
               const SizedBox(height: 20.0)
