@@ -1,5 +1,6 @@
 library todo_entity;
 
+import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 
 part 'todo_entity.g.dart';
@@ -7,6 +8,7 @@ part 'todo_entity.g.dart';
 abstract class TodoEntity implements Built<TodoEntity, TodoEntityBuilder> {
   String get name;
   String get description;
+  BuiltList<String> get bulletPoints;
   TodoStatus get status;
   @nullable
   DateTime get addedDate;
@@ -17,6 +19,7 @@ abstract class TodoEntity implements Built<TodoEntity, TodoEntityBuilder> {
   factory TodoEntity({
     String name = '',
     String description = '',
+    BuiltList<String> bulletPoints,
     TodoStatus status = TodoStatus.unassigned,
     DateTime addedDate,
     DateTime dueDate,
@@ -24,6 +27,7 @@ abstract class TodoEntity implements Built<TodoEntity, TodoEntityBuilder> {
       _$TodoEntity._(
         name: name,
         description: description,
+        bulletPoints: bulletPoints ?? BuiltList(),
         status: status,
         addedDate: addedDate,
         dueDate: dueDate,
