@@ -1,3 +1,4 @@
+import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
 import 'package:tasking/domain/entity/todo_entity.dart';
 import 'package:tasking/presentation/shared/resources.dart';
@@ -34,7 +35,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
     _descriptionFocusNode = FocusNode();
 
     _showBullets = false;
-    _bullets = List();
+    _bullets = widget.todo.bulletPoints.toList();
   }
 
   void _selectDate() async {
@@ -54,8 +55,10 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
   void _submit() {
     final updatedTodo = TodoEntity(
       name: _nameController.text,
-      addedDate: widget.todo.addedDate,
       description: _descriptionController.text,
+      bulletPoints: BuiltList.from(_bullets),
+      status: widget.todo.status ?? TodoStatus.unassigned,
+      addedDate: widget.todo.addedDate,
       dueDate: _dueDate ?? widget.todo.dueDate,
     );
 
