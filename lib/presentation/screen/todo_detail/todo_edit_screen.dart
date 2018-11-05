@@ -21,6 +21,9 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
   FocusNode _nameFocusNode;
   FocusNode _descriptionFocusNode;
 
+  List<String> _bullets;
+  bool _showBullets = false;
+
   @override
   void initState() {
     super.initState();
@@ -29,6 +32,9 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
 
     _nameFocusNode = FocusNode();
     _descriptionFocusNode = FocusNode();
+
+    _showBullets = false;
+    _bullets = List();
   }
 
   void _selectDate() async {
@@ -54,6 +60,12 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
     );
 
     Navigator.of(context).pop(updatedTodo);
+  }
+
+  void _mergeBullets(String result) {
+    setState(() {
+      _bullets.add(result);
+    });
   }
 
   @override
@@ -114,6 +126,8 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
                   child: Text(_dueDate?.toString() ?? widget.todo.dueDate.toString()) ?? '',
                 ),
               ),
+              const SizedBox(height: 12.0),
+              _buildBulletPoints(),
               const SizedBox(height: 20.0)
             ],
           ),
@@ -122,6 +136,50 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
           text: 'Save',
           onPressed: _submit,
         ),
+      ],
+    );
+  }
+
+  Widget _buildBulletPoints() {
+    final children = _bullets.map((entry) {
+      return _buildRow(entry);
+    }).toList();
+
+    children.add(_buildRow('', autofocus: _showBullets));
+
+    if (!_showBullets) {
+      setState(() {
+        _showBullets = true;
+      });
+    }
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: children,
+    );
+  }
+
+  Widget _buildRow(String text, {bool autofocus = false}) {
+    return Row(
+      children: <Widget>[
+        const SizedBox(width: 20.0),
+        Container(
+          width: 8.0,
+          height: 8.0,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: AppColors.black1,
+          ),
+        ),
+        const SizedBox(width: 12.0),
+        Expanded(
+          child: TextField(
+            autofocus: autofocus,
+            controller: TextEditingController(text: text),
+            onSubmitted: (result) => _mergeBullets(result),
+          ),
+        ),
+        const SizedBox(width: 20.0),
       ],
     );
   }
