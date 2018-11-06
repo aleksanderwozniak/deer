@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tasking/domain/entity/todo_entity.dart';
-import 'package:tasking/presentation/screen/todo_detail/todo_edit_screen.dart';
+import 'package:tasking/presentation/screen/todo_edit/todo_edit_screen.dart';
 import 'package:tasking/presentation/shared/helper/date_formatter.dart';
 import 'package:tasking/presentation/shared/resources.dart';
 import 'package:tasking/presentation/shared/widgets/buttons.dart';
