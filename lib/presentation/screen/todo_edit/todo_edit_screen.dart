@@ -1,12 +1,11 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
 import 'package:tasking/domain/entity/todo_entity.dart';
-import 'package:tasking/presentation/screen/todo_edit/todo_edit_actions.dart';
 import 'package:tasking/presentation/screen/todo_edit/todo_edit_bloc.dart';
 import 'package:tasking/presentation/screen/todo_edit/todo_edit_state.dart';
 import 'package:tasking/presentation/shared/resources.dart';
-import 'package:tasking/presentation/shared/widgets/bullet_list_edit.dart';
 import 'package:tasking/presentation/shared/widgets/buttons.dart';
+import 'package:tasking/presentation/shared/widgets/editable_bullet_list.dart';
 
 class TodoEditScreen extends StatefulWidget {
   final TodoEntity todo;
@@ -28,10 +27,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
   FocusNode _nameFocusNode;
   FocusNode _descriptionFocusNode;
 
-  List<String> _bullets;
-  bool _showBullets = false;
-
-  List<String> listholder;
+  List<String> _bulletPointsHolder;
 
   @override
   void initState() {
@@ -44,10 +40,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
     _nameFocusNode = FocusNode();
     _descriptionFocusNode = FocusNode();
 
-    _showBullets = false;
-    _bullets = widget.todo.bulletPoints.toList();
-
-    listholder = List();
+    _bulletPointsHolder = widget.todo.bulletPoints.toList();
   }
 
   void _selectDate() async {
@@ -65,34 +58,17 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
   }
 
   void _submit(TodoEntity todo) {
-    // final updatedTodo = TodoEntity(
-    //   name: _nameController.text,
-    //   description: _descriptionController.text,
-    //   bulletPoints: BuiltList.from(_bullets),
-    //   status: widget.todo.status ?? TodoStatus.unassigned,
-    //   addedDate: widget.todo.addedDate,
-    //   dueDate: _dueDate ?? widget.todo.dueDate,
-    // );
-
-    // [WIP]
+    // TODO: Bloc
     final updatedTodo = TodoEntity(
       name: _nameController.text,
       description: _descriptionController.text,
-      // bulletPoints: todo.bulletPoints,
-      bulletPoints: BuiltList.from(listholder),
+      bulletPoints: BuiltList.from(_bulletPointsHolder),
       status: todo.status,
       addedDate: todo.addedDate,
       dueDate: todo.dueDate,
     );
 
     Navigator.of(context).pop(updatedTodo);
-  }
-
-  void _mergeBullets(String result) {
-    // setState(() {
-    //   _bullets.add(result);
-    // });
-    _bloc.actions.add(UpdateBullets(text: result));
   }
 
   @override
@@ -164,8 +140,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
                 ),
               ),
               const SizedBox(height: 12.0),
-              // _buildBulletPoints(),
-              BulletListEdit(listholder: listholder),
+              EditableBulletList(bulletHolder: _bulletPointsHolder),
               const SizedBox(height: 20.0)
             ],
           ),
@@ -177,48 +152,4 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
       ],
     );
   }
-
-  // Widget _buildBulletPoints() {
-  //   final children = _bullets.map((entry) {
-  //     return _buildRow(entry);
-  //   }).toList();
-
-  //   children.add(_buildRow('', autofocus: _showBullets));
-
-  //   if (!_showBullets) {
-  //     setState(() {
-  //       _showBullets = true;
-  //     });
-  //   }
-
-  //   return Column(
-  //     mainAxisSize: MainAxisSize.min,
-  //     children: children,
-  //   );
-  // }
-
-  // Widget _buildRow(String text, {bool autofocus = false}) {
-  //   return Row(
-  //     children: <Widget>[
-  //       const SizedBox(width: 20.0),
-  //       Container(
-  //         width: 8.0,
-  //         height: 8.0,
-  //         decoration: BoxDecoration(
-  //           shape: BoxShape.circle,
-  //           color: AppColors.black1,
-  //         ),
-  //       ),
-  //       const SizedBox(width: 12.0),
-  //       Expanded(
-  //         child: TextField(
-  //           autofocus: autofocus,
-  //           controller: TextEditingController(text: text),
-  //           onSubmitted: (result) => _mergeBullets(result),
-  //         ),
-  //       ),
-  //       const SizedBox(width: 20.0),
-  //     ],
-  //   );
-  // }
 }
