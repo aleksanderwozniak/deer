@@ -1,3 +1,4 @@
+import 'package:built_collection/built_collection.dart';
 import 'package:tasking/data/json/todo_json.dart';
 import 'package:tasking/domain/entity/todo_entity.dart';
 
@@ -8,6 +9,7 @@ class TodoMapper {
     return TodoJson(
       name: todo.name,
       description: todo.description,
+      bulletPoints: todo.bulletPoints.toList(),
       status: todo.status,
       addedDate: todo.addedDate,
       dueDate: todo.dueDate,
@@ -18,6 +20,7 @@ class TodoMapper {
     return TodoEntity(
       name: json.name,
       description: json.description,
+      bulletPoints: BuiltList(json.bulletPoints),
       status: json.status,
       addedDate: json.addedDate,
       dueDate: json.dueDate,

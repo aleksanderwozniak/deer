@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tasking/domain/entity/todo_entity.dart';
-import 'package:tasking/presentation/screen/todo_detail/todo_edit_screen.dart';
+import 'package:tasking/presentation/screen/todo_edit/todo_edit_screen.dart';
 import 'package:tasking/presentation/shared/helper/date_formatter.dart';
+import 'package:tasking/presentation/shared/resources.dart';
 import 'package:tasking/presentation/shared/widgets/buttons.dart';
 import 'package:tasking/presentation/shared/widgets/todo_avatar.dart';
 import 'package:tuple/tuple.dart';
@@ -119,6 +120,38 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
                 Text(
                   state.todo.description,
                   textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16.0),
+                Text(
+                  'Bullet points:',
+                  textAlign: TextAlign.center,
+                  style: TextStyle().copyWith(fontSize: 20.0),
+                ),
+                const SizedBox(height: 8.0),
+                Center(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: state.todo.bulletPoints.map((entry) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4.0),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Container(
+                              width: 8.0,
+                              height: 8.0,
+                              decoration: BoxDecoration(
+                                color: AppColors.black1,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            const SizedBox(width: 8.0),
+                            Text(entry),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                  ),
                 ),
                 const SizedBox(height: 16.0),
                 Text(

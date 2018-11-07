@@ -1,6 +1,11 @@
+import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
 import 'package:tasking/domain/entity/todo_entity.dart';
+import 'package:tasking/presentation/screen/todo_edit/todo_edit_bloc.dart';
+import 'package:tasking/presentation/screen/todo_edit/todo_edit_state.dart';
+import 'package:tasking/presentation/shared/resources.dart';
 import 'package:tasking/presentation/shared/widgets/buttons.dart';
+import 'package:tasking/presentation/shared/widgets/editable_bullet_list.dart';
 
 class TodoEditScreen extends StatefulWidget {
   final TodoEntity todo;
@@ -14,27 +19,53 @@ class TodoEditScreen extends StatefulWidget {
 }
 
 class _TodoEditScreenState extends State<TodoEditScreen> {
+  TodoEditBloc _bloc;
+
   TextEditingController _nameController;
   TextEditingController _descriptionController;
+  DateTime _dueDate;
   FocusNode _nameFocusNode;
   FocusNode _descriptionFocusNode;
+
+  List<String> _bulletPointsHolder;
 
   @override
   void initState() {
     super.initState();
+    _bloc = TodoEditBloc(todo: widget.todo);
+
     _nameController = TextEditingController(text: widget.todo.name);
     _descriptionController = TextEditingController(text: widget.todo.description);
 
     _nameFocusNode = FocusNode();
     _descriptionFocusNode = FocusNode();
+
+    _bulletPointsHolder = widget.todo.bulletPoints.toList();
   }
 
-  void _submit() {
+  void _selectDate() async {
+    final date = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1970),
+      lastDate: DateTime(2050),
+    );
+
+    // TODO: Bloc
+    setState(() {
+      _dueDate = date;
+    });
+  }
+
+  void _submit(TodoEntity todo) {
+    // TODO: Bloc
     final updatedTodo = TodoEntity(
       name: _nameController.text,
-      addedDate: widget.todo.addedDate,
       description: _descriptionController.text,
-      dueDate: widget.todo.dueDate,
+      bulletPoints: BuiltList.from(_bulletPointsHolder),
+      status: todo.status,
+      addedDate: todo.addedDate,
+      dueDate: todo.dueDate,
     );
 
     Navigator.of(context).pop(updatedTodo);
@@ -42,6 +73,16 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
 
   @override
   Widget build(BuildContext context) {
+    return StreamBuilder(
+      initialData: _bloc.initialState,
+      stream: _bloc.state,
+      builder: (context, snapshot) {
+        return _buildUI(snapshot.data);
+      },
+    );
+  }
+
+  Widget _buildUI(TodoEditState state) {
     return WillPopScope(
       onWillPop: () async {
         _nameFocusNode.unfocus();
@@ -52,12 +93,12 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
         appBar: AppBar(
           title: Text('Edit task'),
         ),
-        body: _buildBody(widget.todo),
+        body: _buildBody(state),
       ),
     );
   }
 
-  Widget _buildBody(TodoEntity todo) {
+  Widget _buildBody(TodoEditState state) {
     return Column(
       children: <Widget>[
         Expanded(
@@ -82,13 +123,31 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
                   hintText: 'Task description',
                 ),
               ),
+              const SizedBox(height: 12.0),
+              GestureDetector(
+                onTap: _selectDate,
+                behavior: HitTestBehavior.opaque,
+                child: Container(
+                  height: 60.0,
+                  alignment: Alignment.centerLeft,
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: AppColors.grey4),
+                    borderRadius: BorderRadius.circular(16.0),
+                  ),
+                  // TODO: apply DateFormat
+                  child: Text(_dueDate?.toString() ?? widget.todo.dueDate.toString()) ?? '',
+                ),
+              ),
+              const SizedBox(height: 12.0),
+              EditableBulletList(bulletHolder: _bulletPointsHolder),
               const SizedBox(height: 20.0)
             ],
           ),
         ),
         BottomButton(
           text: 'Save',
-          onPressed: _submit,
+          onPressed: () => _submit(state.todo),
         ),
       ],
     );
