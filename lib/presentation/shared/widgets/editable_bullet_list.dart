@@ -29,6 +29,11 @@ class _EditableBulletListState extends State<EditableBulletList> {
     _autofocus = false;
   }
 
+  void _save() {
+    widget.bulletHolder.clear();
+    widget.bulletHolder.addAll(_bullets);
+  }
+
   @override
   Widget build(BuildContext context) {
     final children = _bullets.map((bullet) {
@@ -51,6 +56,17 @@ class _EditableBulletListState extends State<EditableBulletList> {
   }
 
   Widget _buildRow({@required String bullet, bool autofocus = false}) {
+    final controller = TextEditingController(text: bullet);
+    controller.addListener(() {
+      if (controller.text.trim().isEmpty) {
+        setState(() {
+          _bullets.remove(bullet);
+        });
+
+        _save();
+      }
+    });
+
     return Row(
       children: <Widget>[
         const SizedBox(width: 20.0),
@@ -66,23 +82,20 @@ class _EditableBulletListState extends State<EditableBulletList> {
         Expanded(
           child: TextField(
             autofocus: autofocus,
-            controller: TextEditingController(text: bullet),
+            controller: controller,
             onSubmitted: (result) {
-              if (result.trim().isEmpty) {
-                setState(() {
-                  _bullets.remove(bullet);
-                });
-              } else {
+              // Empty text should be handled automatically by controller's listener.
+              // This is just a double-check.
+              if (result.trim().isNotEmpty) {
                 int id = _bullets.indexOf(bullet);
                 id = id == -1 ? _bullets.length : id;
                 setState(() {
                   _bullets.remove(bullet);
                   _bullets.insert(id, result);
                 });
-              }
 
-              widget.bulletHolder.clear();
-              widget.bulletHolder.addAll(_bullets);
+                _save();
+              }
             },
           ),
         ),
