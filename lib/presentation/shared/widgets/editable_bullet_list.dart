@@ -83,6 +83,10 @@ class _EditableBulletListState extends State<EditableBulletList> {
           child: TextField(
             autofocus: autofocus,
             controller: controller,
+            maxLines: null,
+            maxLength: 100,
+            maxLengthEnforced: true,
+            textInputAction: TextInputAction.done,
             onSubmitted: (result) {
               // Empty text should be handled automatically by controller's listener.
               // This is just a double-check.

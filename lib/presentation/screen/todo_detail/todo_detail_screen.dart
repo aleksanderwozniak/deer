@@ -146,7 +146,12 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
                               ),
                             ),
                             const SizedBox(width: 8.0),
-                            Text(entry),
+                            Expanded(
+                              child: Text(
+                                entry,
+                                maxLines: null,
+                              ),
+                            ),
                           ],
                         ),
                       );

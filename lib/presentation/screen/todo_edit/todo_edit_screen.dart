@@ -118,6 +118,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
               TextField(
                 controller: _descriptionController,
                 focusNode: _descriptionFocusNode,
+                maxLines: null,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(16.0)),
                   hintText: 'Task description',
