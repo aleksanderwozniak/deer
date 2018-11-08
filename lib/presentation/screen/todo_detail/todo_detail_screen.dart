@@ -90,6 +90,21 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
   }
 
   Widget _buildBody(TodoDetailState state) {
+    final children = [_buildName(state)];
+
+    if (state.todo.description.trim().isNotEmpty) {
+      children.add(_buildDescription(state));
+    }
+
+    if (state.todo.bulletPoints.isNotEmpty) {
+      children.add(_buildBulletPoints(state));
+    }
+
+    children.addAll([
+      _buildDate(state),
+      _buildFooterLabel(),
+    ]);
+
     return SafeArea(
       top: true,
       bottom: true,
@@ -98,16 +113,9 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Expanded(
-            child: ListView(
-              children: <Widget>[
-                _buildName(state),
-                _buildDescription(state),
-                _buildBulletPoints(state),
-                _buildDate(state),
-              ],
-            ),
+            child: ListView(children: children),
           ),
-          _buildBottom(state),
+          _buildBottomBox(state),
         ],
       ),
     );
@@ -199,7 +207,26 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
     );
   }
 
-  Widget _buildBottom(TodoDetailState state) {
+  Widget _buildFooterLabel() {
+    return Column(
+      children: <Widget>[
+        const SizedBox(height: 24.0),
+        Center(
+          child: Text(
+            'Edit this Todo to add more sections',
+            style: TextStyle().copyWith(
+              color: AppColors.grey4,
+              fontSize: 14.0,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+        ),
+        const SizedBox(height: 16.0),
+      ],
+    );
+  }
+
+  Widget _buildBottomBox(TodoDetailState state) {
     if (widget.editable) {
       return BottomButton(
         text: 'Edit',
