@@ -85,7 +85,7 @@ class _EditableBulletListState extends State<EditableBulletList> {
           controller: controller,
           maxLines: null,
           textInputAction: TextInputAction.done,
-          decoration: InputDecoration(hintText: 'New bullet point'),
+          decoration: InputDecoration(hintText: 'Next bullet point'),
           onSubmitted: (result) {
             // Empty text should be handled automatically by controller's listener.
             // This is just a double-check.

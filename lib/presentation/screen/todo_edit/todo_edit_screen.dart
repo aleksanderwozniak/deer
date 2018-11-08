@@ -95,7 +95,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Edit task'),
+          title: Text('Edit Todo'),
         ),
         body: _buildBody(state),
       ),
@@ -126,22 +126,19 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
   Widget _buildName() {
     return ShadedBox(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-        child: Column(
-          children: <Widget>[
-            const SizedBox(height: 20.0),
-            TextField(
-              controller: _nameController,
-              focusNode: _nameFocusNode,
-              textAlign: TextAlign.center,
-              style: TextStyle().copyWith(fontSize: 18.0, color: AppColors.black1),
-              decoration: InputDecoration.collapsed(
-                hintText: 'Task name',
-              ),
-              maxLength: 30,
-              maxLengthEnforced: true,
-            ),
-          ],
+        padding: const EdgeInsets.only(top: 20.0, left: 8.0, right: 8.0),
+        child: TextField(
+          controller: _nameController,
+          focusNode: _nameFocusNode,
+          textAlign: TextAlign.center,
+          style: TextStyle().copyWith(fontSize: 20.0, color: AppColors.black1),
+          decoration: InputDecoration.collapsed(
+            hintText: 'Todo\'s name',
+          ),
+          maxLength: 50,
+          maxLengthEnforced: true,
+          maxLines: null,
+          textInputAction: TextInputAction.done,
         ),
       ),
     );
@@ -164,7 +161,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
               focusNode: _descriptionFocusNode,
               maxLines: null,
               decoration: InputDecoration.collapsed(
-                hintText: 'Task description',
+                hintText: 'Todo\'s description',
               ),
             ),
           ),
@@ -201,7 +198,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Text(
-              'Date due',
+              'Due by',
               style: TextStyle().copyWith(color: AppColors.grey4, fontSize: 12.0),
             ),
             const SizedBox(height: 12.0),

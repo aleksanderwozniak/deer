@@ -164,7 +164,6 @@ class _TodoAdder extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        // boxShadow: [BoxShadow(color: AppColors.black1, blurRadius: 4.0)],
         boxShadow: [BoxShadow(color: Colors.black54, blurRadius: 10.0)],
         color: AppColors.white1,
         borderRadius: BorderRadius.only(
@@ -172,7 +171,6 @@ class _TodoAdder extends StatelessWidget {
           topRight: Radius.circular(24.0),
         ),
       ),
-      // padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0, top: 12.0),
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
       child: Row(
         mainAxisSize: MainAxisSize.max,
@@ -180,6 +178,8 @@ class _TodoAdder extends StatelessWidget {
           Expanded(
             child: TextField(
               controller: todoNameController,
+              maxLength: 50,
+              maxLengthEnforced: true,
               onSubmitted: (_) {
                 onAdd(_buildTask());
                 todoNameController.clear();
