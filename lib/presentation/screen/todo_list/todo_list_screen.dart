@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:tasking/domain/entity/todo_entity.dart';
 import 'package:tasking/presentation/screen/archive_list/archive_list_screen.dart';
 import 'package:tasking/presentation/screen/todo_detail/todo_detail_screen.dart';
@@ -24,13 +25,15 @@ class TodoListScreen extends StatefulWidget {
 class _TodoListScreenState extends State<TodoListScreen> {
   // Place variables here
   TodoListBloc _bloc;
-  TextEditingController _taskNameController;
+  TextEditingController _todoNameController;
+  ScrollController _todoListScrollController;
 
   @override
   void initState() {
     super.initState();
     _bloc = TodoListBloc();
-    _taskNameController = TextEditingController();
+    _todoNameController = TextEditingController();
+    _todoListScrollController = ScrollController();
   }
 
   @override
@@ -46,6 +49,15 @@ class _TodoListScreenState extends State<TodoListScreen> {
 
   void _addTodo(TodoEntity todo) {
     _bloc.actions.add(PerformOnTodo(operation: Operation.add, todo: todo));
+
+    // scrolls to the bottom of TodoList
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      _todoListScrollController.animateTo(
+        _todoListScrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    });
   }
 
   void _showDetails(TodoEntity todo) {
@@ -94,6 +106,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
         Expanded(
           child: ListView.builder(
             itemCount: state.todos.length,
+            controller: _todoListScrollController,
             itemBuilder: (context, index) {
               final todo = state.todos[index];
               return Dismissible(
@@ -110,7 +123,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
           ),
         ),
         _TodoAdder(
-          todoNameController: _taskNameController,
+          todoNameController: _todoNameController,
           onAdd: _addTodo,
         ),
       ],

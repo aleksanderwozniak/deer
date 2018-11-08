@@ -7,10 +7,12 @@ class EditableBulletList extends StatefulWidget {
   /// Use this to initialize EditableBulletList with values.
   /// If there are no values, pass an empty `List()`.
   final List<String> bulletHolder;
+  final bool extraPadding;
 
   const EditableBulletList({
     Key key,
     @required this.bulletHolder,
+    this.extraPadding = true,
   })  : assert(bulletHolder != null),
         super(key: key);
 
@@ -67,40 +69,45 @@ class _EditableBulletListState extends State<EditableBulletList> {
       }
     });
 
-    return Row(
-      children: <Widget>[
-        const SizedBox(width: 20.0),
-        Container(
-          width: 8.0,
-          height: 8.0,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: AppColors.black1,
-          ),
+    final children = [
+      Container(
+        width: 8.0,
+        height: 8.0,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: AppColors.black1,
         ),
-        const SizedBox(width: 12.0),
-        Expanded(
-          child: TextField(
-            autofocus: autofocus,
-            controller: controller,
-            onSubmitted: (result) {
-              // Empty text should be handled automatically by controller's listener.
-              // This is just a double-check.
-              if (result.trim().isNotEmpty) {
-                int id = _bullets.indexOf(bullet);
-                id = id == -1 ? _bullets.length : id;
-                setState(() {
-                  _bullets.remove(bullet);
-                  _bullets.insert(id, result);
-                });
+      ),
+      const SizedBox(width: 12.0),
+      Expanded(
+        child: TextField(
+          autofocus: autofocus,
+          controller: controller,
+          maxLines: null,
+          textInputAction: TextInputAction.done,
+          decoration: InputDecoration(hintText: 'New bullet point'),
+          onSubmitted: (result) {
+            // Empty text should be handled automatically by controller's listener.
+            // This is just a double-check.
+            if (result.trim().isNotEmpty) {
+              int id = _bullets.indexOf(bullet);
+              id = id == -1 ? _bullets.length : id;
+              setState(() {
+                _bullets.remove(bullet);
+                _bullets.insert(id, result);
+              });
 
-                _save();
-              }
-            },
-          ),
+              _save();
+            }
+          },
         ),
-        const SizedBox(width: 20.0),
-      ],
-    );
+      ),
+    ];
+
+    if (widget.extraPadding) {
+      children.insert(0, const SizedBox(width: 8.0));
+    }
+
+    return Row(children: children);
   }
 }

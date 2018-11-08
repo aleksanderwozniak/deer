@@ -3,6 +3,8 @@ import 'package:tasking/domain/entity/todo_entity.dart';
 import 'package:tasking/presentation/screen/todo_edit/todo_edit_screen.dart';
 import 'package:tasking/presentation/shared/helper/date_formatter.dart';
 import 'package:tasking/presentation/shared/resources.dart';
+import 'package:tasking/presentation/shared/widgets/box.dart';
+import 'package:tasking/presentation/shared/widgets/bullet_list.dart';
 import 'package:tasking/presentation/shared/widgets/buttons.dart';
 import 'package:tasking/presentation/shared/widgets/todo_avatar.dart';
 import 'package:tuple/tuple.dart';
@@ -30,6 +32,8 @@ class TodoDetailScreen extends StatefulWidget {
 class _TodoDetailScreenState extends State<TodoDetailScreen> {
   // Place variables here
   TodoDetailBloc _bloc;
+
+  final _colorsMock = [Colors.blueAccent, Colors.redAccent, Colors.greenAccent];
 
   @override
   void initState() {
@@ -86,6 +90,21 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
   }
 
   Widget _buildBody(TodoDetailState state) {
+    final children = [_buildName(state)];
+
+    if (state.todo.description.trim().isNotEmpty) {
+      children.add(_buildDescription(state));
+    }
+
+    if (state.todo.bulletPoints.isNotEmpty) {
+      children.add(_buildBulletPoints(state));
+    }
+
+    children.addAll([
+      _buildDate(state),
+      _buildFooterLabel(),
+    ]);
+
     return SafeArea(
       top: true,
       bottom: true,
@@ -94,86 +113,120 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Expanded(
-            child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              children: <Widget>[
-                const SizedBox(height: 16.0),
-                TodoAvatar(text: state.todo.name, isLarge: true),
-                const SizedBox(height: 16.0),
-                Text(
-                  'Title:',
-                  textAlign: TextAlign.center,
-                  style: TextStyle().copyWith(fontSize: 20.0),
-                ),
-                const SizedBox(height: 8.0),
-                Text(
-                  state.todo.name,
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 16.0),
-                Text(
-                  'Description:',
-                  textAlign: TextAlign.center,
-                  style: TextStyle().copyWith(fontSize: 20.0),
-                ),
-                const SizedBox(height: 8.0),
-                Text(
-                  state.todo.description,
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 16.0),
-                Text(
-                  'Bullet points:',
-                  textAlign: TextAlign.center,
-                  style: TextStyle().copyWith(fontSize: 20.0),
-                ),
-                const SizedBox(height: 8.0),
-                Center(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: state.todo.bulletPoints.map((entry) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 4.0),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Container(
-                              width: 8.0,
-                              height: 8.0,
-                              decoration: BoxDecoration(
-                                color: AppColors.black1,
-                                shape: BoxShape.circle,
-                              ),
-                            ),
-                            const SizedBox(width: 8.0),
-                            Text(entry),
-                          ],
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                ),
-                const SizedBox(height: 16.0),
-                Text(
-                  'Added on: ${DateFormatter.formatSimple(state.todo.addedDate)}',
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 8.0),
-                Text(
-                  'Due by: ${DateFormatter.formatSimple(state.todo.dueDate)}',
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 16.0),
-              ],
-            ),
+            child: ListView(children: children),
           ),
-          _buildBottom(state),
+          _buildBottomBox(state),
         ],
       ),
     );
   }
 
-  Widget _buildBottom(TodoDetailState state) {
+  Widget _buildName(TodoDetailState state) {
+    return ShadedBox(
+      child: Column(
+        children: <Widget>[
+          const SizedBox(height: 12.0),
+          TodoAvatar(text: state.todo.name, isLarge: true),
+          const SizedBox(height: 16.0),
+          Text(
+            state.todo.name,
+            textAlign: TextAlign.center,
+            style: TextStyle().copyWith(fontSize: 20.0),
+          ),
+          const SizedBox(height: 12.0),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDescription(TodoDetailState state) {
+    return ShadedBox(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Text(
+            'Description:',
+            style: TextStyle().copyWith(fontSize: 12.0, color: AppColors.grey4),
+          ),
+          const SizedBox(height: 8.0),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: Text(
+              state.todo.description,
+              textAlign: TextAlign.justify,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBulletPoints(TodoDetailState state) {
+    return ShadedBox(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Text(
+            'Bullet points:',
+            style: TextStyle().copyWith(fontSize: 12.0, color: AppColors.grey4),
+          ),
+          const SizedBox(height: 8.0),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: BulletList(entries: state.todo.bulletPoints.toList()),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDate(TodoDetailState state) {
+    return ShadedBox(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Text(
+            'Added on:',
+            style: TextStyle().copyWith(fontSize: 12.0, color: AppColors.grey4),
+          ),
+          Text(
+            DateFormatter.safeFormatSimple(state.todo.addedDate),
+            textAlign: TextAlign.right,
+          ),
+          const SizedBox(height: 24.0),
+          Text(
+            'Due by:',
+            style: TextStyle().copyWith(fontSize: 12.0, color: AppColors.grey4),
+          ),
+          Text(
+            DateFormatter.safeFormatSimple(state.todo.dueDate),
+            textAlign: TextAlign.right,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFooterLabel() {
+    return Column(
+      children: <Widget>[
+        const SizedBox(height: 24.0),
+        Center(
+          child: Text(
+            'Edit this Todo to add more sections',
+            style: TextStyle().copyWith(
+              color: AppColors.grey4,
+              fontSize: 14.0,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+        ),
+        const SizedBox(height: 16.0),
+      ],
+    );
+  }
+
+  Widget _buildBottomBox(TodoDetailState state) {
     if (widget.editable) {
       return BottomButton(
         text: 'Edit',

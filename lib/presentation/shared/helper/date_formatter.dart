@@ -2,10 +2,6 @@ class DateFormatter {
   DateFormatter._();
 
   static String formatSimple(DateTime date) {
-    if (date == null) {
-      return '';
-    }
-
     final buffer = new StringBuffer();
 
     buffer.write(date.weekday);
@@ -17,5 +13,13 @@ class DateFormatter {
     buffer.write(date.year);
 
     return buffer.toString();
+  }
+
+  static String safeFormatSimple(DateTime date) {
+    if (date == null) {
+      return 'Not assigned';
+    }
+
+    return formatSimple(date);
   }
 }

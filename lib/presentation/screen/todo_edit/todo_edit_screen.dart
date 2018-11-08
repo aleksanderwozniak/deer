@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:tasking/domain/entity/todo_entity.dart';
 import 'package:tasking/presentation/screen/todo_edit/todo_edit_bloc.dart';
 import 'package:tasking/presentation/screen/todo_edit/todo_edit_state.dart';
+import 'package:tasking/presentation/shared/helper/date_formatter.dart';
 import 'package:tasking/presentation/shared/resources.dart';
+import 'package:tasking/presentation/shared/widgets/box.dart';
 import 'package:tasking/presentation/shared/widgets/buttons.dart';
 import 'package:tasking/presentation/shared/widgets/editable_bullet_list.dart';
 
@@ -41,6 +43,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
     _descriptionFocusNode = FocusNode();
 
     _bulletPointsHolder = widget.todo.bulletPoints.toList();
+    _dueDate = widget.todo.dueDate;
   }
 
   void _selectDate() async {
@@ -65,7 +68,8 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
       bulletPoints: BuiltList.from(_bulletPointsHolder),
       status: todo.status,
       addedDate: todo.addedDate,
-      dueDate: todo.dueDate,
+      // dueDate: todo.dueDate,
+      dueDate: _dueDate,
     );
 
     Navigator.of(context).pop(updatedTodo);
@@ -103,45 +107,11 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
       children: <Widget>[
         Expanded(
           child: ListView(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
             children: <Widget>[
-              const SizedBox(height: 20.0),
-              TextField(
-                controller: _nameController,
-                focusNode: _nameFocusNode,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(16.0)),
-                  hintText: 'Task name',
-                ),
-              ),
-              const SizedBox(height: 12.0),
-              TextField(
-                controller: _descriptionController,
-                focusNode: _descriptionFocusNode,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(16.0)),
-                  hintText: 'Task description',
-                ),
-              ),
-              const SizedBox(height: 12.0),
-              GestureDetector(
-                onTap: _selectDate,
-                behavior: HitTestBehavior.opaque,
-                child: Container(
-                  height: 60.0,
-                  alignment: Alignment.centerLeft,
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: AppColors.grey4),
-                    borderRadius: BorderRadius.circular(16.0),
-                  ),
-                  // TODO: apply DateFormat
-                  child: Text(_dueDate?.toString() ?? widget.todo.dueDate.toString()) ?? '',
-                ),
-              ),
-              const SizedBox(height: 12.0),
-              EditableBulletList(bulletHolder: _bulletPointsHolder),
-              const SizedBox(height: 20.0)
+              _buildName(),
+              _buildDescription(),
+              _buildBulletPoints(),
+              _buildDate(),
             ],
           ),
         ),
@@ -150,6 +120,98 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
           onPressed: () => _submit(state.todo),
         ),
       ],
+    );
+  }
+
+  Widget _buildName() {
+    return ShadedBox(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        child: Column(
+          children: <Widget>[
+            const SizedBox(height: 20.0),
+            TextField(
+              controller: _nameController,
+              focusNode: _nameFocusNode,
+              textAlign: TextAlign.center,
+              style: TextStyle().copyWith(fontSize: 18.0, color: AppColors.black1),
+              decoration: InputDecoration.collapsed(
+                hintText: 'Task name',
+              ),
+              maxLength: 30,
+              maxLengthEnforced: true,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDescription() {
+    return ShadedBox(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Text(
+            'Description',
+            style: TextStyle().copyWith(color: AppColors.grey4, fontSize: 12.0),
+          ),
+          const SizedBox(height: 12.0),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: TextField(
+              controller: _descriptionController,
+              focusNode: _descriptionFocusNode,
+              maxLines: null,
+              decoration: InputDecoration.collapsed(
+                hintText: 'Task description',
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBulletPoints() {
+    return ShadedBox(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Text(
+            'Bullet points',
+            style: TextStyle().copyWith(color: AppColors.grey4, fontSize: 12.0),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: EditableBulletList(bulletHolder: _bulletPointsHolder),
+          ),
+          const SizedBox(height: 12.0),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDate() {
+    return ShadedBox(
+      child: GestureDetector(
+        onTap: _selectDate,
+        behavior: HitTestBehavior.opaque,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Text(
+              'Date due',
+              style: TextStyle().copyWith(color: AppColors.grey4, fontSize: 12.0),
+            ),
+            const SizedBox(height: 12.0),
+            Text(
+              DateFormatter.safeFormatSimple(_dueDate),
+              textAlign: TextAlign.right,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
