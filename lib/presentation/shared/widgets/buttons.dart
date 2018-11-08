@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tasking/presentation/shared/resources.dart';
-import 'package:tasking/presentation/shared/widgets/bottom_box.dart';
+import 'package:tasking/presentation/shared/widgets/box.dart';
 import 'package:tuple/tuple.dart';
 
 class RoundButton extends StatelessWidget {
