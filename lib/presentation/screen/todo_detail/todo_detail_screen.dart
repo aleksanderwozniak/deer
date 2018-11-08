@@ -120,7 +120,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
                     children: <Widget>[
                       Text(
                         'Description:',
-                        style: TextStyle().copyWith(fontSize: 10.0),
+                        style: TextStyle().copyWith(fontSize: 12.0, color: AppColors.grey4),
                       ),
                       const SizedBox(height: 8.0),
                       Padding(
@@ -141,7 +141,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
                     children: <Widget>[
                       Text(
                         'Bullet points:',
-                        style: TextStyle().copyWith(fontSize: 10.0),
+                        style: TextStyle().copyWith(fontSize: 12.0, color: AppColors.grey4),
                       ),
                       const SizedBox(height: 8.0),
                       Padding(
@@ -185,19 +185,19 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
                     children: <Widget>[
                       Text(
                         'Added on:',
-                        style: TextStyle().copyWith(fontSize: 10.0),
+                        style: TextStyle().copyWith(fontSize: 12.0, color: AppColors.grey4),
                       ),
                       Text(
-                        DateFormatter.formatSimple(state.todo.addedDate),
+                        DateFormatter.safeFormatSimple(state.todo.addedDate),
                         textAlign: TextAlign.right,
                       ),
                       const SizedBox(height: 24.0),
                       Text(
                         'Due by:',
-                        style: TextStyle().copyWith(fontSize: 10.0),
+                        style: TextStyle().copyWith(fontSize: 12.0, color: AppColors.grey4),
                       ),
                       Text(
-                        DateFormatter.formatSimple(state.todo.dueDate),
+                        DateFormatter.safeFormatSimple(state.todo.dueDate),
                         textAlign: TextAlign.right,
                       ),
                     ],

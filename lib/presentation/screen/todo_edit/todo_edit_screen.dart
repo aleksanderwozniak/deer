@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tasking/domain/entity/todo_entity.dart';
 import 'package:tasking/presentation/screen/todo_edit/todo_edit_bloc.dart';
 import 'package:tasking/presentation/screen/todo_edit/todo_edit_state.dart';
+import 'package:tasking/presentation/shared/helper/date_formatter.dart';
 import 'package:tasking/presentation/shared/resources.dart';
 import 'package:tasking/presentation/shared/widgets/buttons.dart';
 import 'package:tasking/presentation/shared/widgets/editable_bullet_list.dart';
@@ -41,6 +42,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
     _descriptionFocusNode = FocusNode();
 
     _bulletPointsHolder = widget.todo.bulletPoints.toList();
+    _dueDate = widget.todo.dueDate;
   }
 
   void _selectDate() async {
@@ -104,45 +106,134 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
       children: <Widget>[
         Expanded(
           child: ListView(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            // padding: const EdgeInsets.symmetric(horizontal: 20.0),
             children: <Widget>[
               const SizedBox(height: 20.0),
-              TextField(
-                controller: _nameController,
-                focusNode: _nameFocusNode,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(16.0)),
-                  hintText: 'Task name',
+              // Padding(
+              //   padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              //   child: TextField(
+              //     controller: _nameController,
+              //     focusNode: _nameFocusNode,
+              //     decoration: InputDecoration(
+              //       border: OutlineInputBorder(borderRadius: BorderRadius.circular(16.0)),
+              //       hintText: 'Task name',
+              //       labelText: 'Name',
+              //     ),
+              //     maxLength: 30,
+              //     maxLengthEnforced: true,
+              //   ),
+              // ),
+              const SizedBox(height: 12.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: TextField(
+                  controller: _nameController,
+                  focusNode: _nameFocusNode,
+                  textAlign: TextAlign.center,
+                  style: TextStyle().copyWith(fontSize: 18.0, color: AppColors.black1),
+                  decoration: InputDecoration.collapsed(
+                    hintText: 'Task name',
+                  ),
+                  maxLength: 30,
+                  maxLengthEnforced: true,
                 ),
               ),
               const SizedBox(height: 12.0),
-              TextField(
-                controller: _descriptionController,
-                focusNode: _descriptionFocusNode,
-                maxLines: null,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(16.0)),
-                  hintText: 'Task description',
+              _buildDivider(),
+              const SizedBox(height: 12.0),
+              // Padding(
+              //   padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              //   child: TextField(
+              //     controller: _descriptionController,
+              //     focusNode: _descriptionFocusNode,
+              //     maxLines: null,
+              //     decoration: InputDecoration(
+              //       border: OutlineInputBorder(borderRadius: BorderRadius.circular(16.0)),
+              //       hintText: 'Task description',
+              //       labelText: 'Description',
+              //     ),
+              //   ),
+              // ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Text(
+                  'Description',
+                  style: TextStyle().copyWith(color: AppColors.grey4, fontSize: 12.0),
                 ),
               ),
               const SizedBox(height: 12.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: TextField(
+                  controller: _descriptionController,
+                  focusNode: _descriptionFocusNode,
+                  maxLines: null,
+                  decoration: InputDecoration.collapsed(
+                    hintText: 'Task description',
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12.0),
+              _buildDivider(),
+              const SizedBox(height: 12.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Text(
+                  'Bullet points',
+                  style: TextStyle().copyWith(color: AppColors.grey4, fontSize: 12.0),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: EditableBulletList(bulletHolder: _bulletPointsHolder),
+              ),
+              const SizedBox(height: 24.0),
+              _buildDivider(),
+              const SizedBox(height: 12.0),
+              // Padding(
+              //   padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              //   child: GestureDetector(
+              //     onTap: _selectDate,
+              //     behavior: HitTestBehavior.opaque,
+              //     child: Container(
+              //       height: 60.0,
+              //       alignment: Alignment.centerLeft,
+              //       padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              //       decoration: BoxDecoration(
+              //         border: Border.all(color: AppColors.grey4),
+              //         borderRadius: BorderRadius.circular(16.0),
+              //       ),
+              //       // TODO: apply DateFormat
+              //       child: Text(_dueDate?.toString() ?? widget.todo.dueDate.toString()) ?? '',
+              //     ),
+              //   ),
+              // ),
               GestureDetector(
                 onTap: _selectDate,
                 behavior: HitTestBehavior.opaque,
-                child: Container(
-                  height: 60.0,
-                  alignment: Alignment.centerLeft,
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: AppColors.grey4),
-                    borderRadius: BorderRadius.circular(16.0),
-                  ),
-                  // TODO: apply DateFormat
-                  child: Text(_dueDate?.toString() ?? widget.todo.dueDate.toString()) ?? '',
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Text(
+                        'Date due',
+                        style: TextStyle().copyWith(color: AppColors.grey4, fontSize: 12.0),
+                      ),
+                    ),
+                    const SizedBox(height: 12.0),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Text(
+                        DateFormatter.safeFormatSimple(_dueDate),
+                        textAlign: TextAlign.right,
+                      ),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: 12.0),
-              EditableBulletList(bulletHolder: _bulletPointsHolder),
+              _buildDivider(),
               const SizedBox(height: 20.0)
             ],
           ),
@@ -152,6 +243,16 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
           onPressed: () => _submit(state.todo),
         ),
       ],
+    );
+  }
+
+  Widget _buildDivider() {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(width: 0.5),
+        ),
+      ),
     );
   }
 }
