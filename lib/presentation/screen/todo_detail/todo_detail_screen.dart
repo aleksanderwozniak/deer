@@ -31,6 +31,8 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
   // Place variables here
   TodoDetailBloc _bloc;
 
+  final _colorsMock = [Colors.blueAccent, Colors.redAccent, Colors.greenAccent];
+
   @override
   void initState() {
     super.initState();
@@ -95,85 +97,147 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
         children: <Widget>[
           Expanded(
             child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
               children: <Widget>[
-                const SizedBox(height: 16.0),
-                TodoAvatar(text: state.todo.name, isLarge: true),
-                const SizedBox(height: 16.0),
-                Text(
-                  'Title:',
-                  textAlign: TextAlign.center,
-                  style: TextStyle().copyWith(fontSize: 20.0),
-                ),
-                const SizedBox(height: 8.0),
-                Text(
-                  state.todo.name,
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 16.0),
-                Text(
-                  'Description:',
-                  textAlign: TextAlign.center,
-                  style: TextStyle().copyWith(fontSize: 20.0),
-                ),
-                const SizedBox(height: 8.0),
-                Text(
-                  state.todo.description,
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 16.0),
-                Text(
-                  'Bullet points:',
-                  textAlign: TextAlign.center,
-                  style: TextStyle().copyWith(fontSize: 20.0),
-                ),
-                const SizedBox(height: 8.0),
-                Center(
+                _buildSection(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: state.todo.bulletPoints.map((entry) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 4.0),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Container(
-                              width: 8.0,
-                              height: 8.0,
-                              decoration: BoxDecoration(
-                                color: AppColors.black1,
-                                shape: BoxShape.circle,
-                              ),
-                            ),
-                            const SizedBox(width: 8.0),
-                            Expanded(
-                              child: Text(
-                                entry,
-                                maxLines: null,
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    }).toList(),
+                    children: <Widget>[
+                      const SizedBox(height: 12.0),
+                      TodoAvatar(text: state.todo.name, isLarge: true),
+                      const SizedBox(height: 16.0),
+                      Text(
+                        state.todo.name,
+                        textAlign: TextAlign.center,
+                        style: TextStyle().copyWith(fontSize: 20.0),
+                      ),
+                      const SizedBox(height: 12.0),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 16.0),
-                Text(
-                  'Added on: ${DateFormatter.formatSimple(state.todo.addedDate)}',
-                  textAlign: TextAlign.center,
+                // _buildDivider(),
+                _buildSection(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        'Description:',
+                        style: TextStyle().copyWith(fontSize: 10.0),
+                      ),
+                      const SizedBox(height: 8.0),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Text(
+                          state.todo.description,
+                          textAlign: TextAlign.justify,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                const SizedBox(height: 8.0),
-                Text(
-                  'Due by: ${DateFormatter.formatSimple(state.todo.dueDate)}',
-                  textAlign: TextAlign.center,
+                // _buildDivider(),
+                _buildSection(
+                  child: Column(
+                    // TODO: Refactor this
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        'Bullet points:',
+                        style: TextStyle().copyWith(fontSize: 10.0),
+                      ),
+                      const SizedBox(height: 8.0),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: state.todo.bulletPoints.map((entry) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 4.0),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  Container(
+                                    width: 8.0,
+                                    height: 8.0,
+                                    decoration: BoxDecoration(
+                                      color: AppColors.black1,
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8.0),
+                                  Expanded(
+                                    child: Text(
+                                      entry,
+                                      maxLines: null,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                const SizedBox(height: 16.0),
+                // _buildDivider(),
+                _buildSection(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      Text(
+                        'Added on:',
+                        style: TextStyle().copyWith(fontSize: 10.0),
+                      ),
+                      Text(
+                        DateFormatter.formatSimple(state.todo.addedDate),
+                        textAlign: TextAlign.right,
+                      ),
+                      const SizedBox(height: 24.0),
+                      Text(
+                        'Due by:',
+                        style: TextStyle().copyWith(fontSize: 10.0),
+                      ),
+                      Text(
+                        DateFormatter.formatSimple(state.todo.dueDate),
+                        textAlign: TextAlign.right,
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
           _buildBottom(state),
         ],
+      ),
+    );
+  }
+
+  Widget _buildSection({@required Widget child}) {
+    _colorsMock.shuffle();
+
+    return Container(
+      // decoration: BoxDecoration(
+      //   // color: _colorsMock.first,
+      //   border: BorderDirectional(top: BorderSide()),
+      // ),
+      decoration: BoxDecoration(
+        boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 2.0)],
+        // boxShadow: [BoxShadow(color: Colors.black38, blurRadius: 4.0)],
+        color: AppColors.white1,
+        // color: _colorsMock.first,
+        // color: Colors.transparent,
+      ),
+      padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
+      child: child,
+    );
+  }
+
+  Widget _buildDivider() {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(width: 0.5),
+        ),
       ),
     );
   }

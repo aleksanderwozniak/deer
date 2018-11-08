@@ -65,7 +65,8 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
       bulletPoints: BuiltList.from(_bulletPointsHolder),
       status: todo.status,
       addedDate: todo.addedDate,
-      dueDate: todo.dueDate,
+      // dueDate: todo.dueDate,
+      dueDate: _dueDate,
     );
 
     Navigator.of(context).pop(updatedTodo);
