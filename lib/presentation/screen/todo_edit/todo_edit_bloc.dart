@@ -20,7 +20,7 @@ class TodoEditBloc {
       : _state = BehaviorSubject<TodoEditState>(
           seedValue: TodoEditState(todo: todo),
         ) {
-    actions._updateDate.stream.listen(_onUpdateDate);
+    actions._updateField.stream.listen(_onUpdateField);
     actions._updateTodo.stream.listen(_onUpdateTodo);
     actions._submit.stream.listen(_onSubmit);
   }
@@ -30,8 +30,23 @@ class TodoEditBloc {
     _state.close();
   }
 
-  void _onUpdateDate(UpdateDate action) {
-    _state.add(_state.value.rebuild((b) => b..todo.dueDate = action.date));
+  void _onUpdateField(UpdateField action) {
+    final state = _state.value.toBuilder();
+
+    switch (action.key) {
+      case FieldKey.name:
+        state.todo.name = action.value;
+        state.todoNameHasError = isBlank(state.todo.name);
+        break;
+      case FieldKey.description:
+        state.todo.description = action.value;
+        break;
+      case FieldKey.dueDate:
+        state.todo.dueDate = action.value;
+        break;
+    }
+
+    _state.add(state.build());
   }
 
   void _onUpdateTodo(UpdateTodo action) {
@@ -56,8 +71,8 @@ class TodoEditBloc {
 }
 
 class Actions {
-  Sink<UpdateDate> get updateDate => _updateDate;
-  final _updateDate = StreamController<UpdateDate>();
+  Sink<UpdateField> get updateField => _updateField;
+  final _updateField = StreamController<UpdateField>();
 
   Sink<UpdateTodo> get updateTodo => _updateTodo;
   final _updateTodo = StreamController<UpdateTodo>();
@@ -66,7 +81,7 @@ class Actions {
   final _submit = StreamController<Submit>();
 
   void _dispose() {
-    _updateDate.close();
+    _updateField.close();
     _updateTodo.close();
     _submit.close();
   }
