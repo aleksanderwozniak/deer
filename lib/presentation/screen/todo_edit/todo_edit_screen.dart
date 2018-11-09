@@ -25,7 +25,6 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
 
   FocusNode _nameFocusNode;
   FocusNode _descriptionFocusNode;
-  List<String> _bulletPointsHolder;
 
   @override
   void initState() {
@@ -34,7 +33,6 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
 
     _nameFocusNode = FocusNode();
     _descriptionFocusNode = FocusNode();
-    _bulletPointsHolder = widget.todo.bulletPoints.toList();
   }
 
   void _selectDate() async {
@@ -46,19 +44,10 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
       lastDate: DateTime(2050),
     );
 
-    _bloc.actions.updateField.add(UpdateField(key: FieldKey.dueDate, value: date));
+    _bloc.actions.add(UpdateField(key: FieldKey.dueDate, value: date));
   }
 
   void _submit(TodoEditState state) {
-    // final tempTodo = TodoEntity(
-    //   name: _nameController.text,
-    //   description: _descriptionController.text,
-    //   bulletPoints: BuiltList<String>.from(_bulletPointsHolder),
-    // );
-
-    // _bloc.actions.updateTodo.add(UpdateTodo(todo: tempTodo));
-    // _bloc.actions.submit.add(Submit(context: context));
-
     if (!state.todoNameHasError) {
       Navigator.of(context).pop(state.todo);
     }
@@ -127,7 +116,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
           maxLines: null,
           fontSize: 20.0,
           hint: state.todoNameHasError ? 'Name can\'t be empty' : 'Todo\'s name',
-          onChanged: (value) => _bloc.actions.updateField.add(UpdateField(key: FieldKey.name, value: value)),
+          onChanged: (value) => _bloc.actions.add(UpdateField(key: FieldKey.name, value: value)),
         ),
       ),
     );
@@ -150,7 +139,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
               maxLines: null,
               value: state.todo.description,
               hint: 'Todo\'s description',
-              onChanged: (value) => _bloc.actions.updateField.add(UpdateField(key: FieldKey.description, value: value)),
+              onChanged: (value) => _bloc.actions.add(UpdateField(key: FieldKey.description, value: value)),
             ),
           ),
         ],
@@ -169,10 +158,9 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            // child: EditableBulletList(bulletHolder: _bulletPointsHolder),
             child: EditableBulletList(
               initialBulletPoints: widget.todo.bulletPoints.toList(),
-              onChanged: (bullets) => _bloc.actions.updateField.add(UpdateField(key: FieldKey.bulletPoints, value: bullets)),
+              onChanged: (bullets) => _bloc.actions.add(UpdateField(key: FieldKey.bulletPoints, value: bullets)),
             ),
           ),
           const SizedBox(height: 12.0),

@@ -11,7 +11,8 @@ import 'todo_edit_actions.dart';
 import 'todo_edit_state.dart';
 
 class TodoEditBloc {
-  final actions = Actions();
+  Sink get actions => _actions;
+  final _actions = StreamController<UpdateField>();
 
   TodoEditState get initialState => _state.value;
   Stream<TodoEditState> get state => _state.stream.distinct();
@@ -21,13 +22,11 @@ class TodoEditBloc {
       : _state = BehaviorSubject<TodoEditState>(
           seedValue: TodoEditState(todo: todo),
         ) {
-    actions._updateField.stream.listen(_onUpdateField);
-    actions._updateTodo.stream.listen(_onUpdateTodo);
-    actions._submit.stream.listen(_onSubmit);
+    _actions.stream.listen(_onUpdateField);
   }
 
   void dispose() {
-    actions._dispose();
+    _actions.close();
     _state.close();
   }
 
@@ -51,42 +50,5 @@ class TodoEditBloc {
     }
 
     _state.add(state.build());
-  }
-
-  void _onUpdateTodo(UpdateTodo action) {
-    final state = _state.value.toBuilder();
-
-    state.todo.name = action.todo.name;
-    state.todo.description = action.todo.description;
-    state.todo.bulletPoints = action.todo.bulletPoints.toBuilder();
-    state.todoNameHasError = isBlank(state.todo.name);
-
-    _state.add(state.build());
-  }
-
-  void _onSubmit(Submit action) {
-    if (_state.value.todoNameHasError) {
-      return;
-    }
-
-    final context = action.context;
-    Navigator.of(context).pop(_state.value.todo);
-  }
-}
-
-class Actions {
-  Sink<UpdateField> get updateField => _updateField;
-  final _updateField = StreamController<UpdateField>();
-
-  Sink<UpdateTodo> get updateTodo => _updateTodo;
-  final _updateTodo = StreamController<UpdateTodo>();
-
-  Sink<Submit> get submit => _submit;
-  final _submit = StreamController<Submit>();
-
-  void _dispose() {
-    _updateField.close();
-    _updateTodo.close();
-    _submit.close();
   }
 }
