@@ -34,8 +34,6 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
   // Place variables here
   TodoDetailBloc _bloc;
 
-  final _colorsMock = [Colors.blueAccent, Colors.redAccent, Colors.greenAccent];
-
   @override
   void initState() {
     super.initState();

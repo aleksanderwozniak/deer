@@ -22,13 +22,18 @@ part of todo_edit_state;
 class _$TodoEditState extends TodoEditState {
   @override
   final TodoEntity todo;
+  @override
+  final bool todoNameHasError;
 
   factory _$TodoEditState([void updates(TodoEditStateBuilder b)]) =>
       (new TodoEditStateBuilder()..update(updates)).build();
 
-  _$TodoEditState._({this.todo}) : super._() {
+  _$TodoEditState._({this.todo, this.todoNameHasError}) : super._() {
     if (todo == null) {
       throw new BuiltValueNullFieldError('TodoEditState', 'todo');
+    }
+    if (todoNameHasError == null) {
+      throw new BuiltValueNullFieldError('TodoEditState', 'todoNameHasError');
     }
   }
 
@@ -42,17 +47,21 @@ class _$TodoEditState extends TodoEditState {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is TodoEditState && todo == other.todo;
+    return other is TodoEditState &&
+        todo == other.todo &&
+        todoNameHasError == other.todoNameHasError;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, todo.hashCode));
+    return $jf($jc($jc(0, todo.hashCode), todoNameHasError.hashCode));
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('TodoEditState')..add('todo', todo))
+    return (newBuiltValueToStringHelper('TodoEditState')
+          ..add('todo', todo)
+          ..add('todoNameHasError', todoNameHasError))
         .toString();
   }
 }
@@ -65,11 +74,17 @@ class TodoEditStateBuilder
   TodoEntityBuilder get todo => _$this._todo ??= new TodoEntityBuilder();
   set todo(TodoEntityBuilder todo) => _$this._todo = todo;
 
+  bool _todoNameHasError;
+  bool get todoNameHasError => _$this._todoNameHasError;
+  set todoNameHasError(bool todoNameHasError) =>
+      _$this._todoNameHasError = todoNameHasError;
+
   TodoEditStateBuilder();
 
   TodoEditStateBuilder get _$this {
     if (_$v != null) {
       _todo = _$v.todo?.toBuilder();
+      _todoNameHasError = _$v.todoNameHasError;
       _$v = null;
     }
     return this;
@@ -92,7 +107,9 @@ class TodoEditStateBuilder
   _$TodoEditState build() {
     _$TodoEditState _$result;
     try {
-      _$result = _$v ?? new _$TodoEditState._(todo: todo.build());
+      _$result = _$v ??
+          new _$TodoEditState._(
+              todo: todo.build(), todoNameHasError: todoNameHasError);
     } catch (_) {
       String _$failedField;
       try {

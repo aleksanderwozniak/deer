@@ -1,23 +1,20 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:tasking/domain/entity/todo_entity.dart';
 
-class UpdateField {
-  UpdateField({
-    @required this.field,
-    @required this.value,
-  }) : assert(field != null);
+class UpdateDate {
+  final DateTime date;
 
-  final Field field;
-  final dynamic value;
+  const UpdateDate({this.date});
 }
 
-enum Field { username }
+class UpdateTodo {
+  final TodoEntity todo;
 
-class UpdateBullets {
-  final String text;
-  final int index; // MARK: THIS COULD BE GOOD
+  const UpdateTodo({this.todo});
+}
 
-  UpdateBullets({
-    @required this.text,
-    @required this.index,
-  });
+class Submit {
+  final BuildContext context;
+
+  const Submit({this.context});
 }

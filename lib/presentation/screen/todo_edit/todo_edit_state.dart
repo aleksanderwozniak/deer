@@ -7,12 +7,15 @@ part 'todo_edit_state.g.dart';
 
 abstract class TodoEditState implements Built<TodoEditState, TodoEditStateBuilder> {
   TodoEntity get todo;
+  bool get todoNameHasError;
 
   TodoEditState._();
   factory TodoEditState({
     TodoEntity todo,
+    bool todoNameHasError = false,
   }) =>
       _$TodoEditState._(
         todo: todo,
+        todoNameHasError: todoNameHasError,
       );
 }

@@ -1,6 +1,7 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
 import 'package:tasking/domain/entity/todo_entity.dart';
+import 'package:tasking/presentation/screen/todo_edit/todo_edit_actions.dart';
 import 'package:tasking/presentation/screen/todo_edit/todo_edit_bloc.dart';
 import 'package:tasking/presentation/screen/todo_edit/todo_edit_state.dart';
 import 'package:tasking/presentation/shared/helper/date_formatter.dart';
@@ -25,7 +26,6 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
 
   TextEditingController _nameController;
   TextEditingController _descriptionController;
-  DateTime _dueDate;
   FocusNode _nameFocusNode;
   FocusNode _descriptionFocusNode;
 
@@ -43,36 +43,29 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
     _descriptionFocusNode = FocusNode();
 
     _bulletPointsHolder = widget.todo.bulletPoints.toList();
-    _dueDate = widget.todo.dueDate;
   }
 
   void _selectDate() async {
     final date = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      // set initialDate to tomorrow by default
+      initialDate: DateTime.now().add(Duration(days: 1)),
       firstDate: DateTime(1970),
       lastDate: DateTime(2050),
     );
 
-    // TODO: Bloc
-    setState(() {
-      _dueDate = date;
-    });
+    _bloc.actions.updateDate.add(UpdateDate(date: date));
   }
 
-  void _submit(TodoEntity todo) {
-    // TODO: Bloc
-    final updatedTodo = TodoEntity(
+  void _submit() {
+    final tempTodo = TodoEntity(
       name: _nameController.text,
       description: _descriptionController.text,
-      bulletPoints: BuiltList.from(_bulletPointsHolder),
-      status: todo.status,
-      addedDate: todo.addedDate,
-      // dueDate: todo.dueDate,
-      dueDate: _dueDate,
+      bulletPoints: BuiltList<String>.from(_bulletPointsHolder),
     );
 
-    Navigator.of(context).pop(updatedTodo);
+    _bloc.actions.updateTodo.add(UpdateTodo(todo: tempTodo));
+    _bloc.actions.submit.add(Submit(context: context));
   }
 
   @override
@@ -108,22 +101,22 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
         Expanded(
           child: ListView(
             children: <Widget>[
-              _buildName(),
+              _buildName(state),
               _buildDescription(),
               _buildBulletPoints(),
-              _buildDate(),
+              _buildDate(state),
             ],
           ),
         ),
         BottomButton(
           text: 'Save',
-          onPressed: () => _submit(state.todo),
+          onPressed: _submit,
         ),
       ],
     );
   }
 
-  Widget _buildName() {
+  Widget _buildName(TodoEditState state) {
     return ShadedBox(
       child: Padding(
         padding: const EdgeInsets.only(top: 20.0, left: 8.0, right: 8.0),
@@ -133,7 +126,10 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
           textAlign: TextAlign.center,
           style: TextStyle().copyWith(fontSize: 20.0, color: AppColors.black1),
           decoration: InputDecoration.collapsed(
-            hintText: 'Todo\'s name',
+            hintText: state.todoNameHasError ? 'Name can\'t be empty' : 'Todo\'s name',
+            hintStyle: TextStyle().copyWith(
+              color: state.todoNameHasError ? AppColors.pink1 : AppColors.grey3,
+            ),
           ),
           maxLength: 50,
           maxLengthEnforced: true,
@@ -189,7 +185,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
     );
   }
 
-  Widget _buildDate() {
+  Widget _buildDate(TodoEditState state) {
     return ShadedBox(
       child: GestureDetector(
         onTap: _selectDate,
@@ -203,7 +199,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
             ),
             const SizedBox(height: 12.0),
             Text(
-              DateFormatter.safeFormatSimple(_dueDate),
+              DateFormatter.safeFormatSimple(state.todo.dueDate),
               textAlign: TextAlign.right,
             ),
           ],
