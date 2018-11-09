@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:built_collection/built_collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
@@ -40,6 +41,9 @@ class TodoEditBloc {
         break;
       case FieldKey.description:
         state.todo.description = action.value;
+        break;
+      case FieldKey.bulletPoints:
+        state.todo.bulletPoints = ListBuilder(action.value);
         break;
       case FieldKey.dueDate:
         state.todo.dueDate = action.value;

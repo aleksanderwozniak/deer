@@ -169,7 +169,11 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: EditableBulletList(bulletHolder: _bulletPointsHolder),
+            // child: EditableBulletList(bulletHolder: _bulletPointsHolder),
+            child: EditableBulletList(
+              initialBulletPoints: widget.todo.bulletPoints.toList(),
+              onChanged: (bullets) => _bloc.actions.updateField.add(UpdateField(key: FieldKey.bulletPoints, value: bullets)),
+            ),
           ),
           const SizedBox(height: 12.0),
         ],

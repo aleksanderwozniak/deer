@@ -17,7 +17,7 @@ class UpdateField {
   });
 }
 
-enum FieldKey { name, description, dueDate }
+enum FieldKey { name, description, bulletPoints, dueDate }
 
 class UpdateTodo {
   final TodoEntity todo;
