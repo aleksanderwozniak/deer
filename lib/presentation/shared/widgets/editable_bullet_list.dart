@@ -1,6 +1,8 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:tasking/presentation/shared/resources.dart';
+import 'package:tuple/tuple.dart';
 
 class EditableBulletList extends StatefulWidget {
   /// Will contain every BulletList entry.
@@ -24,14 +26,16 @@ class EditableBulletList extends StatefulWidget {
 }
 
 class _EditableBulletListState extends State<EditableBulletList> {
-  BuiltList<String> _bullets;
+  // BuiltList<String> _bullets;
+  BuiltList<Tuple2<String, FocusNode>> _bullets;
   bool _autofocus;
 
   @override
   void initState() {
     super.initState();
 
-    _bullets = BuiltList(widget.initialBulletPoints.toList());
+    // _bullets = BuiltList(widget.initialBulletPoints.toList());
+    _bullets = BuiltList<Tuple2<String, FocusNode>>(widget.initialBulletPoints.map((text) => Tuple2(text, FocusNode())));
     _autofocus = false;
   }
 
@@ -46,14 +50,14 @@ class _EditableBulletListState extends State<EditableBulletList> {
       children.add(_buildRow(bullet: _bullets.last, autofocus: _autofocus));
     } catch (e) {
       if (children.isEmpty) {
-        _bullets = _bullets.rebuild((b) => b..add(' '));
+        _bullets = _bullets.rebuild((b) => b..add(Tuple2(' ', FocusNode())));
         children.add(_buildRow(bullet: _bullets.last, autofocus: _autofocus));
       }
     }
 
-    if (!_autofocus) {
-      _autofocus = true;
-    }
+    // if (!_autofocus) {
+    // _autofocus = true;
+    // }
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -61,7 +65,7 @@ class _EditableBulletListState extends State<EditableBulletList> {
     );
   }
 
-  Widget _buildRow({@required String bullet, bool autofocus = false}) {
+  Widget _buildRow({@required Tuple2<String, FocusNode> bullet, bool autofocus = false}) {
     final children = [
       Container(
         width: 8.0,
@@ -74,33 +78,51 @@ class _EditableBulletListState extends State<EditableBulletList> {
       const SizedBox(width: 12.0),
       Expanded(
         child: _TextField(
-          autofocus: autofocus,
+          // autofocus: autofocus,
+          focusNode: bullet.item2,
           maxLines: null,
-          inputAction: TextInputAction.done,
+          inputAction: TextInputAction.next,
           hint: 'Next bullet point',
-          value: bullet,
+          value: bullet.item1,
           onChanged: (value) {
+            final id = _bullets.indexOf(bullet);
             if (value.isEmpty) {
-              setState(() {
-                _bullets = _bullets.rebuild((b) => b..remove(bullet));
-              });
+              if (id >= 0) {
+                setState(() {
+                  _bullets = _bullets.rebuild((b) => b..remove(bullet));
+                });
+              }
+              // Future.delayed(Duration(milliseconds: 250), () {
+              // FocusScope.of(context).requestFocus(_bullets[id - 1].item2);
+              // });
+              if (id - 1 >= 0) {
+                SchedulerBinding.instance.addPostFrameCallback((_) {
+                  FocusScope.of(context).requestFocus(_bullets[id - 1].item2);
+                });
+              }
             } else {
-              final id = _bullets.indexOf(bullet);
               setState(() {
                 final b = _bullets.toBuilder();
-                b[id] = value;
+                b[id] = Tuple2(value, bullet.item2);
                 _bullets = b.build();
               });
             }
 
-            widget.onChanged(_bullets.map((bullet) => bullet).toList());
+            widget.onChanged(_bullets.map((bullet) => bullet.item1).toList());
           },
           onSubmitted: (result) {
-            // final id = _bullets.indexOf(bullet);
+            final id = _bullets.indexOf(bullet);
             setState(() {
-              _bullets = _bullets.rebuild((b) => b..add(' '));
+              // _bullets = _bullets.rebuild((b) => b..add(Tuple2(' ', FocusNode())));
+              // FocusScope.of(context).requestFocus(_bullets[id - 1].item2);
               // MARK: disable autofocus for this v
-              // _bullets = _bullets.rebuild((b) => b..insert(id + 1, ' '));
+              _bullets = _bullets.rebuild((b) => b..insert(id + 1, Tuple2(' ', FocusNode())));
+            });
+            // Future.delayed(Duration(milliseconds: 250), () {
+            //   FocusScope.of(context).requestFocus(_bullets[id + 1].item2);
+            // });
+            SchedulerBinding.instance.addPostFrameCallback((_) {
+              FocusScope.of(context).requestFocus(_bullets[id + 1].item2);
             });
           },
         ),
