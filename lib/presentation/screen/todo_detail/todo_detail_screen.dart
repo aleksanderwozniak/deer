@@ -7,6 +7,7 @@ import 'package:tasking/presentation/shared/widgets/box.dart';
 import 'package:tasking/presentation/shared/widgets/bullet_list.dart';
 import 'package:tasking/presentation/shared/widgets/buttons.dart';
 import 'package:tasking/presentation/shared/widgets/todo_avatar.dart';
+import 'package:tasking/utils/string_utils.dart';
 import 'package:tuple/tuple.dart';
 
 import 'todo_detail_actions.dart';
@@ -32,8 +33,6 @@ class TodoDetailScreen extends StatefulWidget {
 class _TodoDetailScreenState extends State<TodoDetailScreen> {
   // Place variables here
   TodoDetailBloc _bloc;
-
-  final _colorsMock = [Colors.blueAccent, Colors.redAccent, Colors.greenAccent];
 
   @override
   void initState() {
@@ -83,7 +82,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
     // Build your root view here
     return Scaffold(
       appBar: AppBar(
-        title: Text('Task details'),
+        title: Text('Todo\'s details'),
       ),
       body: _buildBody(state),
     );
@@ -92,7 +91,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
   Widget _buildBody(TodoDetailState state) {
     final children = [_buildName(state)];
 
-    if (state.todo.description.trim().isNotEmpty) {
+    if (!isBlank(state.todo.description)) {
       children.add(_buildDescription(state));
     }
 
@@ -128,10 +127,13 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
           const SizedBox(height: 12.0),
           TodoAvatar(text: state.todo.name, isLarge: true),
           const SizedBox(height: 16.0),
-          Text(
-            state.todo.name,
-            textAlign: TextAlign.center,
-            style: TextStyle().copyWith(fontSize: 20.0),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Text(
+              state.todo.name,
+              textAlign: TextAlign.center,
+              style: TextStyle().copyWith(fontSize: 20.0),
+            ),
           ),
           const SizedBox(height: 12.0),
         ],

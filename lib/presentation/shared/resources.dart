@@ -9,5 +9,6 @@ class AppColors {
   static final Color grey2 = Colors.grey[300];
   static final Color grey3 = Colors.grey[400];
   static final Color grey4 = Colors.grey[700];
+  static final Color pink1 = Colors.pink[400];
   static final Color black1 = Colors.black;
 }

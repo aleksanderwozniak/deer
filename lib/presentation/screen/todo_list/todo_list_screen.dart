@@ -125,6 +125,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
         _TodoAdder(
           todoNameController: _todoNameController,
           onAdd: _addTodo,
+          showError: state.todoNameHasError,
         ),
       ],
     );
@@ -151,20 +152,22 @@ class _TodoListScreenState extends State<TodoListScreen> {
 class _TodoAdder extends StatelessWidget {
   final TextEditingController todoNameController;
   final AddTaskCallback onAdd;
+  final bool showError;
 
   const _TodoAdder({
     Key key,
     @required this.todoNameController,
     @required this.onAdd,
+    @required this.showError,
   })  : assert(todoNameController != null),
         assert(onAdd != null),
+        assert(showError != null),
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        // boxShadow: [BoxShadow(color: AppColors.black1, blurRadius: 4.0)],
         boxShadow: [BoxShadow(color: Colors.black54, blurRadius: 10.0)],
         color: AppColors.white1,
         borderRadius: BorderRadius.only(
@@ -172,14 +175,25 @@ class _TodoAdder extends StatelessWidget {
           topRight: Radius.circular(24.0),
         ),
       ),
-      // padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0, top: 12.0),
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+      padding: const EdgeInsets.only(left: 18.0, right: 16.0, bottom: 16.0, top: 18.0),
       child: Row(
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           Expanded(
             child: TextField(
               controller: todoNameController,
+              maxLength: 50,
+              maxLengthEnforced: true,
+              maxLines: null,
+              textInputAction: TextInputAction.done,
+              style: TextStyle().copyWith(fontSize: 16.0, color: AppColors.black1),
+              decoration: InputDecoration.collapsed(
+                border: UnderlineInputBorder(),
+                hintText: showError ? 'Name can\'t be empty' : 'New Todo',
+                hintStyle: TextStyle().copyWith(
+                  color: showError ? AppColors.pink1 : AppColors.grey3,
+                ),
+              ),
               onSubmitted: (_) {
                 onAdd(_buildTask());
                 todoNameController.clear();

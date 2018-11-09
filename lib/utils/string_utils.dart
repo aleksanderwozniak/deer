@@ -5,3 +5,7 @@ String enumToString(dynamic input) {
 T stringToEnum<T>(String input, List<T> values) {
   return values.firstWhere((e) => input == enumToString(e), orElse: () => null);
 }
+
+bool isBlank(String input) {
+  return input.trim().isEmpty;
+}

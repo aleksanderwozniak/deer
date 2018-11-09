@@ -1,6 +1,6 @@
-import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
 import 'package:tasking/domain/entity/todo_entity.dart';
+import 'package:tasking/presentation/screen/todo_edit/todo_edit_actions.dart';
 import 'package:tasking/presentation/screen/todo_edit/todo_edit_bloc.dart';
 import 'package:tasking/presentation/screen/todo_edit/todo_edit_state.dart';
 import 'package:tasking/presentation/shared/helper/date_formatter.dart';
@@ -23,56 +23,34 @@ class TodoEditScreen extends StatefulWidget {
 class _TodoEditScreenState extends State<TodoEditScreen> {
   TodoEditBloc _bloc;
 
-  TextEditingController _nameController;
-  TextEditingController _descriptionController;
-  DateTime _dueDate;
   FocusNode _nameFocusNode;
   FocusNode _descriptionFocusNode;
-
-  List<String> _bulletPointsHolder;
 
   @override
   void initState() {
     super.initState();
     _bloc = TodoEditBloc(todo: widget.todo);
 
-    _nameController = TextEditingController(text: widget.todo.name);
-    _descriptionController = TextEditingController(text: widget.todo.description);
-
     _nameFocusNode = FocusNode();
     _descriptionFocusNode = FocusNode();
-
-    _bulletPointsHolder = widget.todo.bulletPoints.toList();
-    _dueDate = widget.todo.dueDate;
   }
 
   void _selectDate() async {
     final date = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      // set initialDate to tomorrow by default
+      initialDate: DateTime.now().add(Duration(days: 1)),
       firstDate: DateTime(1970),
       lastDate: DateTime(2050),
     );
 
-    // TODO: Bloc
-    setState(() {
-      _dueDate = date;
-    });
+    _bloc.actions.add(UpdateField(key: FieldKey.dueDate, value: date));
   }
 
-  void _submit(TodoEntity todo) {
-    // TODO: Bloc
-    final updatedTodo = TodoEntity(
-      name: _nameController.text,
-      description: _descriptionController.text,
-      bulletPoints: BuiltList.from(_bulletPointsHolder),
-      status: todo.status,
-      addedDate: todo.addedDate,
-      // dueDate: todo.dueDate,
-      dueDate: _dueDate,
-    );
-
-    Navigator.of(context).pop(updatedTodo);
+  void _submit(TodoEditState state) {
+    if (!state.todoNameHasError) {
+      Navigator.of(context).pop(state.todo);
+    }
   }
 
   @override
@@ -95,7 +73,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Edit task'),
+          title: Text('Edit Todo'),
         ),
         body: _buildBody(state),
       ),
@@ -108,46 +86,43 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
         Expanded(
           child: ListView(
             children: <Widget>[
-              _buildName(),
-              _buildDescription(),
+              _buildName(state),
+              _buildDescription(state),
               _buildBulletPoints(),
-              _buildDate(),
+              _buildDate(state),
             ],
           ),
         ),
         BottomButton(
           text: 'Save',
-          onPressed: () => _submit(state.todo),
+          onPressed: () => _submit(state),
         ),
       ],
     );
   }
 
-  Widget _buildName() {
+  Widget _buildName(TodoEditState state) {
     return ShadedBox(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-        child: Column(
-          children: <Widget>[
-            const SizedBox(height: 20.0),
-            TextField(
-              controller: _nameController,
-              focusNode: _nameFocusNode,
-              textAlign: TextAlign.center,
-              style: TextStyle().copyWith(fontSize: 18.0, color: AppColors.black1),
-              decoration: InputDecoration.collapsed(
-                hintText: 'Task name',
-              ),
-              maxLength: 30,
-              maxLengthEnforced: true,
-            ),
-          ],
+        padding: const EdgeInsets.only(top: 20.0, left: 8.0, right: 8.0),
+        child: _TextField(
+          focusNode: _nameFocusNode,
+          showError: state.todoNameHasError,
+          value: state.todo.name,
+          textAlign: TextAlign.center,
+          inputAction: TextInputAction.done,
+          maxLength: 50,
+          maxLengthEnforced: true,
+          maxLines: null,
+          fontSize: 20.0,
+          hint: state.todoNameHasError ? 'Name can\'t be empty' : 'Todo\'s name',
+          onChanged: (value) => _bloc.actions.add(UpdateField(key: FieldKey.name, value: value)),
         ),
       ),
     );
   }
 
-  Widget _buildDescription() {
+  Widget _buildDescription(TodoEditState state) {
     return ShadedBox(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -159,13 +134,12 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
           const SizedBox(height: 12.0),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: TextField(
-              controller: _descriptionController,
+            child: _TextField(
               focusNode: _descriptionFocusNode,
               maxLines: null,
-              decoration: InputDecoration.collapsed(
-                hintText: 'Task description',
-              ),
+              value: state.todo.description,
+              hint: 'Todo\'s description',
+              onChanged: (value) => _bloc.actions.add(UpdateField(key: FieldKey.description, value: value)),
             ),
           ),
         ],
@@ -184,7 +158,10 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: EditableBulletList(bulletHolder: _bulletPointsHolder),
+            child: EditableBulletList(
+              initialBulletPoints: widget.todo.bulletPoints.toList(),
+              onChanged: (bullets) => _bloc.actions.add(UpdateField(key: FieldKey.bulletPoints, value: bullets)),
+            ),
           ),
           const SizedBox(height: 12.0),
         ],
@@ -192,7 +169,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
     );
   }
 
-  Widget _buildDate() {
+  Widget _buildDate(TodoEditState state) {
     return ShadedBox(
       child: GestureDetector(
         onTap: _selectDate,
@@ -201,16 +178,92 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Text(
-              'Date due',
+              'Due by',
               style: TextStyle().copyWith(color: AppColors.grey4, fontSize: 12.0),
             ),
             const SizedBox(height: 12.0),
             Text(
-              DateFormatter.safeFormatSimple(_dueDate),
+              DateFormatter.safeFormatSimple(state.todo.dueDate),
               textAlign: TextAlign.right,
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _TextField extends StatefulWidget {
+  final FocusNode focusNode;
+  final TextInputAction inputAction;
+  final TextAlign textAlign;
+  final String value;
+  final String hint;
+  final double fontSize;
+  final int maxLines;
+  final int maxLength;
+  final bool maxLengthEnforced;
+  final bool showError;
+  final ValueChanged<String> onChanged;
+  final ValueChanged<String> onSubmitted;
+
+  const _TextField({
+    Key key,
+    this.focusNode,
+    this.inputAction,
+    this.textAlign = TextAlign.start,
+    this.value,
+    this.hint,
+    this.fontSize = 14.0,
+    this.maxLines = 1,
+    this.maxLength,
+    this.maxLengthEnforced = false,
+    this.showError = false,
+    this.onChanged,
+    this.onSubmitted,
+  }) : super(key: key);
+
+  @override
+  _TextFieldState createState() => _TextFieldState();
+}
+
+class _TextFieldState extends State<_TextField> {
+  TextEditingValue _value;
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = TextEditingController.fromValue(
+      _value?.copyWith(text: widget.value) ?? TextEditingValue(text: widget.value),
+    );
+
+    controller.addListener(() {
+      _value = controller.value;
+      widget.onChanged(controller.value.text);
+    });
+
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).requestFocus(widget.focusNode),
+      child: TextField(
+        focusNode: widget.focusNode,
+        textInputAction: widget.inputAction,
+        controller: controller,
+        textAlign: widget.textAlign,
+        maxLines: widget.maxLines,
+        maxLength: widget.maxLength,
+        maxLengthEnforced: widget.maxLengthEnforced,
+        style: TextStyle().copyWith(
+          color: AppColors.black1,
+          fontSize: widget.fontSize,
+        ),
+        decoration: InputDecoration.collapsed(
+          border: InputBorder.none,
+          hintText: widget.hint,
+          hintStyle: TextStyle().copyWith(
+            color: widget.showError ? AppColors.pink1 : AppColors.grey3,
+            fontSize: widget.fontSize,
+          ),
+        ),
+        onSubmitted: widget.onSubmitted,
       ),
     );
   }
