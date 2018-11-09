@@ -7,6 +7,7 @@ import 'package:tasking/presentation/shared/widgets/box.dart';
 import 'package:tasking/presentation/shared/widgets/bullet_list.dart';
 import 'package:tasking/presentation/shared/widgets/buttons.dart';
 import 'package:tasking/presentation/shared/widgets/todo_avatar.dart';
+import 'package:tasking/utils/string_utils.dart';
 import 'package:tuple/tuple.dart';
 
 import 'todo_detail_actions.dart';
@@ -92,7 +93,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
   Widget _buildBody(TodoDetailState state) {
     final children = [_buildName(state)];
 
-    if (state.todo.description.trim().isNotEmpty) {
+    if (!isBlank(state.todo.description)) {
       children.add(_buildDescription(state));
     }
 

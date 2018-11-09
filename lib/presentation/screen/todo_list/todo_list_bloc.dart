@@ -6,6 +6,7 @@ import 'package:tasking/domain/entity/todo_entity.dart';
 import 'package:tasking/domain/interactor/task.dart';
 import 'package:tasking/presentation/app.dart';
 import 'package:tasking/presentation/screen/todo_list/todo_list_actions.dart';
+import 'package:tasking/utils/string_utils.dart';
 
 import 'todo_list_state.dart';
 
@@ -55,6 +56,12 @@ class TodoListBloc {
   }
 
   void _onAdd(TodoEntity todo) {
+    _state.add(_state.value.rebuild((b) => b..todoNameHasError = isBlank(todo.name)));
+
+    if (_state.value.todoNameHasError) {
+      return;
+    }
+
     _diskAccessTask?.cancel();
     _diskAccessTask = dependencies.todoInteractor.add(todo).listen((task) {
       _state.add(_state.value.rebuild((b) => b..diskAccessTask = task));

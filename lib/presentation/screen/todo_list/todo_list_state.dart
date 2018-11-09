@@ -9,15 +9,18 @@ part 'todo_list_state.g.dart';
 
 abstract class TodoListState implements Built<TodoListState, TodoListStateBuilder> {
   BuiltList<TodoEntity> get todos;
+  bool get todoNameHasError;
   Task get diskAccessTask;
 
   TodoListState._();
   factory TodoListState({
     BuiltList<TodoEntity> todos,
+    bool todoNameHasError = false,
     Task diskAccessTask = const Task.idle(),
   }) =>
       _$TodoListState._(
         todos: todos ?? BuiltList(),
+        todoNameHasError: todoNameHasError,
         diskAccessTask: diskAccessTask,
       );
 }

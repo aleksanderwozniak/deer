@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tasking/presentation/shared/resources.dart';
 
 class BulletList extends StatelessWidget {
   final List<String> entries;
@@ -51,7 +52,7 @@ class BulletList extends StatelessWidget {
       height: 8.0,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: Colors.black,
+        color: AppColors.black1,
       ),
     );
   }

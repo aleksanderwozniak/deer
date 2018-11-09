@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tasking/presentation/shared/resources.dart';
+import 'package:tasking/utils/string_utils.dart';
 
 class EditableBulletList extends StatefulWidget {
   /// Will contain every BulletList entry.
@@ -60,7 +61,7 @@ class _EditableBulletListState extends State<EditableBulletList> {
   Widget _buildRow({@required String bullet, bool autofocus = false}) {
     final controller = TextEditingController(text: bullet);
     controller.addListener(() {
-      if (controller.text.trim().isEmpty) {
+      if (isBlank(controller.text)) {
         setState(() {
           _bullets.remove(bullet);
         });
@@ -89,7 +90,7 @@ class _EditableBulletListState extends State<EditableBulletList> {
           onSubmitted: (result) {
             // Empty text should be handled automatically by controller's listener.
             // This is just a double-check.
-            if (result.trim().isNotEmpty) {
+            if (!isBlank(result)) {
               int id = _bullets.indexOf(bullet);
               id = id == -1 ? _bullets.length : id;
               setState(() {
