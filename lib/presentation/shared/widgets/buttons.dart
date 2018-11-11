@@ -20,10 +20,10 @@ class RoundButton extends StatelessWidget {
     return FlatButton(
       child: Text(text),
       onPressed: onPressed,
-      color: AppColors.grey1,
+      color: AppColors.pink1,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.0),
-        side: BorderSide(color: AppColors.grey4),
+        side: BorderSide(color: AppColors.pink4),
       ),
     );
   }

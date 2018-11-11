@@ -101,39 +101,48 @@ class _TodoListScreenState extends State<TodoListScreen> {
   }
 
   Widget _buildBody(TodoListState state) {
-    return Column(
-      children: <Widget>[
-        Expanded(
-          child: ListView.builder(
-            itemCount: state.todos.length,
-            controller: _todoListScrollController,
-            itemBuilder: (context, index) {
-              final todo = state.todos[index];
-              return Dismissible(
-                key: Key(todo.addedDate.toIso8601String()),
-                background: _buildDismissibleBackground(leftToRight: true),
-                secondaryBackground: _buildDismissibleBackground(leftToRight: false),
-                onDismissed: (_) => _archiveTodo(todo),
-                child: TodoTile(
-                  todo: todo,
-                  onTap: () => _showDetails(todo),
-                ),
-              );
-            },
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [AppColors.white1, AppColors.pink1],
+          begin: AlignmentDirectional.topCenter,
+          end: AlignmentDirectional.bottomCenter,
+        ),
+      ),
+      child: Column(
+        children: <Widget>[
+          Expanded(
+            child: ListView.builder(
+              itemCount: state.todos.length,
+              controller: _todoListScrollController,
+              itemBuilder: (context, index) {
+                final todo = state.todos[index];
+                return Dismissible(
+                  key: Key(todo.addedDate.toIso8601String()),
+                  background: _buildDismissibleBackground(leftToRight: true),
+                  secondaryBackground: _buildDismissibleBackground(leftToRight: false),
+                  onDismissed: (_) => _archiveTodo(todo),
+                  child: TodoTile(
+                    todo: todo,
+                    onTap: () => _showDetails(todo),
+                  ),
+                );
+              },
+            ),
           ),
-        ),
-        _TodoAdder(
-          todoNameController: _todoNameController,
-          onAdd: _addTodo,
-          showError: state.todoNameHasError,
-        ),
-      ],
+          _TodoAdder(
+            todoNameController: _todoNameController,
+            onAdd: _addTodo,
+            showError: state.todoNameHasError,
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildDismissibleBackground({@required bool leftToRight}) {
     final alignment = leftToRight ? Alignment.centerLeft : Alignment.centerRight;
-    final colors = leftToRight ? [AppColors.grey3, AppColors.white1] : [AppColors.white1, AppColors.grey3];
+    final colors = leftToRight ? [AppColors.pink2, AppColors.white1] : [AppColors.white1, AppColors.pink2];
 
     return Container(
       child: Text(
@@ -191,7 +200,7 @@ class _TodoAdder extends StatelessWidget {
                 border: UnderlineInputBorder(),
                 hintText: showError ? 'Name can\'t be empty' : 'New Todo',
                 hintStyle: TextStyle().copyWith(
-                  color: showError ? AppColors.pink1 : AppColors.grey3,
+                  color: showError ? AppColors.pink5 : AppColors.pink3,
                 ),
               ),
               onSubmitted: (_) {

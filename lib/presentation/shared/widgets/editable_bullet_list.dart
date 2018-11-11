@@ -177,7 +177,7 @@ class _TextFieldState extends State<_TextField> {
         decoration: InputDecoration(
           hintText: widget.hint,
           hintStyle: TextStyle().copyWith(
-            color: AppColors.grey3,
+            color: AppColors.pink3,
             fontSize: widget.fontSize,
           ),
         ),

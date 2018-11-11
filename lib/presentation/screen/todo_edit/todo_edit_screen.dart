@@ -129,7 +129,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
         children: <Widget>[
           Text(
             'Description',
-            style: TextStyle().copyWith(color: AppColors.grey4, fontSize: 12.0),
+            style: TextStyle().copyWith(color: AppColors.pink4, fontSize: 12.0),
           ),
           const SizedBox(height: 12.0),
           Padding(
@@ -154,7 +154,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
         children: <Widget>[
           Text(
             'Bullet points',
-            style: TextStyle().copyWith(color: AppColors.grey4, fontSize: 12.0),
+            style: TextStyle().copyWith(color: AppColors.pink4, fontSize: 12.0),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -179,7 +179,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
           children: <Widget>[
             Text(
               'Due by',
-              style: TextStyle().copyWith(color: AppColors.grey4, fontSize: 12.0),
+              style: TextStyle().copyWith(color: AppColors.pink4, fontSize: 12.0),
             ),
             const SizedBox(height: 12.0),
             Text(
@@ -259,7 +259,7 @@ class _TextFieldState extends State<_TextField> {
           border: InputBorder.none,
           hintText: widget.hint,
           hintStyle: TextStyle().copyWith(
-            color: widget.showError ? AppColors.pink1 : AppColors.grey3,
+            color: widget.showError ? AppColors.pink5 : AppColors.pink3,
             fontSize: widget.fontSize,
           ),
         ),

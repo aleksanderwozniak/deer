@@ -148,7 +148,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
         children: <Widget>[
           Text(
             'Description:',
-            style: TextStyle().copyWith(fontSize: 12.0, color: AppColors.grey4),
+            style: TextStyle().copyWith(fontSize: 12.0, color: AppColors.pink4),
           ),
           const SizedBox(height: 8.0),
           Padding(
@@ -170,7 +170,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
         children: <Widget>[
           Text(
             'Bullet points:',
-            style: TextStyle().copyWith(fontSize: 12.0, color: AppColors.grey4),
+            style: TextStyle().copyWith(fontSize: 12.0, color: AppColors.pink4),
           ),
           const SizedBox(height: 8.0),
           Padding(
@@ -189,7 +189,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
         children: <Widget>[
           Text(
             'Added on:',
-            style: TextStyle().copyWith(fontSize: 12.0, color: AppColors.grey4),
+            style: TextStyle().copyWith(fontSize: 12.0, color: AppColors.pink4),
           ),
           Text(
             DateFormatter.safeFormatSimple(state.todo.addedDate),
@@ -198,7 +198,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
           const SizedBox(height: 24.0),
           Text(
             'Due by:',
-            style: TextStyle().copyWith(fontSize: 12.0, color: AppColors.grey4),
+            style: TextStyle().copyWith(fontSize: 12.0, color: AppColors.pink4),
           ),
           Text(
             DateFormatter.safeFormatSimple(state.todo.dueDate),
@@ -217,7 +217,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
           child: Text(
             'Edit this Todo to add more sections',
             style: TextStyle().copyWith(
-              color: AppColors.grey4,
+              color: AppColors.pink4,
               fontSize: 14.0,
               fontStyle: FontStyle.italic,
             ),
