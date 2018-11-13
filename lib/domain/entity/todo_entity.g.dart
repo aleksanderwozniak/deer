@@ -25,7 +25,7 @@ class _$TodoEntity extends TodoEntity {
   @override
   final String description;
   @override
-  final BuiltList<String> bulletPoints;
+  final BuiltList<BulletEntity> bulletPoints;
   @override
   final TodoStatus status;
   @override
@@ -113,10 +113,10 @@ class TodoEntityBuilder implements Builder<TodoEntity, TodoEntityBuilder> {
   String get description => _$this._description;
   set description(String description) => _$this._description = description;
 
-  ListBuilder<String> _bulletPoints;
-  ListBuilder<String> get bulletPoints =>
-      _$this._bulletPoints ??= new ListBuilder<String>();
-  set bulletPoints(ListBuilder<String> bulletPoints) =>
+  ListBuilder<BulletEntity> _bulletPoints;
+  ListBuilder<BulletEntity> get bulletPoints =>
+      _$this._bulletPoints ??= new ListBuilder<BulletEntity>();
+  set bulletPoints(ListBuilder<BulletEntity> bulletPoints) =>
       _$this._bulletPoints = bulletPoints;
 
   TodoStatus _status;

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:tasking/domain/entity/bullet_entity.dart';
 import 'package:tasking/presentation/shared/resources.dart';
 
 class BulletList extends StatelessWidget {
-  final List<String> entries;
+  // final List<String> entries;
+  final List<BulletEntity> entries;
   final Widget icon;
   final TextStyle entryStyle;
   final bool extraPadding;
@@ -23,15 +25,17 @@ class BulletList extends StatelessWidget {
     );
   }
 
-  Widget _buildTile(String text) {
+  Widget _buildTile(BulletEntity bullet) {
+    final style = bullet.checked ? TextStyle().copyWith(decoration: TextDecoration.lineThrough) : TextStyle();
+
     final children = [
       icon ?? _buildDefaultIcon(),
       const SizedBox(width: 12.0),
       Expanded(
         child: Text(
-          text,
+          bullet.text,
           maxLines: null,
-          style: entryStyle ?? TextStyle(),
+          style: entryStyle ?? style,
         ),
       ),
     ];

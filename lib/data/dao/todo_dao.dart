@@ -31,7 +31,8 @@ class TodoDao {
 
       if (data != null) {
         todosFromDisk = data.map((task) {
-          final todoJson = TodoJson.parse(json.decode(task));
+          final decodedTask = json.decode(task);
+          final todoJson = TodoJson.parse(decodedTask);
           return TodoMapper.fromJson(todoJson);
         }).toList();
       }
@@ -52,7 +53,8 @@ class TodoDao {
     try {
       final jsonList = data.map((todo) {
         final todoJson = TodoMapper.toJson(todo);
-        return json.encode(todoJson.encode());
+        final encodedTodo = todoJson.encode();
+        return json.encode(encodedTodo);
       }).toList();
 
       result = await prefs.setStringList('todos', jsonList);

@@ -55,13 +55,17 @@ class _EditableBulletListState extends State<EditableBulletList> {
 
   Widget _buildRow({@required Tuple2<String, FocusNode> bullet}) {
     final children = [
-      Container(
-        width: 8.0,
-        height: 8.0,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: AppColors.black1,
-        ),
+      // Container(
+      //   width: 8.0,
+      //   height: 8.0,
+      //   decoration: BoxDecoration(
+      //     shape: BoxShape.circle,
+      //     color: AppColors.black1,
+      //   ),
+      // ),
+      Checkbox(
+        value: false,
+        onChanged: (value) {},
       ),
       const SizedBox(width: 12.0),
       Expanded(

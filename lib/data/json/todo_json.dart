@@ -1,11 +1,12 @@
 import 'package:flutter/foundation.dart';
+import 'package:tasking/data/json/bullet_json.dart';
 import 'package:tasking/domain/entity/todo_entity.dart';
 import 'package:tasking/utils/string_utils.dart';
 
 class TodoJson {
   final String name;
   final String description;
-  final List<String> bulletPoints;
+  final List<BulletJson> bulletPoints;
   final TodoStatus status;
   final DateTime addedDate;
   final DateTime dueDate;
@@ -21,29 +22,29 @@ class TodoJson {
         assert(status != null),
         assert(addedDate != null);
 
-  static TodoJson parse(Map<String, dynamic> json) {
+  static TodoJson parse(Map<String, dynamic> inputJson) {
+    final stringBullets = inputJson['bulletPoints'] as List;
+    final List<BulletJson> decodedBullets = stringBullets.map((e) => BulletJson.parse(e)).toList();
+
     return TodoJson(
-      name: json['name'],
-      description: json['description'],
-      bulletPoints: json['bulletPoints'] != null ? _parseList(json['bulletPoints']) : null,
-      status: stringToEnum(json['status'], TodoStatus.values),
-      addedDate: DateTime.parse(json['addedDate']),
-      dueDate: json['dueDate'] != null ? DateTime.parse(json['dueDate']) : null,
+      name: inputJson['name'],
+      description: inputJson['description'],
+      bulletPoints: inputJson['bulletPoints'] != null ? decodedBullets : null,
+      status: stringToEnum(inputJson['status'], TodoStatus.values),
+      addedDate: DateTime.parse(inputJson['addedDate']),
+      dueDate: inputJson['dueDate'] != null ? DateTime.parse(inputJson['dueDate']) : null,
     );
   }
 
   Map encode() {
+    final bullets = bulletPoints.map((json) => json.encode()).toList();
     return {
       'name': name,
       'description': description,
-      'bulletPoints': bulletPoints?.toString() ?? null,
+      'bulletPoints': bullets,
       'status': enumToString(status),
       'addedDate': addedDate.toIso8601String(),
       'dueDate': dueDate?.toIso8601String(),
     };
-  }
-
-  static List<String> _parseList(String codedList) {
-    return codedList.substring(1, codedList.length - 1).split(', ');
   }
 }
