@@ -157,7 +157,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
             style: TextStyle().copyWith(color: AppColors.pink4, fontSize: 12.0),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            padding: const EdgeInsets.only(right: 20.0),
             child: EditableBulletList(
               initialBulletPoints: widget.todo.bulletPoints.toList(),
               onChanged: (bullets) => _bloc.actions.add(UpdateField(key: FieldKey.bulletPoints, value: bullets)),

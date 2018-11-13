@@ -3,7 +3,6 @@ import 'package:tasking/domain/entity/bullet_entity.dart';
 import 'package:tasking/presentation/shared/resources.dart';
 
 class BulletList extends StatelessWidget {
-  // final List<String> entries;
   final List<BulletEntity> entries;
   final Widget icon;
   final TextStyle entryStyle;
@@ -26,7 +25,12 @@ class BulletList extends StatelessWidget {
   }
 
   Widget _buildTile(BulletEntity bullet) {
-    final style = bullet.checked ? TextStyle().copyWith(decoration: TextDecoration.lineThrough) : TextStyle();
+    final style = bullet.checked
+        ? TextStyle().copyWith(
+            color: AppColors.pink3,
+            decoration: TextDecoration.lineThrough,
+          )
+        : TextStyle();
 
     final children = [
       icon ?? _buildDefaultIcon(),
