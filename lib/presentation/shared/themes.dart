@@ -6,11 +6,11 @@ class Themes {
 
   static final ThemeData main = ThemeData(
     primaryColor: AppColors.white1,
-    accentColor: AppColors.grey3,
+    accentColor: AppColors.pink3,
     canvasColor: AppColors.white1,
-    cursorColor: AppColors.grey4,
-    textSelectionColor: AppColors.grey2,
-    textSelectionHandleColor: AppColors.grey3,
+    cursorColor: AppColors.pink4,
+    textSelectionColor: AppColors.pink2,
+    textSelectionHandleColor: AppColors.pink3,
     textTheme: TextTheme(
       subhead: TextStyle().copyWith(fontSize: 14.0),
     ),

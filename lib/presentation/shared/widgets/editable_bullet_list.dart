@@ -1,13 +1,14 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:tasking/domain/entity/bullet_entity.dart';
 import 'package:tasking/presentation/shared/resources.dart';
 import 'package:tuple/tuple.dart';
 
 class EditableBulletList extends StatefulWidget {
   final bool extraPadding;
-  final List<String> initialBulletPoints;
-  final ValueChanged<List<String>> onChanged;
+  final List<BulletEntity> initialBulletPoints;
+  final ValueChanged<List<BulletEntity>> onChanged;
 
   const EditableBulletList({
     Key key,
@@ -22,13 +23,15 @@ class EditableBulletList extends StatefulWidget {
 }
 
 class _EditableBulletListState extends State<EditableBulletList> {
-  BuiltList<Tuple2<String, FocusNode>> _bullets;
+  BuiltList<Tuple2<BulletEntity, FocusNode>> _bullets;
 
   @override
   void initState() {
     super.initState();
 
-    _bullets = BuiltList<Tuple2<String, FocusNode>>(widget.initialBulletPoints.map((text) => Tuple2(text, FocusNode())));
+    _bullets = BuiltList<Tuple2<BulletEntity, FocusNode>>(widget.initialBulletPoints.map(
+      (text) => Tuple2(text, FocusNode()),
+    ));
   }
 
   @override
@@ -42,7 +45,7 @@ class _EditableBulletListState extends State<EditableBulletList> {
       children.add(_buildRow(bullet: _bullets.last));
     } catch (e) {
       if (children.isEmpty) {
-        _bullets = _bullets.rebuild((b) => b..add(Tuple2(' ', FocusNode())));
+        _bullets = _bullets.rebuild((b) => b..add(Tuple2(BulletEntity(text: ' ', checked: false), FocusNode())));
         children.add(_buildRow(bullet: _bullets.last));
       }
     }
@@ -53,24 +56,34 @@ class _EditableBulletListState extends State<EditableBulletList> {
     );
   }
 
-  Widget _buildRow({@required Tuple2<String, FocusNode> bullet}) {
+  Widget _buildRow({@required Tuple2<BulletEntity, FocusNode> bullet}) {
     final children = [
-      Container(
-        width: 8.0,
-        height: 8.0,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: AppColors.black1,
-        ),
+      Checkbox(
+        value: bullet.item1.checked,
+        onChanged: (value) {
+          final id = _bullets.indexOf(bullet);
+          setState(() {
+            final b = _bullets.toBuilder();
+            b[id] = Tuple2(BulletEntity(text: bullet.item1.text, checked: value), bullet.item2);
+            _bullets = b.build();
+          });
+
+          widget.onChanged(_bullets.map((bullet) {
+            final text = bullet.item1.text.trimLeft();
+            final checked = bullet.item1.checked;
+            return BulletEntity(text: text, checked: checked);
+          }).toList());
+        },
       ),
-      const SizedBox(width: 12.0),
+      const SizedBox(width: 8.0),
       Expanded(
         child: _TextField(
           focusNode: bullet.item2,
           maxLines: null,
           inputAction: TextInputAction.next,
           hint: 'Next bullet point',
-          value: ' ${bullet.item1.trimLeft()}',
+          value: ' ${bullet.item1.text.trimLeft()}',
+          checked: bullet.item1.checked,
           onChanged: (value) {
             final id = _bullets.indexOf(bullet);
             if (value.isEmpty) {
@@ -88,17 +101,27 @@ class _EditableBulletListState extends State<EditableBulletList> {
             } else {
               setState(() {
                 final b = _bullets.toBuilder();
-                b[id] = Tuple2(value, bullet.item2);
+                b[id] = Tuple2(BulletEntity(text: value, checked: bullet.item1.checked), bullet.item2);
                 _bullets = b.build();
               });
             }
 
-            widget.onChanged(_bullets.map((bullet) => bullet.item1.trimLeft()).toList());
+            widget.onChanged(_bullets.map((bullet) {
+              final text = bullet.item1.text.trimLeft();
+              final checked = bullet.item1.checked;
+              return BulletEntity(text: text, checked: checked);
+            }).toList());
           },
           onSubmitted: (result) {
             final id = _bullets.indexOf(bullet);
             setState(() {
-              _bullets = _bullets.rebuild((b) => b..insert(id + 1, Tuple2(' ', FocusNode())));
+              _bullets = _bullets.rebuild((b) => b
+                ..insert(
+                    id + 1,
+                    Tuple2(
+                      BulletEntity(text: ' ', checked: false),
+                      FocusNode(),
+                    )));
             });
 
             SchedulerBinding.instance.addPostFrameCallback((_) {
@@ -126,6 +149,7 @@ class _TextField extends StatefulWidget {
   final int maxLines;
   final int maxLength;
   final bool maxLengthEnforced;
+  final bool checked;
   final ValueChanged<String> onChanged;
   final ValueChanged<String> onSubmitted;
 
@@ -139,6 +163,7 @@ class _TextField extends StatefulWidget {
     this.maxLines = 1,
     this.maxLength,
     this.maxLengthEnforced = false,
+    this.checked = false,
     this.onChanged,
     this.onSubmitted,
   }) : super(key: key);
@@ -171,13 +196,14 @@ class _TextFieldState extends State<_TextField> {
         maxLength: widget.maxLength,
         maxLengthEnforced: widget.maxLengthEnforced,
         style: TextStyle().copyWith(
-          color: AppColors.black1,
+          color: widget.checked ? AppColors.pink3 : AppColors.black1,
           fontSize: widget.fontSize,
+          decoration: widget.checked ? TextDecoration.lineThrough : null,
         ),
         decoration: InputDecoration(
           hintText: widget.hint,
           hintStyle: TextStyle().copyWith(
-            color: AppColors.grey3,
+            color: AppColors.pink3,
             fontSize: widget.fontSize,
           ),
         ),
