@@ -60,7 +60,8 @@ class BulletList extends StatelessWidget {
       height: 8.0,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: AppColors.black1,
+        color: AppColors.pink1,
+        border: Border.all(color: AppColors.pink4),
       ),
     );
   }
