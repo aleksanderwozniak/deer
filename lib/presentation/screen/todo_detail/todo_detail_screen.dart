@@ -82,6 +82,8 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
     // Build your root view here
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(color: AppColors.pink4),
+        centerTitle: true,
         title: Text('Todo\'s details'),
       ),
       body: _buildBody(state),
@@ -191,18 +193,40 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
             'Added on:',
             style: TextStyle().copyWith(fontSize: 12.0, color: AppColors.pink4),
           ),
-          Text(
-            DateFormatter.safeFormatSimple(state.todo.addedDate),
-            textAlign: TextAlign.right,
+          const SizedBox(height: 8.0),
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              const SizedBox(width: 20.0),
+              Text(
+                DateFormatter.safeFormatDays(state.todo.addedDate),
+              ),
+              Expanded(child: const SizedBox(width: 20.0)),
+              Text(
+                DateFormatter.safeFormatFull(state.todo.addedDate),
+                textAlign: TextAlign.right,
+              ),
+            ],
           ),
           const SizedBox(height: 24.0),
           Text(
-            'Due by:',
+            'Due on:',
             style: TextStyle().copyWith(fontSize: 12.0, color: AppColors.pink4),
           ),
-          Text(
-            DateFormatter.safeFormatSimple(state.todo.dueDate),
-            textAlign: TextAlign.right,
+          const SizedBox(height: 8.0),
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              const SizedBox(width: 20.0),
+              Text(
+                DateFormatter.safeFormatDays(state.todo.dueDate),
+              ),
+              Expanded(child: const SizedBox(width: 20.0)),
+              Text(
+                DateFormatter.safeFormatFull(state.todo.dueDate),
+                textAlign: TextAlign.right,
+              ),
+            ],
           ),
         ],
       ),
