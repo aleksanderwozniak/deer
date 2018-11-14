@@ -35,11 +35,13 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
     _descriptionFocusNode = FocusNode();
   }
 
-  void _selectDate() async {
+  void _selectDate(TodoEditState state) async {
+    // set initialDate to tomorrow by default
+    final tomorrow = DateTime.now().add(Duration(days: 1));
+
     final date = await showDatePicker(
       context: context,
-      // set initialDate to tomorrow by default
-      initialDate: DateTime.now().add(Duration(days: 1)),
+      initialDate: state.todo.dueDate ?? tomorrow,
       firstDate: DateTime(1970),
       lastDate: DateTime(2050),
     );
@@ -172,19 +174,29 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
   Widget _buildDate(TodoEditState state) {
     return ShadedBox(
       child: GestureDetector(
-        onTap: _selectDate,
+        onTap: () => _selectDate(state),
         behavior: HitTestBehavior.opaque,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Text(
-              'Due by',
-              style: TextStyle().copyWith(color: AppColors.pink4, fontSize: 12.0),
+              'Due on:',
+              style: TextStyle().copyWith(fontSize: 12.0, color: AppColors.pink4),
             ),
-            const SizedBox(height: 12.0),
-            Text(
-              DateFormatter.safeFormatSimple(state.todo.dueDate),
-              textAlign: TextAlign.right,
+            const SizedBox(height: 8.0),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                const SizedBox(width: 20.0),
+                Text(
+                  DateFormatter.safeFormatDays(state.todo.dueDate),
+                ),
+                Expanded(child: const SizedBox(width: 20.0)),
+                Text(
+                  DateFormatter.safeFormatFull(state.todo.dueDate),
+                  textAlign: TextAlign.right,
+                ),
+              ],
             ),
           ],
         ),
