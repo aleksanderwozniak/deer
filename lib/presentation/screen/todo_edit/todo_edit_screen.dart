@@ -251,6 +251,7 @@ class _TextFieldState extends State<_TextField> {
         maxLines: widget.maxLines,
         maxLength: widget.maxLength,
         maxLengthEnforced: widget.maxLengthEnforced,
+        textCapitalization: TextCapitalization.sentences,
         style: TextStyle().copyWith(
           color: AppColors.black1,
           fontSize: widget.fontSize,

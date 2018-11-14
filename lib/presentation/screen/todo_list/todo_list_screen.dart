@@ -195,6 +195,7 @@ class _TodoAdder extends StatelessWidget {
               maxLengthEnforced: true,
               maxLines: null,
               textInputAction: TextInputAction.done,
+              textCapitalization: TextCapitalization.sentences,
               style: TextStyle().copyWith(fontSize: 16.0, color: AppColors.black1),
               decoration: InputDecoration.collapsed(
                 border: UnderlineInputBorder(),
@@ -204,7 +205,7 @@ class _TodoAdder extends StatelessWidget {
                 ),
               ),
               onSubmitted: (_) {
-                onAdd(_buildTask());
+                onAdd(_buildTodo());
                 todoNameController.clear();
               },
             ),
@@ -213,7 +214,7 @@ class _TodoAdder extends StatelessWidget {
           RoundButton(
             text: 'Add',
             onPressed: () {
-              onAdd(_buildTask());
+              onAdd(_buildTodo());
               todoNameController.clear();
             },
           ),
@@ -222,7 +223,7 @@ class _TodoAdder extends StatelessWidget {
     );
   }
 
-  TodoEntity _buildTask() {
+  TodoEntity _buildTodo() {
     return TodoEntity(
       name: todoNameController.text,
       addedDate: DateTime.now(),
