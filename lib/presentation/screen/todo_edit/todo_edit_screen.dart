@@ -75,6 +75,8 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
+          iconTheme: IconThemeData(color: AppColors.pink4),
+          centerTitle: true,
           title: Text('Edit Todo'),
         ),
         body: _buildBody(state),

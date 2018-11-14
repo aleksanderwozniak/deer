@@ -87,13 +87,16 @@ class _TodoListScreenState extends State<TodoListScreen> {
     // Build your root view here
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(color: AppColors.pink4),
         title: Text(widget.title),
-        // TODO: [WIP] go to Archive UI
+        centerTitle: true,
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.archive),
+            icon: Icon(Icons.done_all),
+            tooltip: 'Archive',
             onPressed: _showArchive,
           ),
+          const SizedBox(width: 8.0),
         ],
       ),
       body: SafeArea(top: true, bottom: true, child: _buildBody(state)),
@@ -102,13 +105,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
 
   Widget _buildBody(TodoListState state) {
     return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [AppColors.white1, AppColors.pink1],
-          begin: AlignmentDirectional.topCenter,
-          end: AlignmentDirectional.bottomCenter,
-        ),
-      ),
+      decoration: BoxDecoration(gradient: AppColors.pinkGradient),
       child: Column(
         children: <Widget>[
           Expanded(

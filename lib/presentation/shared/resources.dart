@@ -11,4 +11,10 @@ class AppColors {
   static const Color pink4 = const Color(0xff7f6767);
   static const Color pink5 = const Color(0xff7f4141);
   static const Color black1 = Colors.black;
+
+  static const LinearGradient pinkGradient = LinearGradient(
+    colors: [AppColors.white1, AppColors.pink1],
+    begin: AlignmentDirectional.topCenter,
+    end: AlignmentDirectional.bottomCenter,
+  );
 }

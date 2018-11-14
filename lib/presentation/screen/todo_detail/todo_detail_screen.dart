@@ -82,6 +82,8 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
     // Build your root view here
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(color: AppColors.pink4),
+        centerTitle: true,
         title: Text('Todo\'s details'),
       ),
       body: _buildBody(state),
