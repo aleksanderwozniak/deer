@@ -182,7 +182,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Text(
-              'Due on:',
+              'Due by:',
               style: TextStyle().copyWith(fontSize: 12.0, color: AppColors.pink4),
             ),
             const SizedBox(height: 8.0),
