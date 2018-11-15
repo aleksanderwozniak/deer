@@ -128,9 +128,9 @@ class _TodoListScreenState extends State<TodoListScreen> {
             ),
           ),
           _TodoAdder(
-            todoNameController: _todoNameController,
             onAdd: _addTodo,
             showError: state.todoNameHasError,
+            todoNameController: _todoNameController,
           ),
         ],
       ),
@@ -155,7 +155,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
   }
 }
 
-class _TodoAdder extends StatelessWidget {
+class _TodoAdder extends StatefulWidget {
   final TextEditingController todoNameController;
   final AddTaskCallback onAdd;
   final bool showError;
@@ -171,23 +171,44 @@ class _TodoAdder extends StatelessWidget {
         super(key: key);
 
   @override
+  _TodoAdderState createState() => _TodoAdderState();
+}
+
+class _TodoAdderState extends State<_TodoAdder> {
+  bool _isExpanded;
+  double _height;
+
+  @override
+  void initState() {
+    super.initState();
+    _isExpanded = false;
+    _height = 96;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        boxShadow: [BoxShadow(color: Colors.black54, blurRadius: 10.0)],
-        color: AppColors.white1,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(24.0),
-          topRight: Radius.circular(24.0),
+    final children = [
+      const SizedBox(height: 4.0),
+      GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          setState(() {
+            _isExpanded = !_isExpanded;
+            _height = _isExpanded ? 240 : 96;
+          });
+        },
+        child: Center(
+          child: Icon(_isExpanded ? Icons.arrow_drop_down : Icons.arrow_drop_up),
         ),
       ),
-      padding: const EdgeInsets.only(left: 18.0, right: 16.0, bottom: 16.0, top: 18.0),
-      child: Row(
+      const SizedBox(height: 4.0),
+      Row(
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
+          const SizedBox(width: 18.0),
           Expanded(
             child: TextField(
-              controller: todoNameController,
+              controller: widget.todoNameController,
               maxLength: 50,
               maxLengthEnforced: true,
               maxLines: null,
@@ -196,14 +217,14 @@ class _TodoAdder extends StatelessWidget {
               style: TextStyle().copyWith(fontSize: 16.0, color: AppColors.black1),
               decoration: InputDecoration.collapsed(
                 border: UnderlineInputBorder(),
-                hintText: showError ? 'Name can\'t be empty' : 'New Todo',
+                hintText: widget.showError ? 'Name can\'t be empty' : 'New Todo',
                 hintStyle: TextStyle().copyWith(
-                  color: showError ? AppColors.pink5 : AppColors.pink3,
+                  color: widget.showError ? AppColors.pink5 : AppColors.pink3,
                 ),
               ),
               onSubmitted: (_) {
-                onAdd(_buildTodo());
-                todoNameController.clear();
+                widget.onAdd(_buildTodo());
+                widget.todoNameController.clear();
               },
             ),
           ),
@@ -211,18 +232,47 @@ class _TodoAdder extends StatelessWidget {
           RoundButton(
             text: 'Add',
             onPressed: () {
-              onAdd(_buildTodo());
-              todoNameController.clear();
+              widget.onAdd(_buildTodo());
+              widget.todoNameController.clear();
             },
           ),
+          const SizedBox(width: 16.0),
         ],
+      ),
+      const SizedBox(height: 16.0),
+    ];
+
+    if (_isExpanded) {
+      children.add(Expanded(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 32.0),
+          child: Center(child: Text('lorem ipsum')),
+        ),
+      ));
+    }
+
+    return AnimatedContainer(
+      duration: Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+      height: _height,
+      decoration: BoxDecoration(
+        boxShadow: [BoxShadow(color: Colors.black54, blurRadius: 10.0)],
+        color: AppColors.white1,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(24.0),
+          topRight: Radius.circular(24.0),
+        ),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: children,
       ),
     );
   }
 
   TodoEntity _buildTodo() {
     return TodoEntity(
-      name: todoNameController.text,
+      name: widget.todoNameController.text,
       addedDate: DateTime.now(),
     );
   }
