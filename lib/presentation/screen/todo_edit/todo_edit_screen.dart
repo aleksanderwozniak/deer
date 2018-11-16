@@ -26,6 +26,8 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
   FocusNode _nameFocusNode;
   FocusNode _descriptionFocusNode;
 
+  final List<String> _tags = const ['Work', 'School', 'Personal', 'Hobby', 'Relax'];
+
   @override
   void initState() {
     super.initState();
@@ -95,7 +97,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
               _buildName(state),
               _buildDescription(state),
               _buildBulletPoints(),
-              _buildTags(),
+              _buildTags(state),
               _buildDate(state),
             ],
           ),
@@ -176,7 +178,15 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
     );
   }
 
-  Widget _buildTags() {
+  Widget _buildTags(TodoEditState state) {
+    final children = _tags
+        .map((tag) => _TagActionChip(
+              title: tag,
+              initiallySelected: state.todo.tags.contains(tag),
+              onTap: () => _bloc.actions.add(ToggleTag(tag: tag)),
+            ))
+        .toList();
+
     return ShadedBox(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -192,15 +202,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
               alignment: WrapAlignment.center,
               spacing: 16.0,
               runSpacing: 12.0,
-              children: <Widget>[
-                _TagActionChip(title: 'Tag A', onTap: (_) {}, initiallySelected: false),
-                _TagActionChip(title: 'Tag B', onTap: (_) {}, initiallySelected: true),
-                _TagActionChip(title: 'Tag C', onTap: (_) {}, initiallySelected: false),
-                _TagActionChip(title: 'Tag D', onTap: (_) {}, initiallySelected: false),
-                _TagActionChip(title: 'Tag E', onTap: (_) {}, initiallySelected: false),
-                _TagActionChip(title: 'Tag F', onTap: (_) {}, initiallySelected: false),
-                _TagActionChip(title: 'Tag G', onTap: (_) {}, initiallySelected: false),
-              ],
+              children: children,
             ),
           ),
         ],
@@ -328,7 +330,7 @@ class _TextFieldState extends State<_TextField> {
 class _TagActionChip extends StatefulWidget {
   final String title;
   final bool initiallySelected;
-  final _SelectionCallback onTap;
+  final VoidCallback onTap;
 
   const _TagActionChip({
     Key key,
@@ -361,7 +363,7 @@ class _TagActionChipState extends State<_TagActionChip> {
           _isSelected = !_isSelected;
         });
 
-        widget.onTap(_isSelected);
+        widget.onTap();
       },
       child: AnimatedContainer(
         duration: Duration(milliseconds: 300),
@@ -377,5 +379,3 @@ class _TagActionChipState extends State<_TagActionChip> {
     );
   }
 }
-
-typedef void _SelectionCallback(bool value);

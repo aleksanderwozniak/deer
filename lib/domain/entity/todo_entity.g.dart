@@ -27,6 +27,8 @@ class _$TodoEntity extends TodoEntity {
   @override
   final BuiltList<BulletEntity> bulletPoints;
   @override
+  final BuiltList<String> tags;
+  @override
   final TodoStatus status;
   @override
   final DateTime addedDate;
@@ -40,6 +42,7 @@ class _$TodoEntity extends TodoEntity {
       {this.name,
       this.description,
       this.bulletPoints,
+      this.tags,
       this.status,
       this.addedDate,
       this.dueDate})
@@ -52,6 +55,9 @@ class _$TodoEntity extends TodoEntity {
     }
     if (bulletPoints == null) {
       throw new BuiltValueNullFieldError('TodoEntity', 'bulletPoints');
+    }
+    if (tags == null) {
+      throw new BuiltValueNullFieldError('TodoEntity', 'tags');
     }
     if (status == null) {
       throw new BuiltValueNullFieldError('TodoEntity', 'status');
@@ -72,6 +78,7 @@ class _$TodoEntity extends TodoEntity {
         name == other.name &&
         description == other.description &&
         bulletPoints == other.bulletPoints &&
+        tags == other.tags &&
         status == other.status &&
         addedDate == other.addedDate &&
         dueDate == other.dueDate;
@@ -82,8 +89,10 @@ class _$TodoEntity extends TodoEntity {
     return $jf($jc(
         $jc(
             $jc(
-                $jc($jc($jc(0, name.hashCode), description.hashCode),
-                    bulletPoints.hashCode),
+                $jc(
+                    $jc($jc($jc(0, name.hashCode), description.hashCode),
+                        bulletPoints.hashCode),
+                    tags.hashCode),
                 status.hashCode),
             addedDate.hashCode),
         dueDate.hashCode));
@@ -95,6 +104,7 @@ class _$TodoEntity extends TodoEntity {
           ..add('name', name)
           ..add('description', description)
           ..add('bulletPoints', bulletPoints)
+          ..add('tags', tags)
           ..add('status', status)
           ..add('addedDate', addedDate)
           ..add('dueDate', dueDate))
@@ -119,6 +129,10 @@ class TodoEntityBuilder implements Builder<TodoEntity, TodoEntityBuilder> {
   set bulletPoints(ListBuilder<BulletEntity> bulletPoints) =>
       _$this._bulletPoints = bulletPoints;
 
+  ListBuilder<String> _tags;
+  ListBuilder<String> get tags => _$this._tags ??= new ListBuilder<String>();
+  set tags(ListBuilder<String> tags) => _$this._tags = tags;
+
   TodoStatus _status;
   TodoStatus get status => _$this._status;
   set status(TodoStatus status) => _$this._status = status;
@@ -138,6 +152,7 @@ class TodoEntityBuilder implements Builder<TodoEntity, TodoEntityBuilder> {
       _name = _$v.name;
       _description = _$v.description;
       _bulletPoints = _$v.bulletPoints?.toBuilder();
+      _tags = _$v.tags?.toBuilder();
       _status = _$v.status;
       _addedDate = _$v.addedDate;
       _dueDate = _$v.dueDate;
@@ -168,6 +183,7 @@ class TodoEntityBuilder implements Builder<TodoEntity, TodoEntityBuilder> {
               name: name,
               description: description,
               bulletPoints: bulletPoints.build(),
+              tags: tags.build(),
               status: status,
               addedDate: addedDate,
               dueDate: dueDate);
@@ -176,6 +192,8 @@ class TodoEntityBuilder implements Builder<TodoEntity, TodoEntityBuilder> {
       try {
         _$failedField = 'bulletPoints';
         bulletPoints.build();
+        _$failedField = 'tags';
+        tags.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             'TodoEntity', _$failedField, e.toString());

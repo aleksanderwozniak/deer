@@ -101,8 +101,11 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
       children.add(_buildBulletPoints(state));
     }
 
+    if (state.todo.tags.isNotEmpty) {
+      children.add(_buildTags(state));
+    }
+
     children.addAll([
-      _buildTags(),
       _buildDate(state),
       _buildFooterLabel(),
     ]);
@@ -185,7 +188,9 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
     );
   }
 
-  Widget _buildTags() {
+  Widget _buildTags(TodoDetailState state) {
+    final children = state.todo.tags.map((tag) => _TagChip(title: tag)).toList();
+
     return ShadedBox(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -201,11 +206,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
               alignment: WrapAlignment.center,
               spacing: 16.0,
               runSpacing: 12.0,
-              children: <Widget>[
-                _TagChip(title: 'Tag A'),
-                _TagChip(title: 'Tag C'),
-                _TagChip(title: 'Tag F'),
-              ],
+              children: children,
             ),
           ),
         ],

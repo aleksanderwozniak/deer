@@ -12,6 +12,7 @@ class TodoMapper {
       name: todo.name,
       description: todo.description,
       bulletPoints: todo.bulletPoints.map(bulletToJson).toList(),
+      tags: todo.tags.asList(),
       status: todo.status,
       addedDate: todo.addedDate,
       dueDate: todo.dueDate,
@@ -22,7 +23,8 @@ class TodoMapper {
     return TodoEntity(
       name: json.name,
       description: json.description,
-      bulletPoints: BuiltList(json.bulletPoints.map(bulletFromJson)),
+      bulletPoints: BuiltList<BulletEntity>(json.bulletPoints.map(bulletFromJson)),
+      tags: BuiltList<String>(json.tags),
       status: json.status,
       addedDate: json.addedDate,
       dueDate: json.dueDate,
