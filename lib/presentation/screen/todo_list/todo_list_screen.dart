@@ -1,5 +1,7 @@
+import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:tasking/domain/entity/tags.dart';
 import 'package:tasking/domain/entity/todo_entity.dart';
 import 'package:tasking/presentation/screen/archive_list/archive_list_screen.dart';
 import 'package:tasking/presentation/screen/todo_detail/todo_detail_screen.dart';
@@ -11,6 +13,8 @@ import 'package:tasking/presentation/shared/widgets/tile.dart';
 
 import 'todo_list_bloc.dart';
 import 'todo_list_state.dart';
+
+typedef void _AddTaskCallback(TodoEntity task);
 
 class TodoListScreen extends StatefulWidget {
   final String title;
@@ -176,18 +180,19 @@ class _TodoAdder extends StatefulWidget {
 }
 
 class _TodoAdderState extends State<_TodoAdder> {
-  final double _collapsedHeight = 96;
-  // final double _expandedHeight = 180;
-  final double _expandedHeight = 260;
+  final double _collapsedHeight = 96.0;
+  final double _expandedHeight = 286.0;
 
   bool _isExpanded;
   double _height;
   DateTime _dueDate;
+  List<String> _tags;
 
   @override
   void initState() {
     super.initState();
     _isExpanded = false;
+    _tags = [];
     _height = _collapsedHeight;
   }
 
@@ -206,6 +211,14 @@ class _TodoAdderState extends State<_TodoAdder> {
       setState(() {
         _dueDate = date;
       });
+    }
+  }
+
+  void _toggleTag(String tag) {
+    if (_tags.contains(tag)) {
+      _tags.remove(tag);
+    } else {
+      _tags.add(tag);
     }
   }
 
@@ -306,9 +319,10 @@ class _TodoAdderState extends State<_TodoAdder> {
         child: ListView(
           physics: NeverScrollableScrollPhysics(),
           children: <Widget>[
-            _buildDate(),
             // [WIP] Change for Tags
-            const SizedBox(height: 16.0),
+            const SizedBox(height: 4.0),
+            _buildTags(),
+            const SizedBox(height: 24.0),
             _buildDate(),
           ],
         ),
@@ -355,16 +369,85 @@ class _TodoAdderState extends State<_TodoAdder> {
     );
   }
 
+  Widget _buildTags() {
+    final children = presetTags
+        .map((tag) => _TagActionChip(
+              title: tag,
+              onTap: () => _toggleTag(tag),
+            ))
+        .toList();
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Wrap(
+        alignment: WrapAlignment.center,
+        spacing: 16.0,
+        runSpacing: 12.0,
+        children: children,
+      ),
+    );
+  }
+
   TodoEntity _buildTodo() {
     return TodoEntity(
       name: widget.todoNameController.text,
+      tags: BuiltList(_tags),
       addedDate: DateTime.now(),
       dueDate: _dueDate,
     );
   }
 }
 
-typedef void _AddTaskCallback(TodoEntity task);
+class _TagActionChip extends StatefulWidget {
+  final String title;
+  final VoidCallback onTap;
+
+  const _TagActionChip({
+    Key key,
+    @required this.title,
+    @required this.onTap,
+  })  : assert(title != null),
+        assert(onTap != null),
+        super(key: key);
+
+  @override
+  _TagActionChipState createState() => _TagActionChipState();
+}
+
+class _TagActionChipState extends State<_TagActionChip> {
+  bool _isSelected;
+
+  @override
+  void initState() {
+    super.initState();
+    _isSelected = false;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        setState(() {
+          _isSelected = !_isSelected;
+        });
+
+        widget.onTap();
+      },
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(24.0),
+          border: Border.all(color: AppColors.pink4, width: 0.0),
+          color: _isSelected ? AppColors.pink1 : AppColors.white1,
+        ),
+        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+        child: Text(widget.title),
+      ),
+    );
+  }
+}
 
 // For disabling scroll 'glow'. Wrap the `ListView` with `ScrollConfiguration`
 //----------

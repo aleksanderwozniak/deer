@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tasking/domain/entity/tags.dart';
 import 'package:tasking/domain/entity/todo_entity.dart';
 import 'package:tasking/presentation/screen/todo_edit/todo_edit_actions.dart';
 import 'package:tasking/presentation/screen/todo_edit/todo_edit_bloc.dart';
@@ -25,8 +26,6 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
 
   FocusNode _nameFocusNode;
   FocusNode _descriptionFocusNode;
-
-  final List<String> _tags = const ['Work', 'School', 'Personal', 'Hobby', 'Relax'];
 
   @override
   void initState() {
@@ -179,7 +178,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
   }
 
   Widget _buildTags(TodoEditState state) {
-    final children = _tags
+    final children = presetTags
         .map((tag) => _TagActionChip(
               title: tag,
               initiallySelected: state.todo.tags.contains(tag),
