@@ -46,7 +46,9 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
       lastDate: DateTime(2050),
     );
 
-    _bloc.actions.add(UpdateField(key: FieldKey.dueDate, value: date));
+    if (date != null) {
+      _bloc.actions.add(UpdateField(key: FieldKey.dueDate, value: date));
+    }
   }
 
   void _submit(TodoEditState state) {
@@ -182,7 +184,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Text(
-              'Due on:',
+              'Due by:',
               style: TextStyle().copyWith(fontSize: 12.0, color: AppColors.pink4),
             ),
             const SizedBox(height: 8.0),

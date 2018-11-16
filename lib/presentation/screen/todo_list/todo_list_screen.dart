@@ -4,6 +4,7 @@ import 'package:tasking/domain/entity/todo_entity.dart';
 import 'package:tasking/presentation/screen/archive_list/archive_list_screen.dart';
 import 'package:tasking/presentation/screen/todo_detail/todo_detail_screen.dart';
 import 'package:tasking/presentation/screen/todo_list/todo_list_actions.dart';
+import 'package:tasking/presentation/shared/helper/date_formatter.dart';
 import 'package:tasking/presentation/shared/resources.dart';
 import 'package:tasking/presentation/shared/widgets/buttons.dart';
 import 'package:tasking/presentation/shared/widgets/tile.dart';
@@ -128,9 +129,9 @@ class _TodoListScreenState extends State<TodoListScreen> {
             ),
           ),
           _TodoAdder(
-            todoNameController: _todoNameController,
             onAdd: _addTodo,
             showError: state.todoNameHasError,
+            todoNameController: _todoNameController,
           ),
         ],
       ),
@@ -155,7 +156,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
   }
 }
 
-class _TodoAdder extends StatelessWidget {
+class _TodoAdder extends StatefulWidget {
   final TextEditingController todoNameController;
   final AddTaskCallback onAdd;
   final bool showError;
@@ -171,8 +172,61 @@ class _TodoAdder extends StatelessWidget {
         super(key: key);
 
   @override
+  _TodoAdderState createState() => _TodoAdderState();
+}
+
+class _TodoAdderState extends State<_TodoAdder> {
+  final double _collapsedHeight = 96;
+  final double _expandedHeight = 180;
+  // final double _expandedHeight = 240;
+
+  bool _isExpanded;
+  double _height;
+  DateTime _dueDate;
+
+  @override
+  void initState() {
+    super.initState();
+    _isExpanded = false;
+    _height = _collapsedHeight;
+  }
+
+  void _selectDate() async {
+    // set initialDate to tomorrow by default
+    final tomorrow = DateTime.now().add(Duration(days: 1));
+
+    final date = await showDatePicker(
+      context: context,
+      initialDate: _dueDate ?? tomorrow,
+      firstDate: DateTime(1970),
+      lastDate: DateTime(2050),
+    );
+
+    if (date != null) {
+      setState(() {
+        _dueDate = date;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
+    final children = [
+      const SizedBox(height: 4.0),
+      _buildHeader(),
+      const SizedBox(height: 4.0),
+      _buildAdder(),
+      const SizedBox(height: 16.0),
+    ];
+
+    if (_isExpanded) {
+      children.add(_buildBody());
+    }
+
+    return AnimatedContainer(
+      duration: Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+      height: _height,
       decoration: BoxDecoration(
         boxShadow: [BoxShadow(color: Colors.black54, blurRadius: 10.0)],
         color: AppColors.white1,
@@ -181,49 +235,119 @@ class _TodoAdder extends StatelessWidget {
           topRight: Radius.circular(24.0),
         ),
       ),
-      padding: const EdgeInsets.only(left: 18.0, right: 16.0, bottom: 16.0, top: 18.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          Expanded(
-            child: TextField(
-              controller: todoNameController,
-              maxLength: 50,
-              maxLengthEnforced: true,
-              maxLines: null,
-              textInputAction: TextInputAction.done,
-              textCapitalization: TextCapitalization.sentences,
-              style: TextStyle().copyWith(fontSize: 16.0, color: AppColors.black1),
-              decoration: InputDecoration.collapsed(
-                border: UnderlineInputBorder(),
-                hintText: showError ? 'Name can\'t be empty' : 'New Todo',
-                hintStyle: TextStyle().copyWith(
-                  color: showError ? AppColors.pink5 : AppColors.pink3,
-                ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: children,
+      ),
+    );
+  }
+
+  Widget _buildHeader() {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        setState(() {
+          _isExpanded = !_isExpanded;
+          _height = _isExpanded ? _expandedHeight : _collapsedHeight;
+        });
+      },
+      child: Center(
+        child: Icon(_isExpanded ? Icons.arrow_drop_down : Icons.arrow_drop_up),
+      ),
+    );
+  }
+
+  Widget _buildAdder() {
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      children: <Widget>[
+        const SizedBox(width: 18.0),
+        Expanded(
+          child: TextField(
+            controller: widget.todoNameController,
+            maxLength: 50,
+            maxLengthEnforced: true,
+            maxLines: null,
+            textInputAction: TextInputAction.done,
+            textCapitalization: TextCapitalization.sentences,
+            style: TextStyle().copyWith(fontSize: 16.0, color: AppColors.black1),
+            decoration: InputDecoration.collapsed(
+              border: UnderlineInputBorder(),
+              hintText: widget.showError ? 'Name can\'t be empty' : 'New Todo',
+              hintStyle: TextStyle().copyWith(
+                color: widget.showError ? AppColors.pink5 : AppColors.pink3,
               ),
-              onSubmitted: (_) {
-                onAdd(_buildTodo());
-                todoNameController.clear();
-              },
             ),
-          ),
-          const SizedBox(width: 16.0),
-          RoundButton(
-            text: 'Add',
-            onPressed: () {
-              onAdd(_buildTodo());
-              todoNameController.clear();
+            onSubmitted: (_) {
+              widget.onAdd(_buildTodo());
+              widget.todoNameController.clear();
             },
           ),
-        ],
+        ),
+        const SizedBox(width: 16.0),
+        RoundButton(
+          text: 'Add',
+          onPressed: () {
+            widget.onAdd(_buildTodo());
+            widget.todoNameController.clear();
+          },
+        ),
+        const SizedBox(width: 16.0),
+      ],
+    );
+  }
+
+  Widget _buildBody() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: _buildDate(),
+    );
+  }
+
+  Widget _buildDate() {
+    return GestureDetector(
+      onTap: _selectDate,
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(24.0),
+          border: Border.all(color: AppColors.pink4),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Text(
+              'Due by:',
+              style: TextStyle().copyWith(fontSize: 12.0, color: AppColors.pink4),
+            ),
+            const SizedBox(height: 8.0),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                const SizedBox(width: 20.0),
+                Text(
+                  DateFormatter.safeFormatDays(_dueDate),
+                ),
+                Expanded(child: const SizedBox(width: 20.0)),
+                Text(
+                  DateFormatter.safeFormatFull(_dueDate),
+                  textAlign: TextAlign.right,
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
 
   TodoEntity _buildTodo() {
     return TodoEntity(
-      name: todoNameController.text,
+      name: widget.todoNameController.text,
       addedDate: DateTime.now(),
+      dueDate: _dueDate,
     );
   }
 }

@@ -210,7 +210,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
           ),
           const SizedBox(height: 24.0),
           Text(
-            'Due on:',
+            'Due by:',
             style: TextStyle().copyWith(fontSize: 12.0, color: AppColors.pink4),
           ),
           const SizedBox(height: 8.0),
