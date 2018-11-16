@@ -40,7 +40,7 @@ class _TagActionChipState extends State<TagActionChip> {
         widget.onTap();
       },
       child: AnimatedContainer(
-        duration: Duration(milliseconds: 300),
+        duration: Duration(milliseconds: 200),
         curve: Curves.easeOut,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(24.0),

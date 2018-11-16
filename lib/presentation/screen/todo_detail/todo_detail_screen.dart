@@ -97,12 +97,12 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
       children.add(_buildDescription(state));
     }
 
-    if (state.todo.bulletPoints.isNotEmpty) {
-      children.add(_buildBulletPoints(state));
-    }
-
     if (state.todo.tags.isNotEmpty) {
       children.add(_buildTags(state));
+    }
+
+    if (state.todo.bulletPoints.isNotEmpty) {
+      children.add(_buildBulletPoints(state));
     }
 
     children.addAll([
@@ -199,7 +199,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
             'Tags',
             style: TextStyle().copyWith(color: AppColors.pink4, fontSize: 12.0),
           ),
-          const SizedBox(height: 8.0),
+          const SizedBox(height: 4.0),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Wrap(
@@ -235,7 +235,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              const SizedBox(width: 20.0),
+              const SizedBox(width: 8.0),
               Expanded(
                 child: Text(
                   DateFormatter.safeFormatFull(state.todo.addedDate),
@@ -261,7 +261,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              const SizedBox(width: 20.0),
+              const SizedBox(width: 8.0),
               Expanded(
                 child: Text(
                   DateFormatter.safeFormatFull(state.todo.dueDate),

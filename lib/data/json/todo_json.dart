@@ -27,7 +27,7 @@ class TodoJson {
   static TodoJson parse(Map<String, dynamic> inputJson) {
     final stringBullets = inputJson['bulletPoints'] as List;
     final List<BulletJson> decodedBullets = stringBullets.map((e) => BulletJson.parse(e)).toList();
-    final tags = (inputJson['tags'] as List).cast<String>();
+    final tags = (inputJson['tags'] as List)?.cast<String>();
 
     return TodoJson(
       name: inputJson['name'],

@@ -48,9 +48,10 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
       lastDate: DateTime(2050),
     );
 
-    if (date != null) {
-      _bloc.actions.add(UpdateField(key: FieldKey.dueDate, value: date));
-    }
+    // Null check prevents user from resetting dueDate.
+    // I've decided the reset is a wanted feature.
+    // if (date != null) {
+    _bloc.actions.add(UpdateField(key: FieldKey.dueDate, value: date));
   }
 
   void _submit(TodoEditState state) {
@@ -96,8 +97,8 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
             children: <Widget>[
               _buildName(state),
               _buildDescription(state),
-              _buildBulletPoints(),
               _buildTags(state),
+              _buildBulletPoints(),
               _buildDate(state),
             ],
           ),
@@ -195,7 +196,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
             'Tags',
             style: TextStyle().copyWith(color: AppColors.pink4, fontSize: 12.0),
           ),
-          const SizedBox(height: 8.0),
+          const SizedBox(height: 4.0),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Wrap(
@@ -234,7 +235,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                const SizedBox(width: 20.0),
+                const SizedBox(width: 8.0),
                 Expanded(
                   child: Text(
                     DateFormatter.safeFormatFull(state.todo.dueDate),

@@ -56,14 +56,20 @@ class _TodoListScreenState extends State<TodoListScreen> {
   void _addTodo(TodoEntity todo) {
     _bloc.actions.add(PerformOnTodo(operation: Operation.add, todo: todo));
 
-    // scrolls to the bottom of TodoList
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      _todoListScrollController.animateTo(
-        _todoListScrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
-    });
+    // [WIP] A workaround for `todoNameHasError`
+    if (todo.name.trim().isNotEmpty) {
+      // Because sometimes last item is skipped (see below)
+      final lastItemExtent = 60.0;
+
+      // Auto-scrolls to bottom of the ListView
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        _todoListScrollController.animateTo(
+          _todoListScrollController.position.maxScrollExtent + lastItemExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      });
+    }
   }
 
   void _showDetails(TodoEntity todo) {
@@ -183,7 +189,7 @@ class _TodoAdder extends StatefulWidget {
 
 class _TodoAdderState extends State<_TodoAdder> {
   final double _collapsedHeight = 96.0;
-  final double _expandedHeight = 286.0;
+  final double _expandedHeight = 294.0;
 
   bool _isExpanded;
   double _height;
@@ -209,11 +215,12 @@ class _TodoAdderState extends State<_TodoAdder> {
       lastDate: DateTime(2050),
     );
 
-    if (date != null) {
-      setState(() {
-        _dueDate = date;
-      });
-    }
+    // Null check prevents user from resetting dueDate.
+    // I've decided the reset is a wanted feature.
+    // if (date != null) {
+    setState(() {
+      _dueDate = date;
+    });
   }
 
   void _toggleTag(String tag) {
@@ -232,6 +239,10 @@ class _TodoAdderState extends State<_TodoAdder> {
       const SizedBox(height: 4.0),
       _buildAdder(),
       const SizedBox(height: 16.0),
+      Container(
+        color: AppColors.pink4,
+        height: 1.0,
+      ),
     ];
 
     if (_isExpanded) {
@@ -293,10 +304,6 @@ class _TodoAdderState extends State<_TodoAdder> {
                 color: widget.showError ? AppColors.pink5 : AppColors.pink3,
               ),
             ),
-            onSubmitted: (_) {
-              widget.onAdd(_buildTodo());
-              widget.todoNameController.clear();
-            },
           ),
         ),
         const SizedBox(width: 16.0),
@@ -321,9 +328,9 @@ class _TodoAdderState extends State<_TodoAdder> {
         child: ListView(
           physics: NeverScrollableScrollPhysics(),
           children: <Widget>[
-            const SizedBox(height: 4.0),
+            const SizedBox(height: 18.0),
             _buildTags(),
-            const SizedBox(height: 24.0),
+            const SizedBox(height: 18.0),
             _buildDate(),
           ],
         ),
@@ -354,10 +361,14 @@ class _TodoAdderState extends State<_TodoAdder> {
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
                 const SizedBox(width: 20.0),
-                Text(
-                  DateFormatter.safeFormatDays(_dueDate),
+                Expanded(
+                  child: Text(
+                    DateFormatter.safeFormatDays(_dueDate),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
-                Expanded(child: const SizedBox(width: 20.0)),
+                const SizedBox(width: 8.0),
                 Text(
                   DateFormatter.safeFormatFull(_dueDate),
                   textAlign: TextAlign.right,
@@ -374,6 +385,7 @@ class _TodoAdderState extends State<_TodoAdder> {
     final children = presetTags
         .map((tag) => TagActionChip(
               title: tag,
+              initiallySelected: _tags.contains(tag),
               onTap: () => _toggleTag(tag),
             ))
         .toList();
