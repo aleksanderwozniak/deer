@@ -97,6 +97,10 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
       children.add(_buildDescription(state));
     }
 
+    if (state.todo.tags.isNotEmpty) {
+      children.add(_buildTags(state));
+    }
+
     if (state.todo.bulletPoints.isNotEmpty) {
       children.add(_buildBulletPoints(state));
     }
@@ -184,6 +188,32 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
     );
   }
 
+  Widget _buildTags(TodoDetailState state) {
+    final children = state.todo.tags.map((tag) => _TagChip(title: tag)).toList();
+
+    return ShadedBox(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Text(
+            'Tags',
+            style: TextStyle().copyWith(color: AppColors.pink4, fontSize: 12.0),
+          ),
+          const SizedBox(height: 4.0),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Wrap(
+              alignment: WrapAlignment.center,
+              spacing: 16.0,
+              runSpacing: 12.0,
+              children: children,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildDate(TodoDetailState state) {
     return ShadedBox(
       child: Column(
@@ -198,13 +228,19 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
               const SizedBox(width: 20.0),
-              Text(
-                DateFormatter.safeFormatDays(state.todo.addedDate),
+              Expanded(
+                child: Text(
+                  DateFormatter.safeFormatDays(state.todo.addedDate),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
-              Expanded(child: const SizedBox(width: 20.0)),
-              Text(
-                DateFormatter.safeFormatFull(state.todo.addedDate),
-                textAlign: TextAlign.right,
+              const SizedBox(width: 8.0),
+              Expanded(
+                child: Text(
+                  DateFormatter.safeFormatFull(state.todo.addedDate),
+                  textAlign: TextAlign.right,
+                ),
               ),
             ],
           ),
@@ -218,13 +254,19 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
               const SizedBox(width: 20.0),
-              Text(
-                DateFormatter.safeFormatDays(state.todo.dueDate),
+              Expanded(
+                child: Text(
+                  DateFormatter.safeFormatDays(state.todo.dueDate),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
-              Expanded(child: const SizedBox(width: 20.0)),
-              Text(
-                DateFormatter.safeFormatFull(state.todo.dueDate),
-                textAlign: TextAlign.right,
+              const SizedBox(width: 8.0),
+              Expanded(
+                child: Text(
+                  DateFormatter.safeFormatFull(state.todo.dueDate),
+                  textAlign: TextAlign.right,
+                ),
               ),
             ],
           ),
@@ -266,5 +308,28 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
         ],
       );
     }
+  }
+}
+
+class _TagChip extends StatelessWidget {
+  final String title;
+
+  const _TagChip({
+    Key key,
+    @required this.title,
+  })  : assert(title != null),
+        super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(24.0),
+        border: Border.all(color: AppColors.pink4, width: 0.5),
+        color: AppColors.pink1,
+      ),
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      child: Text(title),
+    );
   }
 }

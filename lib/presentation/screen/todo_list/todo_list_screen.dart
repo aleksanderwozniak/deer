@@ -1,5 +1,7 @@
+import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:tasking/domain/entity/tags.dart';
 import 'package:tasking/domain/entity/todo_entity.dart';
 import 'package:tasking/presentation/screen/archive_list/archive_list_screen.dart';
 import 'package:tasking/presentation/screen/todo_detail/todo_detail_screen.dart';
@@ -7,10 +9,13 @@ import 'package:tasking/presentation/screen/todo_list/todo_list_actions.dart';
 import 'package:tasking/presentation/shared/helper/date_formatter.dart';
 import 'package:tasking/presentation/shared/resources.dart';
 import 'package:tasking/presentation/shared/widgets/buttons.dart';
+import 'package:tasking/presentation/shared/widgets/tag_action_chip.dart';
 import 'package:tasking/presentation/shared/widgets/tile.dart';
 
 import 'todo_list_bloc.dart';
 import 'todo_list_state.dart';
+
+typedef void _AddTaskCallback(TodoEntity task);
 
 class TodoListScreen extends StatefulWidget {
   final String title;
@@ -51,14 +56,20 @@ class _TodoListScreenState extends State<TodoListScreen> {
   void _addTodo(TodoEntity todo) {
     _bloc.actions.add(PerformOnTodo(operation: Operation.add, todo: todo));
 
-    // scrolls to the bottom of TodoList
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      _todoListScrollController.animateTo(
-        _todoListScrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
-    });
+    // [WIP] A workaround for `todoNameHasError`
+    if (todo.name.trim().isNotEmpty) {
+      // Because sometimes last item is skipped (see below)
+      final lastItemExtent = 60.0;
+
+      // Auto-scrolls to bottom of the ListView
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        _todoListScrollController.animateTo(
+          _todoListScrollController.position.maxScrollExtent + lastItemExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      });
+    }
   }
 
   void _showDetails(TodoEntity todo) {
@@ -156,9 +167,10 @@ class _TodoListScreenState extends State<TodoListScreen> {
   }
 }
 
+// TODO: Expanded TodoAdder might overflow vertically, esp. w/ visible keyboard
 class _TodoAdder extends StatefulWidget {
   final TextEditingController todoNameController;
-  final AddTaskCallback onAdd;
+  final _AddTaskCallback onAdd;
   final bool showError;
 
   const _TodoAdder({
@@ -176,18 +188,19 @@ class _TodoAdder extends StatefulWidget {
 }
 
 class _TodoAdderState extends State<_TodoAdder> {
-  final double _collapsedHeight = 96;
-  final double _expandedHeight = 180;
-  // final double _expandedHeight = 240;
+  final double _collapsedHeight = 96.0;
+  final double _expandedHeight = 294.0;
 
   bool _isExpanded;
   double _height;
   DateTime _dueDate;
+  List<String> _tags;
 
   @override
   void initState() {
     super.initState();
     _isExpanded = false;
+    _tags = [];
     _height = _collapsedHeight;
   }
 
@@ -202,10 +215,19 @@ class _TodoAdderState extends State<_TodoAdder> {
       lastDate: DateTime(2050),
     );
 
-    if (date != null) {
-      setState(() {
-        _dueDate = date;
-      });
+    // Null check prevents user from resetting dueDate.
+    // I've decided the reset is a wanted feature.
+    // if (date != null) {
+    setState(() {
+      _dueDate = date;
+    });
+  }
+
+  void _toggleTag(String tag) {
+    if (_tags.contains(tag)) {
+      _tags.remove(tag);
+    } else {
+      _tags.add(tag);
     }
   }
 
@@ -217,6 +239,10 @@ class _TodoAdderState extends State<_TodoAdder> {
       const SizedBox(height: 4.0),
       _buildAdder(),
       const SizedBox(height: 16.0),
+      Container(
+        color: AppColors.pink4,
+        height: 1.0,
+      ),
     ];
 
     if (_isExpanded) {
@@ -278,10 +304,6 @@ class _TodoAdderState extends State<_TodoAdder> {
                 color: widget.showError ? AppColors.pink5 : AppColors.pink3,
               ),
             ),
-            onSubmitted: (_) {
-              widget.onAdd(_buildTodo());
-              widget.todoNameController.clear();
-            },
           ),
         ),
         const SizedBox(width: 16.0),
@@ -298,9 +320,21 @@ class _TodoAdderState extends State<_TodoAdder> {
   }
 
   Widget _buildBody() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: _buildDate(),
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        // ListView disables overflow error. If scrolling becomes desired, remove `NeverScrollableScrollPhysics`
+        // NOTE: overflow error happens just during animation; also it is not visible on Release build.
+        child: ListView(
+          physics: NeverScrollableScrollPhysics(),
+          children: <Widget>[
+            const SizedBox(height: 18.0),
+            _buildTags(),
+            const SizedBox(height: 18.0),
+            _buildDate(),
+          ],
+        ),
+      ),
     );
   }
 
@@ -327,10 +361,14 @@ class _TodoAdderState extends State<_TodoAdder> {
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
                 const SizedBox(width: 20.0),
-                Text(
-                  DateFormatter.safeFormatDays(_dueDate),
+                Expanded(
+                  child: Text(
+                    DateFormatter.safeFormatDays(_dueDate),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
-                Expanded(child: const SizedBox(width: 20.0)),
+                const SizedBox(width: 8.0),
                 Text(
                   DateFormatter.safeFormatFull(_dueDate),
                   textAlign: TextAlign.right,
@@ -343,13 +381,43 @@ class _TodoAdderState extends State<_TodoAdder> {
     );
   }
 
+  Widget _buildTags() {
+    final children = presetTags
+        .map((tag) => TagActionChip(
+              title: tag,
+              initiallySelected: _tags.contains(tag),
+              onTap: () => _toggleTag(tag),
+            ))
+        .toList();
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Wrap(
+        alignment: WrapAlignment.center,
+        spacing: 16.0,
+        runSpacing: 12.0,
+        children: children,
+      ),
+    );
+  }
+
   TodoEntity _buildTodo() {
+    _tags.sort();
+
     return TodoEntity(
       name: widget.todoNameController.text,
+      tags: BuiltList(_tags),
       addedDate: DateTime.now(),
       dueDate: _dueDate,
     );
   }
 }
 
-typedef void AddTaskCallback(TodoEntity task);
+// For disabling scroll 'glow'. Wrap the `ListView` with `ScrollConfiguration`
+//----------
+// class _NoHighlightBehavior extends ScrollBehavior {
+//   @override
+//   Widget buildViewportChrome(BuildContext context, Widget child, AxisDirection axisDirection) {
+//     return child;
+//   }
+// }

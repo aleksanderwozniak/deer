@@ -46,7 +46,7 @@ class DateFormatter {
       }
 
       if (daysAbs < 7) {
-        return DateFormat("'Last' EEEE ($days 'days ago')").format(date);
+        return DateFormat("'Last' EEEE ($daysAbs 'days ago')").format(date);
       }
 
       if (daysAbs < 30) {

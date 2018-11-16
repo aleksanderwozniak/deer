@@ -10,6 +10,7 @@ abstract class TodoEntity implements Built<TodoEntity, TodoEntityBuilder> {
   String get name;
   String get description;
   BuiltList<BulletEntity> get bulletPoints;
+  BuiltList<String> get tags;
   TodoStatus get status;
   @nullable
   DateTime get addedDate;
@@ -21,6 +22,7 @@ abstract class TodoEntity implements Built<TodoEntity, TodoEntityBuilder> {
     String name = '',
     String description = '',
     BuiltList<BulletEntity> bulletPoints,
+    BuiltList<String> tags,
     TodoStatus status = TodoStatus.unassigned,
     DateTime addedDate,
     DateTime dueDate,
@@ -29,6 +31,7 @@ abstract class TodoEntity implements Built<TodoEntity, TodoEntityBuilder> {
         name: name,
         description: description,
         bulletPoints: bulletPoints ?? BuiltList(),
+        tags: tags ?? BuiltList(),
         status: status,
         addedDate: addedDate,
         dueDate: dueDate,

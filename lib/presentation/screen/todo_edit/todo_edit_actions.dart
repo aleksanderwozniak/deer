@@ -9,3 +9,11 @@ class UpdateField {
 }
 
 enum FieldKey { name, description, bulletPoints, dueDate }
+
+class ToggleTag {
+  final String tag;
+
+  const ToggleTag({
+    this.tag,
+  });
+}

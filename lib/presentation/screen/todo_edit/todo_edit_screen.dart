@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tasking/domain/entity/tags.dart';
 import 'package:tasking/domain/entity/todo_entity.dart';
 import 'package:tasking/presentation/screen/todo_edit/todo_edit_actions.dart';
 import 'package:tasking/presentation/screen/todo_edit/todo_edit_bloc.dart';
@@ -8,6 +9,7 @@ import 'package:tasking/presentation/shared/resources.dart';
 import 'package:tasking/presentation/shared/widgets/box.dart';
 import 'package:tasking/presentation/shared/widgets/buttons.dart';
 import 'package:tasking/presentation/shared/widgets/editable_bullet_list.dart';
+import 'package:tasking/presentation/shared/widgets/tag_action_chip.dart';
 
 class TodoEditScreen extends StatefulWidget {
   final TodoEntity todo;
@@ -46,9 +48,10 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
       lastDate: DateTime(2050),
     );
 
-    if (date != null) {
-      _bloc.actions.add(UpdateField(key: FieldKey.dueDate, value: date));
-    }
+    // Null check prevents user from resetting dueDate.
+    // I've decided the reset is a wanted feature.
+    // if (date != null) {
+    _bloc.actions.add(UpdateField(key: FieldKey.dueDate, value: date));
   }
 
   void _submit(TodoEditState state) {
@@ -94,6 +97,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
             children: <Widget>[
               _buildName(state),
               _buildDescription(state),
+              _buildTags(state),
               _buildBulletPoints(),
               _buildDate(state),
             ],
@@ -175,6 +179,38 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
     );
   }
 
+  Widget _buildTags(TodoEditState state) {
+    final children = presetTags
+        .map((tag) => TagActionChip(
+              title: tag,
+              initiallySelected: state.todo.tags.contains(tag),
+              onTap: () => _bloc.actions.add(ToggleTag(tag: tag)),
+            ))
+        .toList();
+
+    return ShadedBox(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Text(
+            'Tags',
+            style: TextStyle().copyWith(color: AppColors.pink4, fontSize: 12.0),
+          ),
+          const SizedBox(height: 4.0),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Wrap(
+              alignment: WrapAlignment.center,
+              spacing: 16.0,
+              runSpacing: 12.0,
+              children: children,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildDate(TodoEditState state) {
     return ShadedBox(
       child: GestureDetector(
@@ -192,13 +228,19 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
                 const SizedBox(width: 20.0),
-                Text(
-                  DateFormatter.safeFormatDays(state.todo.dueDate),
+                Expanded(
+                  child: Text(
+                    DateFormatter.safeFormatDays(state.todo.dueDate),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
-                Expanded(child: const SizedBox(width: 20.0)),
-                Text(
-                  DateFormatter.safeFormatFull(state.todo.dueDate),
-                  textAlign: TextAlign.right,
+                const SizedBox(width: 8.0),
+                Expanded(
+                  child: Text(
+                    DateFormatter.safeFormatFull(state.todo.dueDate),
+                    textAlign: TextAlign.right,
+                  ),
                 ),
               ],
             ),
