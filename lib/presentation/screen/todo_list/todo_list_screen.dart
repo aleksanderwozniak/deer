@@ -158,7 +158,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
 
 class _TodoAdder extends StatefulWidget {
   final TextEditingController todoNameController;
-  final AddTaskCallback onAdd;
+  final _AddTaskCallback onAdd;
   final bool showError;
 
   const _TodoAdder({
@@ -177,8 +177,8 @@ class _TodoAdder extends StatefulWidget {
 
 class _TodoAdderState extends State<_TodoAdder> {
   final double _collapsedHeight = 96;
-  final double _expandedHeight = 180;
-  // final double _expandedHeight = 240;
+  // final double _expandedHeight = 180;
+  final double _expandedHeight = 260;
 
   bool _isExpanded;
   double _height;
@@ -298,9 +298,21 @@ class _TodoAdderState extends State<_TodoAdder> {
   }
 
   Widget _buildBody() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: _buildDate(),
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        // ListView disables overflow error. If scrolling becomes desired, remove `NeverScrollableScrollPhysics`
+        // NOTE: overflow error happens just during animation; also it is not visible on Release build.
+        child: ListView(
+          physics: NeverScrollableScrollPhysics(),
+          children: <Widget>[
+            _buildDate(),
+            // [WIP] Change for Tags
+            const SizedBox(height: 16.0),
+            _buildDate(),
+          ],
+        ),
+      ),
     );
   }
 
@@ -352,4 +364,13 @@ class _TodoAdderState extends State<_TodoAdder> {
   }
 }
 
-typedef void AddTaskCallback(TodoEntity task);
+typedef void _AddTaskCallback(TodoEntity task);
+
+// For disabling scroll 'glow'. Wrap the `ListView` with `ScrollConfiguration`
+//----------
+// class _NoHighlightBehavior extends ScrollBehavior {
+//   @override
+//   Widget buildViewportChrome(BuildContext context, Widget child, AxisDirection axisDirection) {
+//     return child;
+//   }
+// }

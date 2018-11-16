@@ -95,6 +95,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
               _buildName(state),
               _buildDescription(state),
               _buildBulletPoints(),
+              _buildTags(),
               _buildDate(state),
             ],
           ),
@@ -170,6 +171,38 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
             ),
           ),
           const SizedBox(height: 12.0),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTags() {
+    return ShadedBox(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Text(
+            'Tags',
+            style: TextStyle().copyWith(color: AppColors.pink4, fontSize: 12.0),
+          ),
+          const SizedBox(height: 8.0),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Wrap(
+              alignment: WrapAlignment.center,
+              spacing: 16.0,
+              runSpacing: 12.0,
+              children: <Widget>[
+                _TagActionChip(title: 'Tag A', onTap: (_) {}, initiallySelected: false),
+                _TagActionChip(title: 'Tag B', onTap: (_) {}, initiallySelected: true),
+                _TagActionChip(title: 'Tag C', onTap: (_) {}, initiallySelected: false),
+                _TagActionChip(title: 'Tag D', onTap: (_) {}, initiallySelected: false),
+                _TagActionChip(title: 'Tag E', onTap: (_) {}, initiallySelected: false),
+                _TagActionChip(title: 'Tag F', onTap: (_) {}, initiallySelected: false),
+                _TagActionChip(title: 'Tag G', onTap: (_) {}, initiallySelected: false),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -285,3 +318,58 @@ class _TextFieldState extends State<_TextField> {
     );
   }
 }
+
+class _TagActionChip extends StatefulWidget {
+  final String title;
+  final bool initiallySelected;
+  final _SelectionCallback onTap;
+
+  const _TagActionChip({
+    Key key,
+    @required this.title,
+    @required this.onTap,
+    this.initiallySelected = false,
+  })  : assert(title != null),
+        assert(onTap != null),
+        super(key: key);
+
+  @override
+  _TagActionChipState createState() => _TagActionChipState();
+}
+
+class _TagActionChipState extends State<_TagActionChip> {
+  bool _isSelected;
+
+  @override
+  void initState() {
+    super.initState();
+    _isSelected = widget.initiallySelected;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        setState(() {
+          _isSelected = !_isSelected;
+        });
+
+        widget.onTap(_isSelected);
+      },
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(24.0),
+          border: Border.all(color: AppColors.pink4, width: 0.0),
+          color: _isSelected ? AppColors.pink1 : AppColors.white1,
+        ),
+        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+        child: Text(widget.title),
+      ),
+    );
+  }
+}
+
+typedef void _SelectionCallback(bool value);

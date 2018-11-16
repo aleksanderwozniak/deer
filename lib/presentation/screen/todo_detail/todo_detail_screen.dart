@@ -102,6 +102,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
     }
 
     children.addAll([
+      _buildTags(),
       _buildDate(state),
       _buildFooterLabel(),
     ]);
@@ -178,6 +179,34 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: BulletList(entries: state.todo.bulletPoints.toList()),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTags() {
+    return ShadedBox(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Text(
+            'Tags',
+            style: TextStyle().copyWith(color: AppColors.pink4, fontSize: 12.0),
+          ),
+          const SizedBox(height: 8.0),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Wrap(
+              alignment: WrapAlignment.center,
+              spacing: 16.0,
+              runSpacing: 12.0,
+              children: <Widget>[
+                _TagChip(title: 'Tag A'),
+                _TagChip(title: 'Tag C'),
+                _TagChip(title: 'Tag F'),
+              ],
+            ),
           ),
         ],
       ),
@@ -266,5 +295,28 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
         ],
       );
     }
+  }
+}
+
+class _TagChip extends StatelessWidget {
+  final String title;
+
+  const _TagChip({
+    Key key,
+    @required this.title,
+  })  : assert(title != null),
+        super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(24.0),
+        border: Border.all(color: AppColors.pink4, width: 0.5),
+        color: AppColors.pink1,
+      ),
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      child: Text(title),
+    );
   }
 }
