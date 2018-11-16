@@ -9,6 +9,7 @@ import 'package:tasking/presentation/screen/todo_list/todo_list_actions.dart';
 import 'package:tasking/presentation/shared/helper/date_formatter.dart';
 import 'package:tasking/presentation/shared/resources.dart';
 import 'package:tasking/presentation/shared/widgets/buttons.dart';
+import 'package:tasking/presentation/shared/widgets/tag_action_chip.dart';
 import 'package:tasking/presentation/shared/widgets/tile.dart';
 
 import 'todo_list_bloc.dart';
@@ -160,6 +161,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
   }
 }
 
+// TODO: Expanded TodoAdder might overflow vertically, esp. w/ visible keyboard
 class _TodoAdder extends StatefulWidget {
   final TextEditingController todoNameController;
   final _AddTaskCallback onAdd;
@@ -319,7 +321,6 @@ class _TodoAdderState extends State<_TodoAdder> {
         child: ListView(
           physics: NeverScrollableScrollPhysics(),
           children: <Widget>[
-            // [WIP] Change for Tags
             const SizedBox(height: 4.0),
             _buildTags(),
             const SizedBox(height: 24.0),
@@ -371,7 +372,7 @@ class _TodoAdderState extends State<_TodoAdder> {
 
   Widget _buildTags() {
     final children = presetTags
-        .map((tag) => _TagActionChip(
+        .map((tag) => TagActionChip(
               title: tag,
               onTap: () => _toggleTag(tag),
             ))
@@ -389,62 +390,13 @@ class _TodoAdderState extends State<_TodoAdder> {
   }
 
   TodoEntity _buildTodo() {
+    _tags.sort();
+
     return TodoEntity(
       name: widget.todoNameController.text,
       tags: BuiltList(_tags),
       addedDate: DateTime.now(),
       dueDate: _dueDate,
-    );
-  }
-}
-
-class _TagActionChip extends StatefulWidget {
-  final String title;
-  final VoidCallback onTap;
-
-  const _TagActionChip({
-    Key key,
-    @required this.title,
-    @required this.onTap,
-  })  : assert(title != null),
-        assert(onTap != null),
-        super(key: key);
-
-  @override
-  _TagActionChipState createState() => _TagActionChipState();
-}
-
-class _TagActionChipState extends State<_TagActionChip> {
-  bool _isSelected;
-
-  @override
-  void initState() {
-    super.initState();
-    _isSelected = false;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: () {
-        setState(() {
-          _isSelected = !_isSelected;
-        });
-
-        widget.onTap();
-      },
-      child: AnimatedContainer(
-        duration: Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(24.0),
-          border: Border.all(color: AppColors.pink4, width: 0.0),
-          color: _isSelected ? AppColors.pink1 : AppColors.white1,
-        ),
-        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-        child: Text(widget.title),
-      ),
     );
   }
 }
