@@ -46,7 +46,9 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
       lastDate: DateTime(2050),
     );
 
-    _bloc.actions.add(UpdateField(key: FieldKey.dueDate, value: date));
+    if (date != null) {
+      _bloc.actions.add(UpdateField(key: FieldKey.dueDate, value: date));
+    }
   }
 
   void _submit(TodoEditState state) {
