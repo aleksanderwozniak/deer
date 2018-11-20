@@ -58,6 +58,9 @@ class ColorfulAppBuilderState extends State<ColorfulAppBuilder> {
 }
 
 class ColorThemeData {
+  ColorfulTheme get current => _current;
+  ColorfulTheme _current;
+
   Color get brightest => _brightest;
   Color _brightest;
 
@@ -76,16 +79,16 @@ class ColorThemeData {
   LinearGradient get brightGradient => _brightGradient;
   LinearGradient _brightGradient;
 
-  // TODO
   ThemeData get theme => Themes.standard.copyWith(
-        accentColor: _medium ?? AppColors.pink3,
-        cursorColor: _dark ?? AppColors.pink4,
-        textSelectionColor: _bright ?? AppColors.pink2,
-        textSelectionHandleColor: _medium ?? AppColors.pink3,
+        accentColor: _medium,
+        cursorColor: _dark,
+        textSelectionColor: _bright,
+        textSelectionHandleColor: _medium,
       );
 
   ColorThemeData.pink()
-      : _brightest = AppColors.pink1,
+      : _current = ColorfulTheme.pink,
+        _brightest = AppColors.pink1,
         _bright = AppColors.pink2,
         _medium = AppColors.pink3,
         _dark = AppColors.pink4,
@@ -93,7 +96,8 @@ class ColorThemeData {
         _brightGradient = AppColors.pinkGradient;
 
   ColorThemeData.blue()
-      : _brightest = AppColors.blue1,
+      : _current = ColorfulTheme.blue,
+        _brightest = AppColors.blue1,
         _bright = AppColors.blue2,
         _medium = AppColors.blue3,
         _dark = AppColors.blue4,

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:tasking/domain/entity/todo_entity.dart';
+import 'package:tasking/presentation/colorful_app_builder.dart';
 import 'package:tasking/presentation/screen/todo_edit/todo_edit_screen.dart';
 import 'package:tasking/presentation/shared/helper/date_formatter.dart';
 import 'package:tasking/presentation/shared/widgets/box.dart';
 import 'package:tasking/presentation/shared/widgets/bullet_list.dart';
 import 'package:tasking/presentation/shared/widgets/buttons.dart';
-import 'package:tasking/presentation/shared/widgets/colorful_app_builder.dart';
 import 'package:tasking/presentation/shared/widgets/todo_avatar.dart';
 import 'package:tasking/utils/string_utils.dart';
 import 'package:tuple/tuple.dart';

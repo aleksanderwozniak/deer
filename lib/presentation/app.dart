@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tasking/dependencies.dart';
+import 'package:tasking/presentation/colorful_app_builder.dart';
 import 'package:tasking/presentation/screen/todo_list/todo_list_screen.dart';
-import 'package:tasking/presentation/shared/widgets/colorful_app_builder.dart';
 
 Dependencies _sharedDependencies;
 Dependencies get dependencies => _sharedDependencies;

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tasking/domain/entity/tags.dart';
 import 'package:tasking/domain/entity/todo_entity.dart';
+import 'package:tasking/presentation/colorful_app_builder.dart';
 import 'package:tasking/presentation/screen/todo_edit/todo_edit_actions.dart';
 import 'package:tasking/presentation/screen/todo_edit/todo_edit_bloc.dart';
 import 'package:tasking/presentation/screen/todo_edit/todo_edit_state.dart';
@@ -8,7 +9,6 @@ import 'package:tasking/presentation/shared/helper/date_formatter.dart';
 import 'package:tasking/presentation/shared/resources.dart';
 import 'package:tasking/presentation/shared/widgets/box.dart';
 import 'package:tasking/presentation/shared/widgets/buttons.dart';
-import 'package:tasking/presentation/shared/widgets/colorful_app_builder.dart';
 import 'package:tasking/presentation/shared/widgets/editable_bullet_list.dart';
 import 'package:tasking/presentation/shared/widgets/tag_action_chip.dart';
 

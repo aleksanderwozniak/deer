@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:tasking/domain/entity/tags.dart';
 import 'package:tasking/domain/entity/todo_entity.dart';
+import 'package:tasking/presentation/colorful_app_builder.dart';
 import 'package:tasking/presentation/screen/archive_list/archive_list_screen.dart';
 import 'package:tasking/presentation/screen/todo_detail/todo_detail_screen.dart';
 import 'package:tasking/presentation/screen/todo_list/todo_list_actions.dart';
 import 'package:tasking/presentation/shared/helper/date_formatter.dart';
 import 'package:tasking/presentation/shared/resources.dart';
 import 'package:tasking/presentation/shared/widgets/buttons.dart';
-import 'package:tasking/presentation/shared/widgets/colorful_app_builder.dart';
 import 'package:tasking/presentation/shared/widgets/tag_action_chip.dart';
 import 'package:tasking/presentation/shared/widgets/tile.dart';
 
@@ -107,10 +107,17 @@ class _TodoListScreenState extends State<TodoListScreen> {
           IconButton(
             icon: Icon(Icons.done_all),
             tooltip: 'Archive',
-            // onPressed: _showArchive,
+            onPressed: _showArchive,
+          ),
+          IconButton(
+            icon: Icon(Icons.color_lens),
+            tooltip: 'Change theme',
             onPressed: () {
               // TODO -> this is for testing
-              ColorfulAppBuilder.of(context).setColor(ColorfulTheme.blue);
+              final currentTheme = ColorfulAppBuilder.of(context).data.current;
+              ColorfulAppBuilder.of(context).setColor(
+                currentTheme == ColorfulTheme.pink ? ColorfulTheme.blue : ColorfulTheme.pink,
+              );
             },
           ),
           const SizedBox(width: 8.0),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:tasking/presentation/colorful_app_builder.dart';
 import 'package:tasking/presentation/shared/resources.dart';
-import 'package:tasking/presentation/shared/widgets/colorful_app_builder.dart';
 
 class TodoAvatar extends StatelessWidget {
   final String text;

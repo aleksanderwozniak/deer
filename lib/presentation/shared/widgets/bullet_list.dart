@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tasking/domain/entity/bullet_entity.dart';
-import 'package:tasking/presentation/shared/widgets/colorful_app_builder.dart';
+import 'package:tasking/presentation/colorful_app_builder.dart';
 
 class BulletList extends StatelessWidget {
   final List<BulletEntity> entries;
