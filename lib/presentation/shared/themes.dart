@@ -15,4 +15,12 @@ class Themes {
       subhead: TextStyle().copyWith(fontSize: 14.0),
     ),
   );
+
+  static final ThemeData standard = ThemeData(
+    primaryColor: AppColors.white1,
+    canvasColor: AppColors.white1,
+    textTheme: TextTheme(
+      subhead: TextStyle().copyWith(fontSize: 14.0),
+    ),
+  );
 }

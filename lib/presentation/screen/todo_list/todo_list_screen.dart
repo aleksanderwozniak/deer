@@ -106,7 +106,16 @@ class _TodoListScreenState extends State<TodoListScreen> {
           IconButton(
             icon: Icon(Icons.done_all),
             tooltip: 'Archive',
-            onPressed: _showArchive,
+            // onPressed: _showArchive,
+            onPressed: () {
+              // setState(() {
+              //   AppColors.setBlueTheme();
+              // });
+              // setState(() {
+              //   ColorTheme.of(context).setBlue();
+              // });
+              ColorfulAppBuilder.of(context).setColor(ColorfulTheme.blue);
+            },
           ),
           const SizedBox(width: 8.0),
         ],
@@ -117,7 +126,9 @@ class _TodoListScreenState extends State<TodoListScreen> {
 
   Widget _buildBody(TodoListState state) {
     return Container(
-      decoration: BoxDecoration(gradient: AppColors.pinkGradient),
+      // decoration: BoxDecoration(gradient: AppColors.pinkGradient),
+      // decoration: BoxDecoration(gradient: ColorTheme.of(context).brightGradient),
+      decoration: BoxDecoration(gradient: ColorfulAppBuilder.of(context).data.brightGradient),
       child: Column(
         children: <Widget>[
           Expanded(
@@ -188,7 +199,7 @@ class _TodoAdder extends StatefulWidget {
 }
 
 class _TodoAdderState extends State<_TodoAdder> {
-  final double _collapsedHeight = 96.0;
+  final double _collapsedHeight = 97.0;
   final double _expandedHeight = 294.0;
 
   bool _isExpanded;
