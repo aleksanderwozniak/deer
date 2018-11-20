@@ -9,6 +9,7 @@ import 'package:tasking/presentation/screen/todo_list/todo_list_actions.dart';
 import 'package:tasking/presentation/shared/helper/date_formatter.dart';
 import 'package:tasking/presentation/shared/resources.dart';
 import 'package:tasking/presentation/shared/widgets/buttons.dart';
+import 'package:tasking/presentation/shared/widgets/colorful_app_builder.dart';
 import 'package:tasking/presentation/shared/widgets/tag_action_chip.dart';
 import 'package:tasking/presentation/shared/widgets/tile.dart';
 
@@ -108,12 +109,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
             tooltip: 'Archive',
             // onPressed: _showArchive,
             onPressed: () {
-              // setState(() {
-              //   AppColors.setBlueTheme();
-              // });
-              // setState(() {
-              //   ColorTheme.of(context).setBlue();
-              // });
+              // TODO -> this is for testing
               ColorfulAppBuilder.of(context).setColor(ColorfulTheme.blue);
             },
           ),
@@ -126,8 +122,6 @@ class _TodoListScreenState extends State<TodoListScreen> {
 
   Widget _buildBody(TodoListState state) {
     return Container(
-      // decoration: BoxDecoration(gradient: AppColors.pinkGradient),
-      // decoration: BoxDecoration(gradient: ColorTheme.of(context).brightGradient),
       decoration: BoxDecoration(gradient: ColorfulAppBuilder.of(context).data.brightGradient),
       child: Column(
         children: <Widget>[

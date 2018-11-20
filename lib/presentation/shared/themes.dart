@@ -16,6 +16,11 @@ class Themes {
     ),
   );
 
+  /// Use .copyWith(...) to apply dynamic colors:
+  /// - accentColor (medium)
+  /// - cursorColor (dark)
+  /// - textSelectionColor (bright)
+  /// - textSelectionHandleColor (medium)
   static final ThemeData standard = ThemeData(
     primaryColor: AppColors.white1,
     canvasColor: AppColors.white1,
