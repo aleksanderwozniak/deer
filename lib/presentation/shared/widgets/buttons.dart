@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tasking/presentation/shared/resources.dart';
 import 'package:tasking/presentation/shared/widgets/box.dart';
+import 'package:tasking/presentation/shared/widgets/colorful_app_builder.dart';
 import 'package:tuple/tuple.dart';
 
 class RoundButton extends StatelessWidget {
@@ -20,10 +20,10 @@ class RoundButton extends StatelessWidget {
     return FlatButton(
       child: Text(text),
       onPressed: onPressed,
-      color: AppColors.pink1,
+      color: ColorfulAppBuilder.of(context).data.brightest,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.0),
-        side: BorderSide(color: AppColors.pink4),
+        side: BorderSide(color: ColorfulAppBuilder.of(context).data.dark),
       ),
     );
   }

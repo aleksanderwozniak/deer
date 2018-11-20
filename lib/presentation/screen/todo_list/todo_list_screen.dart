@@ -100,7 +100,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
     // Build your root view here
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(color: AppColors.pink4),
+        iconTheme: IconThemeData(color: ColorfulAppBuilder.of(context).data.dark),
         title: Text(widget.title),
         centerTitle: true,
         actions: <Widget>[
@@ -156,7 +156,9 @@ class _TodoListScreenState extends State<TodoListScreen> {
 
   Widget _buildDismissibleBackground({@required bool leftToRight}) {
     final alignment = leftToRight ? Alignment.centerLeft : Alignment.centerRight;
-    final colors = leftToRight ? [AppColors.pink2, AppColors.white1] : [AppColors.white1, AppColors.pink2];
+    final colors = leftToRight
+        ? [ColorfulAppBuilder.of(context).data.bright, AppColors.white1]
+        : [AppColors.white1, ColorfulAppBuilder.of(context).data.bright];
 
     return Container(
       child: Text(
@@ -245,7 +247,7 @@ class _TodoAdderState extends State<_TodoAdder> {
       _buildAdder(),
       const SizedBox(height: 16.0),
       Container(
-        color: AppColors.pink4,
+        color: ColorfulAppBuilder.of(context).data.dark,
         height: 1.0,
       ),
     ];
@@ -306,7 +308,7 @@ class _TodoAdderState extends State<_TodoAdder> {
               border: UnderlineInputBorder(),
               hintText: widget.showError ? 'Name can\'t be empty' : 'New Todo',
               hintStyle: TextStyle().copyWith(
-                color: widget.showError ? AppColors.pink5 : AppColors.pink3,
+                color: widget.showError ? ColorfulAppBuilder.of(context).data.darkest : ColorfulAppBuilder.of(context).data.medium,
               ),
             ),
           ),
@@ -351,7 +353,7 @@ class _TodoAdderState extends State<_TodoAdder> {
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(24.0),
-          border: Border.all(color: AppColors.pink4),
+          border: Border.all(color: ColorfulAppBuilder.of(context).data.dark),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -359,7 +361,7 @@ class _TodoAdderState extends State<_TodoAdder> {
           children: <Widget>[
             Text(
               'Due by:',
-              style: TextStyle().copyWith(fontSize: 12.0, color: AppColors.pink4),
+              style: TextStyle().copyWith(fontSize: 12.0, color: ColorfulAppBuilder.of(context).data.dark),
             ),
             const SizedBox(height: 8.0),
             Row(

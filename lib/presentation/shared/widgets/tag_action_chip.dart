@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tasking/presentation/shared/resources.dart';
+import 'package:tasking/presentation/shared/widgets/colorful_app_builder.dart';
 
 class TagActionChip extends StatefulWidget {
   final String title;
@@ -44,8 +45,8 @@ class _TagActionChipState extends State<TagActionChip> {
         curve: Curves.easeOut,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(24.0),
-          border: Border.all(color: AppColors.pink4, width: 0.0),
-          color: _isSelected ? AppColors.pink1 : AppColors.white1,
+          border: Border.all(color: ColorfulAppBuilder.of(context).data.dark, width: 0.0),
+          color: _isSelected ? ColorfulAppBuilder.of(context).data.brightest : AppColors.white1,
         ),
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
         child: Text(widget.title),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:tasking/domain/entity/bullet_entity.dart';
 import 'package:tasking/presentation/shared/resources.dart';
+import 'package:tasking/presentation/shared/widgets/colorful_app_builder.dart';
 import 'package:tuple/tuple.dart';
 
 class EditableBulletList extends StatefulWidget {
@@ -197,14 +198,14 @@ class _TextFieldState extends State<_TextField> {
         maxLengthEnforced: widget.maxLengthEnforced,
         textCapitalization: TextCapitalization.sentences,
         style: TextStyle().copyWith(
-          color: widget.checked ? AppColors.pink3 : AppColors.black1,
+          color: widget.checked ? ColorfulAppBuilder.of(context).data.medium : AppColors.black1,
           fontSize: widget.fontSize,
           decoration: widget.checked ? TextDecoration.lineThrough : null,
         ),
         decoration: InputDecoration(
           hintText: widget.hint,
           hintStyle: TextStyle().copyWith(
-            color: AppColors.pink3,
+            color: ColorfulAppBuilder.of(context).data.medium,
             fontSize: widget.fontSize,
           ),
         ),

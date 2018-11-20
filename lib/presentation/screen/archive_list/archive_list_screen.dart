@@ -3,8 +3,8 @@ import 'package:tasking/domain/entity/todo_entity.dart';
 import 'package:tasking/domain/interactor/task.dart';
 import 'package:tasking/presentation/screen/archive_list/archive_list_actions.dart';
 import 'package:tasking/presentation/screen/todo_detail/todo_detail_screen.dart';
-import 'package:tasking/presentation/shared/resources.dart';
 import 'package:tasking/presentation/shared/widgets/buttons.dart';
+import 'package:tasking/presentation/shared/widgets/colorful_app_builder.dart';
 import 'package:tasking/presentation/shared/widgets/tile.dart';
 
 import 'archive_list_bloc.dart';
@@ -57,7 +57,7 @@ class _ArchiveListScreenState extends State<ArchiveListScreen> {
     // Build your root view here
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(color: AppColors.pink4),
+        iconTheme: IconThemeData(color: ColorfulAppBuilder.of(context).data.dark),
         centerTitle: true,
         title: Text('Archive'),
       ),
@@ -70,7 +70,7 @@ class _ArchiveListScreenState extends State<ArchiveListScreen> {
       top: true,
       bottom: true,
       child: Container(
-        decoration: BoxDecoration(gradient: AppColors.pinkGradient),
+        decoration: BoxDecoration(gradient: ColorfulAppBuilder.of(context).data.brightGradient),
         child: Column(
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[

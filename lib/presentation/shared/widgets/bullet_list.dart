@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tasking/domain/entity/bullet_entity.dart';
-import 'package:tasking/presentation/shared/resources.dart';
+import 'package:tasking/presentation/shared/widgets/colorful_app_builder.dart';
 
 class BulletList extends StatelessWidget {
   final List<BulletEntity> entries;
@@ -20,20 +20,20 @@ class BulletList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: entries.map((e) => _buildTile(e)).toList(),
+      children: entries.map((e) => _buildTile(context, e)).toList(),
     );
   }
 
-  Widget _buildTile(BulletEntity bullet) {
+  Widget _buildTile(BuildContext context, BulletEntity bullet) {
     final style = bullet.checked
         ? TextStyle().copyWith(
-            color: AppColors.pink3,
+            color: ColorfulAppBuilder.of(context).data.medium,
             decoration: TextDecoration.lineThrough,
           )
         : TextStyle();
 
     final children = [
-      icon ?? _buildDefaultIcon(),
+      icon ?? _buildDefaultIcon(context),
       const SizedBox(width: 12.0),
       Expanded(
         child: Text(
@@ -54,14 +54,14 @@ class BulletList extends StatelessWidget {
     );
   }
 
-  Widget _buildDefaultIcon() {
+  Widget _buildDefaultIcon(BuildContext context) {
     return Container(
       width: 8.0,
       height: 8.0,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: AppColors.pink1,
-        border: Border.all(color: AppColors.pink4),
+        color: ColorfulAppBuilder.of(context).data.brightest,
+        border: Border.all(color: ColorfulAppBuilder.of(context).data.dark),
       ),
     );
   }

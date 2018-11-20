@@ -8,6 +8,7 @@ import 'package:tasking/presentation/shared/helper/date_formatter.dart';
 import 'package:tasking/presentation/shared/resources.dart';
 import 'package:tasking/presentation/shared/widgets/box.dart';
 import 'package:tasking/presentation/shared/widgets/buttons.dart';
+import 'package:tasking/presentation/shared/widgets/colorful_app_builder.dart';
 import 'package:tasking/presentation/shared/widgets/editable_bullet_list.dart';
 import 'package:tasking/presentation/shared/widgets/tag_action_chip.dart';
 
@@ -80,7 +81,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          iconTheme: IconThemeData(color: AppColors.pink4),
+          iconTheme: IconThemeData(color: ColorfulAppBuilder.of(context).data.dark),
           centerTitle: true,
           title: Text('Edit Todo'),
         ),
@@ -139,7 +140,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
         children: <Widget>[
           Text(
             'Description',
-            style: TextStyle().copyWith(color: AppColors.pink4, fontSize: 12.0),
+            style: TextStyle().copyWith(color: ColorfulAppBuilder.of(context).data.dark, fontSize: 12.0),
           ),
           const SizedBox(height: 12.0),
           Padding(
@@ -164,7 +165,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
         children: <Widget>[
           Text(
             'Bullet points',
-            style: TextStyle().copyWith(color: AppColors.pink4, fontSize: 12.0),
+            style: TextStyle().copyWith(color: ColorfulAppBuilder.of(context).data.dark, fontSize: 12.0),
           ),
           Padding(
             padding: const EdgeInsets.only(right: 20.0),
@@ -194,7 +195,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
         children: <Widget>[
           Text(
             'Tags',
-            style: TextStyle().copyWith(color: AppColors.pink4, fontSize: 12.0),
+            style: TextStyle().copyWith(color: ColorfulAppBuilder.of(context).data.dark, fontSize: 12.0),
           ),
           const SizedBox(height: 4.0),
           Padding(
@@ -221,7 +222,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
           children: <Widget>[
             Text(
               'Due by:',
-              style: TextStyle().copyWith(fontSize: 12.0, color: AppColors.pink4),
+              style: TextStyle().copyWith(fontSize: 12.0, color: ColorfulAppBuilder.of(context).data.dark),
             ),
             const SizedBox(height: 8.0),
             Row(
@@ -318,7 +319,7 @@ class _TextFieldState extends State<_TextField> {
           border: InputBorder.none,
           hintText: widget.hint,
           hintStyle: TextStyle().copyWith(
-            color: widget.showError ? AppColors.pink5 : AppColors.pink3,
+            color: widget.showError ? ColorfulAppBuilder.of(context).data.darkest : ColorfulAppBuilder.of(context).data.medium,
             fontSize: widget.fontSize,
           ),
         ),
