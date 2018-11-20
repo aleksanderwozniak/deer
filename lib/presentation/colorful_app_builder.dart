@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:tasking/presentation/shared/resources.dart';
-import 'package:tasking/presentation/shared/themes.dart';
 
 typedef Widget AppBuilder(BuildContext context, ThemeData data);
 
@@ -79,11 +78,16 @@ class ColorThemeData {
   LinearGradient get brightGradient => _brightGradient;
   LinearGradient _brightGradient;
 
-  ThemeData get theme => Themes.standard.copyWith(
+  ThemeData get theme => ThemeData(
         accentColor: _medium,
         cursorColor: _dark,
         textSelectionColor: _bright,
         textSelectionHandleColor: _medium,
+        primaryColor: AppColors.white1,
+        canvasColor: AppColors.white1,
+        textTheme: TextTheme(
+          subhead: TextStyle().copyWith(fontSize: 14.0),
+        ),
       );
 
   ColorThemeData.pink()
