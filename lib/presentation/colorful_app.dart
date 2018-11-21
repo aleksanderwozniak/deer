@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tasking/presentation/shared/resources.dart';
+import 'package:tasking/utils/string_utils.dart';
 
 typedef Widget AppBuilder(BuildContext context, ThemeData data);
+
+const String _colorfulThemeKey = 'colorfulTheme';
 
 enum ColorfulTheme {
   pink,
@@ -32,15 +36,10 @@ class ColorfulAppState extends State<ColorfulApp> {
   @override
   void initState() {
     super.initState();
-    colors = widget.colorTheme;
+    _loadColorTheme();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return widget.builder(context, colors.theme);
-  }
-
-  void setColorTheme(ColorfulTheme theme) {
+  void _setColorTheme(ColorfulTheme theme) {
     switch (theme) {
       case ColorfulTheme.pink:
         setState(() {
@@ -53,6 +52,25 @@ class ColorfulAppState extends State<ColorfulApp> {
         });
         break;
     }
+  }
+
+  void _loadColorTheme() async {
+    final prefs = await SharedPreferences.getInstance();
+    final theme = stringToEnum(prefs.getString(_colorfulThemeKey), ColorfulTheme.values) ?? ColorfulTheme.pink;
+
+    _setColorTheme(theme);
+  }
+
+  void updateColorTheme(ColorfulTheme theme) async {
+    _setColorTheme(theme);
+
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString(_colorfulThemeKey, enumToString(theme));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.builder(context, colors.theme);
   }
 }
 

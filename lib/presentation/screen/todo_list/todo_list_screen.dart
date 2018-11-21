@@ -115,7 +115,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
             onPressed: () {
               // TODO -> this is for testing
               final currentTheme = ColorfulApp.of(context).colors.currentTheme;
-              ColorfulApp.of(context).setColorTheme(
+              ColorfulApp.of(context).updateColorTheme(
                 currentTheme == ColorfulTheme.pink ? ColorfulTheme.blue : ColorfulTheme.pink,
               );
             },
