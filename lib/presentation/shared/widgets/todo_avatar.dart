@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tasking/presentation/colorful_app.dart';
 import 'package:tasking/presentation/shared/resources.dart';
 
 class TodoAvatar extends StatelessWidget {
@@ -23,9 +24,9 @@ class TodoAvatar extends StatelessWidget {
         shape: BoxShape.circle,
         border: Border.all(
           width: 1.0,
-          color: AppColors.pink4,
+          color: ColorfulApp.of(context).colors.dark,
         ),
-        color: isLarge ? AppColors.pink1 : AppColors.white1,
+        color: isLarge ? ColorfulApp.of(context).colors.brightest : AppColors.white1,
       ),
       child: Center(child: _buildContentInCircle()),
     );

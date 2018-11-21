@@ -2,6 +2,7 @@ import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:tasking/domain/entity/bullet_entity.dart';
+import 'package:tasking/presentation/colorful_app.dart';
 import 'package:tasking/presentation/shared/resources.dart';
 import 'package:tuple/tuple.dart';
 
@@ -35,6 +36,14 @@ class _EditableBulletListState extends State<EditableBulletList> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    _bullets.forEach((bullet) {
+      bullet.item2.dispose();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     var children = [];
 
@@ -62,11 +71,13 @@ class _EditableBulletListState extends State<EditableBulletList> {
         value: bullet.item1.checked,
         onChanged: (value) {
           final id = _bullets.indexOf(bullet);
-          setState(() {
-            final b = _bullets.toBuilder();
-            b[id] = Tuple2(BulletEntity(text: bullet.item1.text, checked: value), bullet.item2);
-            _bullets = b.build();
-          });
+          if (id >= 0) {
+            setState(() {
+              final b = _bullets.toBuilder();
+              b[id] = Tuple2(BulletEntity(text: bullet.item1.text, checked: value), bullet.item2);
+              _bullets = b.build();
+            });
+          }
 
           widget.onChanged(_bullets.map((bullet) {
             final text = bullet.item1.text.trimLeft();
@@ -86,8 +97,8 @@ class _EditableBulletListState extends State<EditableBulletList> {
           checked: bullet.item1.checked,
           onChanged: (value) {
             final id = _bullets.indexOf(bullet);
-            if (value.isEmpty) {
-              if (id >= 0) {
+            if (id >= 0) {
+              if (value.isEmpty) {
                 setState(() {
                   _bullets = _bullets.rebuild((b) => b..remove(bullet));
                 });
@@ -97,13 +108,13 @@ class _EditableBulletListState extends State<EditableBulletList> {
                 SchedulerBinding.instance.scheduleFrameCallback((_) {
                   FocusScope.of(context).requestFocus(node);
                 });
+              } else {
+                setState(() {
+                  final b = _bullets.toBuilder();
+                  b[id] = Tuple2(BulletEntity(text: value, checked: bullet.item1.checked), bullet.item2);
+                  _bullets = b.build();
+                });
               }
-            } else {
-              setState(() {
-                final b = _bullets.toBuilder();
-                b[id] = Tuple2(BulletEntity(text: value, checked: bullet.item1.checked), bullet.item2);
-                _bullets = b.build();
-              });
             }
 
             widget.onChanged(_bullets.map((bullet) {
@@ -197,14 +208,14 @@ class _TextFieldState extends State<_TextField> {
         maxLengthEnforced: widget.maxLengthEnforced,
         textCapitalization: TextCapitalization.sentences,
         style: TextStyle().copyWith(
-          color: widget.checked ? AppColors.pink3 : AppColors.black1,
+          color: widget.checked ? ColorfulApp.of(context).colors.medium : AppColors.black1,
           fontSize: widget.fontSize,
           decoration: widget.checked ? TextDecoration.lineThrough : null,
         ),
         decoration: InputDecoration(
           hintText: widget.hint,
           hintStyle: TextStyle().copyWith(
-            color: AppColors.pink3,
+            color: ColorfulApp.of(context).colors.medium,
             fontSize: widget.fontSize,
           ),
         ),

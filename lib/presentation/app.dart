@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tasking/dependencies.dart';
+import 'package:tasking/presentation/colorful_app.dart';
 import 'package:tasking/presentation/screen/todo_list/todo_list_screen.dart';
-import 'package:tasking/presentation/shared/themes.dart';
 
 Dependencies _sharedDependencies;
 Dependencies get dependencies => _sharedDependencies;
@@ -19,10 +19,14 @@ class App extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: _title,
-      theme: Themes.main,
-      home: TodoListScreen(title: _title),
+    return ColorfulApp(
+      builder: (context, theme) {
+        return MaterialApp(
+          title: _title,
+          theme: theme,
+          home: TodoListScreen(title: _title),
+        );
+      },
     );
   }
 }
