@@ -8,48 +8,48 @@ enum ColorfulTheme {
   blue,
 }
 
-class ColorfulAppBuilder extends StatefulWidget {
+class ColorfulApp extends StatefulWidget {
   final AppBuilder builder;
   final ColorThemeData colorTheme;
 
-  ColorfulAppBuilder({
+  ColorfulApp({
     Key key,
     this.builder,
     this.colorTheme,
   }) : super(key: key);
 
-  static ColorfulAppBuilderState of(BuildContext context) {
-    return context.ancestorStateOfType(const TypeMatcher<ColorfulAppBuilderState>());
+  static ColorfulAppState of(BuildContext context) {
+    return context.ancestorStateOfType(const TypeMatcher<ColorfulAppState>());
   }
 
   @override
-  ColorfulAppBuilderState createState() => ColorfulAppBuilderState();
+  ColorfulAppState createState() => ColorfulAppState();
 }
 
-class ColorfulAppBuilderState extends State<ColorfulAppBuilder> {
-  ColorThemeData data;
+class ColorfulAppState extends State<ColorfulApp> {
+  ColorThemeData colors;
 
   @override
   void initState() {
     super.initState();
-    data = widget.colorTheme;
+    colors = widget.colorTheme;
   }
 
   @override
   Widget build(BuildContext context) {
-    return widget.builder(context, data.theme);
+    return widget.builder(context, colors.theme);
   }
 
-  void setColor(ColorfulTheme color) {
-    switch (color) {
+  void setColorTheme(ColorfulTheme theme) {
+    switch (theme) {
       case ColorfulTheme.pink:
         setState(() {
-          data = ColorThemeData.pink();
+          colors = ColorThemeData.pink();
         });
         break;
       case ColorfulTheme.blue:
         setState(() {
-          data = ColorThemeData.blue();
+          colors = ColorThemeData.blue();
         });
         break;
     }
@@ -57,8 +57,8 @@ class ColorfulAppBuilderState extends State<ColorfulAppBuilder> {
 }
 
 class ColorThemeData {
-  ColorfulTheme get current => _current;
-  ColorfulTheme _current;
+  ColorfulTheme get currentTheme => _currentTheme;
+  ColorfulTheme _currentTheme;
 
   Color get brightest => _brightest;
   Color _brightest;
@@ -91,7 +91,7 @@ class ColorThemeData {
       );
 
   ColorThemeData.pink()
-      : _current = ColorfulTheme.pink,
+      : _currentTheme = ColorfulTheme.pink,
         _brightest = AppColors.pink1,
         _bright = AppColors.pink2,
         _medium = AppColors.pink3,
@@ -100,7 +100,7 @@ class ColorThemeData {
         _brightGradient = AppColors.pinkGradient;
 
   ColorThemeData.blue()
-      : _current = ColorfulTheme.blue,
+      : _currentTheme = ColorfulTheme.blue,
         _brightest = AppColors.blue1,
         _bright = AppColors.blue2,
         _medium = AppColors.blue3,

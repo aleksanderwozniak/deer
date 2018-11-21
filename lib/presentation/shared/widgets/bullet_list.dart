@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tasking/domain/entity/bullet_entity.dart';
-import 'package:tasking/presentation/colorful_app_builder.dart';
+import 'package:tasking/presentation/colorful_app.dart';
 
 class BulletList extends StatelessWidget {
   final List<BulletEntity> entries;
@@ -27,7 +27,7 @@ class BulletList extends StatelessWidget {
   Widget _buildTile(BuildContext context, BulletEntity bullet) {
     final style = bullet.checked
         ? TextStyle().copyWith(
-            color: ColorfulAppBuilder.of(context).data.medium,
+            color: ColorfulApp.of(context).colors.medium,
             decoration: TextDecoration.lineThrough,
           )
         : TextStyle();
@@ -60,8 +60,8 @@ class BulletList extends StatelessWidget {
       height: 8.0,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: ColorfulAppBuilder.of(context).data.brightest,
-        border: Border.all(color: ColorfulAppBuilder.of(context).data.dark),
+        color: ColorfulApp.of(context).colors.brightest,
+        border: Border.all(color: ColorfulApp.of(context).colors.dark),
       ),
     );
   }

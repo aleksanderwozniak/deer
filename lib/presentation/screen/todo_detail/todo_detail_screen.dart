@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tasking/domain/entity/todo_entity.dart';
-import 'package:tasking/presentation/colorful_app_builder.dart';
+import 'package:tasking/presentation/colorful_app.dart';
 import 'package:tasking/presentation/screen/todo_edit/todo_edit_screen.dart';
 import 'package:tasking/presentation/shared/helper/date_formatter.dart';
 import 'package:tasking/presentation/shared/widgets/box.dart';
@@ -82,7 +82,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
     // Build your root view here
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(color: ColorfulAppBuilder.of(context).data.dark),
+        iconTheme: IconThemeData(color: ColorfulApp.of(context).colors.dark),
         centerTitle: true,
         title: Text('Todo\'s details'),
       ),
@@ -154,7 +154,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
         children: <Widget>[
           Text(
             'Description:',
-            style: TextStyle().copyWith(fontSize: 12.0, color: ColorfulAppBuilder.of(context).data.dark),
+            style: TextStyle().copyWith(fontSize: 12.0, color: ColorfulApp.of(context).colors.dark),
           ),
           const SizedBox(height: 8.0),
           Padding(
@@ -176,7 +176,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
         children: <Widget>[
           Text(
             'Bullet points:',
-            style: TextStyle().copyWith(fontSize: 12.0, color: ColorfulAppBuilder.of(context).data.dark),
+            style: TextStyle().copyWith(fontSize: 12.0, color: ColorfulApp.of(context).colors.dark),
           ),
           const SizedBox(height: 8.0),
           Padding(
@@ -197,7 +197,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
         children: <Widget>[
           Text(
             'Tags',
-            style: TextStyle().copyWith(color: ColorfulAppBuilder.of(context).data.dark, fontSize: 12.0),
+            style: TextStyle().copyWith(color: ColorfulApp.of(context).colors.dark, fontSize: 12.0),
           ),
           const SizedBox(height: 4.0),
           Padding(
@@ -221,7 +221,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
         children: <Widget>[
           Text(
             'Added on:',
-            style: TextStyle().copyWith(fontSize: 12.0, color: ColorfulAppBuilder.of(context).data.dark),
+            style: TextStyle().copyWith(fontSize: 12.0, color: ColorfulApp.of(context).colors.dark),
           ),
           const SizedBox(height: 8.0),
           Row(
@@ -247,7 +247,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
           const SizedBox(height: 24.0),
           Text(
             'Due by:',
-            style: TextStyle().copyWith(fontSize: 12.0, color: ColorfulAppBuilder.of(context).data.dark),
+            style: TextStyle().copyWith(fontSize: 12.0, color: ColorfulApp.of(context).colors.dark),
           ),
           const SizedBox(height: 8.0),
           Row(
@@ -283,7 +283,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
           child: Text(
             'Edit this Todo to add more sections',
             style: TextStyle().copyWith(
-              color: ColorfulAppBuilder.of(context).data.dark,
+              color: ColorfulApp.of(context).colors.dark,
               fontSize: 14.0,
               fontStyle: FontStyle.italic,
             ),
@@ -325,8 +325,8 @@ class _TagChip extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(24.0),
-        border: Border.all(color: ColorfulAppBuilder.of(context).data.dark, width: 0.5),
-        color: ColorfulAppBuilder.of(context).data.brightest,
+        border: Border.all(color: ColorfulApp.of(context).colors.dark, width: 0.5),
+        color: ColorfulApp.of(context).colors.brightest,
       ),
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: Text(title),

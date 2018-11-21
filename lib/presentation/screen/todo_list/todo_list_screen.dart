@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:tasking/domain/entity/tags.dart';
 import 'package:tasking/domain/entity/todo_entity.dart';
-import 'package:tasking/presentation/colorful_app_builder.dart';
+import 'package:tasking/presentation/colorful_app.dart';
 import 'package:tasking/presentation/screen/archive_list/archive_list_screen.dart';
 import 'package:tasking/presentation/screen/todo_detail/todo_detail_screen.dart';
 import 'package:tasking/presentation/screen/todo_list/todo_list_actions.dart';
@@ -100,7 +100,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
     // Build your root view here
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(color: ColorfulAppBuilder.of(context).data.dark),
+        iconTheme: IconThemeData(color: ColorfulApp.of(context).colors.dark),
         title: Text(widget.title),
         centerTitle: true,
         actions: <Widget>[
@@ -114,8 +114,8 @@ class _TodoListScreenState extends State<TodoListScreen> {
             tooltip: 'Change theme',
             onPressed: () {
               // TODO -> this is for testing
-              final currentTheme = ColorfulAppBuilder.of(context).data.current;
-              ColorfulAppBuilder.of(context).setColor(
+              final currentTheme = ColorfulApp.of(context).colors.currentTheme;
+              ColorfulApp.of(context).setColorTheme(
                 currentTheme == ColorfulTheme.pink ? ColorfulTheme.blue : ColorfulTheme.pink,
               );
             },
@@ -129,7 +129,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
 
   Widget _buildBody(TodoListState state) {
     return Container(
-      decoration: BoxDecoration(gradient: ColorfulAppBuilder.of(context).data.brightGradient),
+      decoration: BoxDecoration(gradient: ColorfulApp.of(context).colors.brightGradient),
       child: Column(
         children: <Widget>[
           Expanded(
@@ -163,9 +163,8 @@ class _TodoListScreenState extends State<TodoListScreen> {
 
   Widget _buildDismissibleBackground({@required bool leftToRight}) {
     final alignment = leftToRight ? Alignment.centerLeft : Alignment.centerRight;
-    final colors = leftToRight
-        ? [ColorfulAppBuilder.of(context).data.bright, AppColors.white1]
-        : [AppColors.white1, ColorfulAppBuilder.of(context).data.bright];
+    final colors =
+        leftToRight ? [ColorfulApp.of(context).colors.bright, AppColors.white1] : [AppColors.white1, ColorfulApp.of(context).colors.bright];
 
     return Container(
       child: Text(
@@ -254,7 +253,7 @@ class _TodoAdderState extends State<_TodoAdder> {
       _buildAdder(),
       const SizedBox(height: 16.0),
       Container(
-        color: ColorfulAppBuilder.of(context).data.dark,
+        color: ColorfulApp.of(context).colors.dark,
         height: 1.0,
       ),
     ];
@@ -315,7 +314,7 @@ class _TodoAdderState extends State<_TodoAdder> {
               border: UnderlineInputBorder(),
               hintText: widget.showError ? 'Name can\'t be empty' : 'New Todo',
               hintStyle: TextStyle().copyWith(
-                color: widget.showError ? ColorfulAppBuilder.of(context).data.darkest : ColorfulAppBuilder.of(context).data.medium,
+                color: widget.showError ? ColorfulApp.of(context).colors.darkest : ColorfulApp.of(context).colors.medium,
               ),
             ),
           ),
@@ -360,7 +359,7 @@ class _TodoAdderState extends State<_TodoAdder> {
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(24.0),
-          border: Border.all(color: ColorfulAppBuilder.of(context).data.dark),
+          border: Border.all(color: ColorfulApp.of(context).colors.dark),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -368,7 +367,7 @@ class _TodoAdderState extends State<_TodoAdder> {
           children: <Widget>[
             Text(
               'Due by:',
-              style: TextStyle().copyWith(fontSize: 12.0, color: ColorfulAppBuilder.of(context).data.dark),
+              style: TextStyle().copyWith(fontSize: 12.0, color: ColorfulApp.of(context).colors.dark),
             ),
             const SizedBox(height: 8.0),
             Row(
