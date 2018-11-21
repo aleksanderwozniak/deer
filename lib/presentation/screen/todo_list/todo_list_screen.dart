@@ -103,24 +103,23 @@ class _TodoListScreenState extends State<TodoListScreen> {
         iconTheme: IconThemeData(color: ColorfulApp.of(context).colors.dark),
         title: Text(widget.title),
         centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.color_lens),
+          tooltip: 'Change theme',
+          onPressed: () {
+            // TODO -> this is for testing
+            final currentTheme = ColorfulApp.of(context).colors.currentTheme;
+            ColorfulApp.of(context).updateColorTheme(
+              currentTheme == ColorfulTheme.pink ? ColorfulTheme.blue : ColorfulTheme.pink,
+            );
+          },
+        ),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.done_all),
             tooltip: 'Archive',
             onPressed: _showArchive,
           ),
-          IconButton(
-            icon: Icon(Icons.color_lens),
-            tooltip: 'Change theme',
-            onPressed: () {
-              // TODO -> this is for testing
-              final currentTheme = ColorfulApp.of(context).colors.currentTheme;
-              ColorfulApp.of(context).updateColorTheme(
-                currentTheme == ColorfulTheme.pink ? ColorfulTheme.blue : ColorfulTheme.pink,
-              );
-            },
-          ),
-          const SizedBox(width: 8.0),
         ],
       ),
       body: SafeArea(top: true, bottom: true, child: _buildBody(state)),

@@ -14,12 +14,10 @@ enum ColorfulTheme {
 
 class ColorfulApp extends StatefulWidget {
   final AppBuilder builder;
-  final ColorThemeData colorTheme;
 
   ColorfulApp({
     Key key,
     this.builder,
-    this.colorTheme,
   }) : super(key: key);
 
   static ColorfulAppState of(BuildContext context) {
@@ -36,6 +34,9 @@ class ColorfulAppState extends State<ColorfulApp> {
   @override
   void initState() {
     super.initState();
+
+    // Hack, needed since _loadColorTheme is async
+    colors = ColorThemeData.pink();
     _loadColorTheme();
   }
 

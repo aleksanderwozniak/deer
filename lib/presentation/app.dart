@@ -20,7 +20,6 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ColorfulApp(
-      colorTheme: ColorThemeData.pink(),
       builder: (context, theme) {
         return MaterialApp(
           title: _title,
