@@ -36,6 +36,14 @@ class _EditableBulletListState extends State<EditableBulletList> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    _bullets.forEach((bullet) {
+      bullet.item2.dispose();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     var children = [];
 
@@ -63,11 +71,13 @@ class _EditableBulletListState extends State<EditableBulletList> {
         value: bullet.item1.checked,
         onChanged: (value) {
           final id = _bullets.indexOf(bullet);
-          setState(() {
-            final b = _bullets.toBuilder();
-            b[id] = Tuple2(BulletEntity(text: bullet.item1.text, checked: value), bullet.item2);
-            _bullets = b.build();
-          });
+          if (id >= 0) {
+            setState(() {
+              final b = _bullets.toBuilder();
+              b[id] = Tuple2(BulletEntity(text: bullet.item1.text, checked: value), bullet.item2);
+              _bullets = b.build();
+            });
+          }
 
           widget.onChanged(_bullets.map((bullet) {
             final text = bullet.item1.text.trimLeft();
@@ -87,8 +97,8 @@ class _EditableBulletListState extends State<EditableBulletList> {
           checked: bullet.item1.checked,
           onChanged: (value) {
             final id = _bullets.indexOf(bullet);
-            if (value.isEmpty) {
-              if (id >= 0) {
+            if (id >= 0) {
+              if (value.isEmpty) {
                 setState(() {
                   _bullets = _bullets.rebuild((b) => b..remove(bullet));
                 });
@@ -98,13 +108,13 @@ class _EditableBulletListState extends State<EditableBulletList> {
                 SchedulerBinding.instance.scheduleFrameCallback((_) {
                   FocusScope.of(context).requestFocus(node);
                 });
+              } else {
+                setState(() {
+                  final b = _bullets.toBuilder();
+                  b[id] = Tuple2(BulletEntity(text: value, checked: bullet.item1.checked), bullet.item2);
+                  _bullets = b.build();
+                });
               }
-            } else {
-              setState(() {
-                final b = _bullets.toBuilder();
-                b[id] = Tuple2(BulletEntity(text: value, checked: bullet.item1.checked), bullet.item2);
-                _bullets = b.build();
-              });
             }
 
             widget.onChanged(_bullets.map((bullet) {
