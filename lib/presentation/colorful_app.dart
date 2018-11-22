@@ -102,6 +102,8 @@ class ColorThemeData {
         cursorColor: _dark,
         textSelectionColor: _bright,
         textSelectionHandleColor: _medium,
+        hintColor: _dark,
+        unselectedWidgetColor: _dark,
         primaryColor: AppColors.white1,
         canvasColor: AppColors.white1,
         textTheme: TextTheme(
