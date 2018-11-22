@@ -9,17 +9,28 @@ import 'package:tasking/domain/entity/todo_entity.dart';
 
 class TodoDao {
   Stream<List<TodoEntity>> get all => _data.stream().map((it) => it.toList());
-  Stream<List<TodoEntity>> get unassigned => _data.stream().map(
-        (it) => it.where((e) => e.status == TodoStatus.unassigned).toList(),
+
+  Stream<List<TodoEntity>> get active => _data.stream().map(
+        (it) => it.where((e) => e.status == TodoStatus.active).toList(),
       );
+
   Stream<List<TodoEntity>> get finished => _data.stream().map(
         (it) => it.where((e) => e.status == TodoStatus.finished).toList(),
       );
 
+  Stream<String> get filter => _filter.stream();
+
   final _data = InMemory<BuiltList<TodoEntity>>();
+  final _filter = InMemory<String>();
 
   TodoDao() {
     _loadFromDisk();
+    _filter.add('All');
+    _filter.seedValue = 'All';
+  }
+
+  void setFilter(String value) {
+    _filter.add(value);
   }
 
   void _loadFromDisk() async {

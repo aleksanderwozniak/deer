@@ -12,8 +12,13 @@ class TodoInteractor {
   }) : assert(todoRepository != null);
 
   Stream<List<TodoEntity>> get all => todoRepository.all;
-  Stream<List<TodoEntity>> get unassigned => todoRepository.unassigned;
+  Stream<List<TodoEntity>> get active => todoRepository.active;
   Stream<List<TodoEntity>> get finished => todoRepository.finished;
+  Stream<String> get filter => todoRepository.filter;
+
+  void setFilter(String value) {
+    todoRepository.setFilter(value);
+  }
 
   Stream<Task> add(TodoEntity todo) {
     return Observable.fromFuture(todoRepository.add(todo)).startWith(Task.running());

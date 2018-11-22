@@ -7,6 +7,7 @@ import 'package:tasking/domain/interactor/task.dart';
 import 'package:tasking/presentation/app.dart';
 import 'package:tasking/presentation/screen/todo_list/todo_list_actions.dart';
 import 'package:tasking/utils/string_utils.dart';
+import 'package:tuple/tuple.dart';
 
 import 'todo_list_state.dart';
 
@@ -20,8 +21,8 @@ class TodoListBloc {
     seedValue: TodoListState(),
   );
 
-  StreamSubscription<List<TodoEntity>> _unassignedTodos;
-  StreamSubscription<Task> _diskAccessTask;
+  StreamSubscription<Task> _diskAccessSubscription;
+  StreamSubscription<Tuple2<String, List<TodoEntity>>> _todosSubscription;
 
   TodoListBloc() {
     _actions.stream.listen((action) {
@@ -29,15 +30,27 @@ class TodoListBloc {
         case PerformOnTodo:
           _onPerform(action);
           break;
+        case FilterBy:
+          _onFilterBy(action);
+          break;
         default:
           assert(false);
       }
     });
 
-    _unassignedTodos = dependencies.todoInteractor.unassigned.listen((todos) {
-      _state.add(_state.value.rebuild(
-        (b) => b..todos = ListBuilder(todos),
-      ));
+    _todosSubscription = Observable.combineLatest2(
+      dependencies.todoInteractor.filter,
+      dependencies.todoInteractor.active,
+      (a, b) => Tuple2<String, List<TodoEntity>>(a, b),
+    ).listen((data) {
+      var list = [];
+      if (data.item1 == 'All') {
+        list = data.item2;
+      } else {
+        list = data.item2.where((e) => e.tags.contains(data.item1)).toList();
+      }
+
+      _state.add(_state.value.rebuild((b) => b..todos = ListBuilder(list)));
     });
   }
 
@@ -62,8 +75,8 @@ class TodoListBloc {
       return;
     }
 
-    _diskAccessTask?.cancel();
-    _diskAccessTask = dependencies.todoInteractor.add(todo).listen((task) {
+    _diskAccessSubscription?.cancel();
+    _diskAccessSubscription = dependencies.todoInteractor.add(todo).listen((task) {
       _state.add(_state.value.rebuild((b) => b..diskAccessTask = task));
     });
   }
@@ -72,17 +85,24 @@ class TodoListBloc {
     final todoBuilder = todo.toBuilder();
     todoBuilder.status = TodoStatus.finished;
 
-    _diskAccessTask?.cancel();
-    _diskAccessTask = dependencies.todoInteractor.update(todoBuilder.build()).listen((task) {
+    _diskAccessSubscription?.cancel();
+    _diskAccessSubscription = dependencies.todoInteractor.update(todoBuilder.build()).listen((task) {
       _state.add(_state.value.rebuild((b) => b..diskAccessTask = task));
     });
+  }
+
+  void _onFilterBy(FilterBy action) {
+    final filter = action.filter;
+
+    _state.add(_state.value.rebuild((b) => b..filter = filter));
+    dependencies.todoInteractor.setFilter(filter);
   }
 
   void dispose() {
     _actions.close();
     _state.close();
 
-    _unassignedTodos?.cancel();
-    _diskAccessTask?.cancel();
+    _todosSubscription?.cancel();
+    _diskAccessSubscription?.cancel();
   }
 }

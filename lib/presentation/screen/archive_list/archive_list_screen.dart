@@ -75,16 +75,19 @@ class _ArchiveListScreenState extends State<ArchiveListScreen> {
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             Expanded(
-              child: ListView.builder(
-                itemCount: state.archivedTodos.length,
-                itemBuilder: (context, index) {
-                  final todo = state.archivedTodos[index];
-                  return TodoTile(
-                    todo: todo,
-                    onTap: () => _showDetails(todo),
-                  );
-                },
-              ),
+              child: state.archivedTodos.length == 0
+                  // TODO: beautify
+                  ? Center(child: Text('Archive is empty!'))
+                  : ListView.builder(
+                      itemCount: state.archivedTodos.length,
+                      itemBuilder: (context, index) {
+                        final todo = state.archivedTodos[index];
+                        return TodoTile(
+                          todo: todo,
+                          onTap: () => _showDetails(todo),
+                        );
+                      },
+                    ),
             ),
             BottomButton(
               text: 'Clear',

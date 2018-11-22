@@ -9,7 +9,9 @@ import 'package:tasking/presentation/screen/todo_detail/todo_detail_screen.dart'
 import 'package:tasking/presentation/screen/todo_list/todo_list_actions.dart';
 import 'package:tasking/presentation/shared/helper/date_formatter.dart';
 import 'package:tasking/presentation/shared/resources.dart';
+import 'package:tasking/presentation/shared/widgets/box_decoration.dart';
 import 'package:tasking/presentation/shared/widgets/buttons.dart';
+import 'package:tasking/presentation/shared/widgets/dropdown.dart' as CustomDropdown;
 import 'package:tasking/presentation/shared/widgets/tag_action_chip.dart';
 import 'package:tasking/presentation/shared/widgets/tile.dart';
 
@@ -103,6 +105,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
         iconTheme: IconThemeData(color: ColorfulApp.of(context).colors.dark),
         title: Text(widget.title),
         centerTitle: true,
+        bottom: _buildFilter(state),
         leading: IconButton(
           icon: Icon(Icons.color_lens),
           tooltip: 'Change theme',
@@ -126,29 +129,72 @@ class _TodoListScreenState extends State<TodoListScreen> {
     );
   }
 
+  Widget _buildFilter(TodoListState state) {
+    final filters = presetTags.toList();
+    filters.insert(0, 'All');
+
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(40.0),
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 8.0, right: 8.0),
+        child: Align(
+          alignment: Alignment.bottomRight,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              Text('Filter by:'),
+              const SizedBox(width: 8.0),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
+                decoration: roundedShape(context),
+                child: CustomDropdown.DropdownButtonHideUnderline(
+                  child: CustomDropdown.DropdownButton<String>(
+                    isDense: true,
+                    value: state.filter,
+                    items: filters
+                        .map((f) => CustomDropdown.DropdownMenuItem<String>(
+                              child: Text(f),
+                              value: f,
+                            ))
+                        .toList(),
+                    onChanged: (filter) => _bloc.actions.add(FilterBy(filter: filter)),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildBody(TodoListState state) {
     return Container(
       decoration: BoxDecoration(gradient: ColorfulApp.of(context).colors.brightGradient),
       child: Column(
         children: <Widget>[
           Expanded(
-            child: ListView.builder(
-              itemCount: state.todos.length,
-              controller: _todoListScrollController,
-              itemBuilder: (context, index) {
-                final todo = state.todos[index];
-                return Dismissible(
-                  key: Key(todo.addedDate.toIso8601String()),
-                  background: _buildDismissibleBackground(leftToRight: true),
-                  secondaryBackground: _buildDismissibleBackground(leftToRight: false),
-                  onDismissed: (_) => _archiveTodo(todo),
-                  child: TodoTile(
-                    todo: todo,
-                    onTap: () => _showDetails(todo),
+            child: state.todos.length == 0
+                // TODO: beautify
+                ? Center(child: Text('Todo list is empty!'))
+                : ListView.builder(
+                    itemCount: state.todos.length,
+                    controller: _todoListScrollController,
+                    itemBuilder: (context, index) {
+                      final todo = state.todos[index];
+                      return Dismissible(
+                        key: Key(todo.addedDate.toIso8601String()),
+                        background: _buildDismissibleBackground(leftToRight: true),
+                        secondaryBackground: _buildDismissibleBackground(leftToRight: false),
+                        onDismissed: (_) => _archiveTodo(todo),
+                        child: TodoTile(
+                          todo: todo,
+                          onTap: () => _showDetails(todo),
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
           ),
           _TodoAdder(
             onAdd: _addTodo,
@@ -179,7 +225,6 @@ class _TodoListScreenState extends State<TodoListScreen> {
   }
 }
 
-// TODO: Expanded TodoAdder might overflow vertically, esp. w/ visible keyboard
 class _TodoAdder extends StatefulWidget {
   final TextEditingController todoNameController;
   final _AddTaskCallback onAdd;
@@ -208,12 +253,21 @@ class _TodoAdderState extends State<_TodoAdder> {
   DateTime _dueDate;
   List<String> _tags;
 
+  FocusNode _focusNode;
+
   @override
   void initState() {
     super.initState();
     _isExpanded = false;
     _tags = [];
     _height = _collapsedHeight;
+
+    _focusNode = FocusNode();
+    _focusNode.addListener(() {
+      if (_focusNode.hasFocus) {
+        _animate(showExpansion: false);
+      }
+    });
   }
 
   void _selectDate() async {
@@ -243,6 +297,18 @@ class _TodoAdderState extends State<_TodoAdder> {
     }
   }
 
+  void _animate({bool showExpansion}) {
+    setState(() {
+      _isExpanded = showExpansion ?? !_isExpanded;
+      _height = _isExpanded ? _expandedHeight : _collapsedHeight;
+
+      if (_isExpanded) {
+        _focusNode.unfocus();
+        FocusScope.of(context).requestFocus(FocusNode());
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final children = [
@@ -263,8 +329,8 @@ class _TodoAdderState extends State<_TodoAdder> {
 
     return AnimatedContainer(
       duration: Duration(milliseconds: 300),
+      constraints: BoxConstraints.expand(height: _height),
       curve: Curves.easeOut,
-      height: _height,
       decoration: BoxDecoration(
         boxShadow: [BoxShadow(color: Colors.black54, blurRadius: 10.0)],
         color: AppColors.white1,
@@ -283,14 +349,14 @@ class _TodoAdderState extends State<_TodoAdder> {
   Widget _buildHeader() {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: () {
-        setState(() {
-          _isExpanded = !_isExpanded;
-          _height = _isExpanded ? _expandedHeight : _collapsedHeight;
-        });
+      onVerticalDragStart: (_) {
+        _animate();
       },
       child: Center(
-        child: Icon(_isExpanded ? Icons.arrow_drop_down : Icons.arrow_drop_up),
+        child: Icon(
+          _isExpanded ? Icons.arrow_drop_down : Icons.arrow_drop_up,
+          color: ColorfulApp.of(context).colors.darkest,
+        ),
       ),
     );
   }
@@ -302,6 +368,7 @@ class _TodoAdderState extends State<_TodoAdder> {
         const SizedBox(width: 18.0),
         Expanded(
           child: TextField(
+            focusNode: _focusNode,
             controller: widget.todoNameController,
             maxLength: 50,
             maxLengthEnforced: true,
@@ -356,10 +423,7 @@ class _TodoAdderState extends State<_TodoAdder> {
       behavior: HitTestBehavior.opaque,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(24.0),
-          border: Border.all(color: ColorfulApp.of(context).colors.dark),
-        ),
+        decoration: roundedShape(context),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
