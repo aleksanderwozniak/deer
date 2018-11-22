@@ -9,6 +9,7 @@ import 'package:tasking/presentation/screen/todo_detail/todo_detail_screen.dart'
 import 'package:tasking/presentation/screen/todo_list/todo_list_actions.dart';
 import 'package:tasking/presentation/shared/helper/date_formatter.dart';
 import 'package:tasking/presentation/shared/resources.dart';
+import 'package:tasking/presentation/shared/widgets/box_decoration.dart';
 import 'package:tasking/presentation/shared/widgets/buttons.dart';
 import 'package:tasking/presentation/shared/widgets/tag_action_chip.dart';
 import 'package:tasking/presentation/shared/widgets/tile.dart';
@@ -132,32 +133,37 @@ class _TodoListScreenState extends State<TodoListScreen> {
     filters.insert(0, 'All');
 
     return PreferredSize(
-      preferredSize: const Size.fromHeight(40.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: <Widget>[
-          Row(
+      preferredSize: const Size.fromHeight(36.0),
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 8.0, right: 8.0),
+        child: Align(
+          alignment: Alignment.bottomRight,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               Text('Filter by:'),
               const SizedBox(width: 8.0),
-              DropdownButton<String>(
-                isDense: true,
-                value: state.filter,
-                items: filters
-                    .map((f) => DropdownMenuItem<String>(
-                          child: Text(f),
-                          value: f,
-                        ))
-                    .toList(),
-                onChanged: (filter) => _bloc.actions.add(FilterBy(filter: filter)),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
+                decoration: roundedShape(context),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    isDense: true,
+                    value: state.filter,
+                    items: filters
+                        .map((f) => DropdownMenuItem<String>(
+                              child: Text(f),
+                              value: f,
+                            ))
+                        .toList(),
+                    onChanged: (filter) => _bloc.actions.add(FilterBy(filter: filter)),
+                  ),
+                ),
               ),
-              const SizedBox(width: 12.0),
             ],
           ),
-          const SizedBox(height: 12.0),
-        ],
+        ),
       ),
     );
   }
@@ -238,6 +244,7 @@ class _TodoAdder extends StatefulWidget {
 class _TodoAdderState extends State<_TodoAdder> {
   final double _collapsedHeight = 97.0;
   final double _expandedHeight = 294.0;
+  // final double _expandedHeight = 220.0;
 
   bool _isExpanded;
   double _height;
@@ -299,8 +306,8 @@ class _TodoAdderState extends State<_TodoAdder> {
 
     return AnimatedContainer(
       duration: Duration(milliseconds: 300),
+      constraints: BoxConstraints.expand(height: _height),
       curve: Curves.easeOut,
-      height: _height,
       decoration: BoxDecoration(
         boxShadow: [BoxShadow(color: Colors.black54, blurRadius: 10.0)],
         color: AppColors.white1,
@@ -319,7 +326,16 @@ class _TodoAdderState extends State<_TodoAdder> {
   Widget _buildHeader() {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: () {
+      // onTap: () {
+      //   setState(() {
+      //     _isExpanded = !_isExpanded;
+      //     _height = _isExpanded ? _expandedHeight : _collapsedHeight;
+      //   });
+      // },
+      // -----------
+      // Replacement for `onTap`
+      // TODO: Test on real device
+      onVerticalDragDown: (_) {
         setState(() {
           _isExpanded = !_isExpanded;
           _height = _isExpanded ? _expandedHeight : _collapsedHeight;
@@ -373,6 +389,8 @@ class _TodoAdderState extends State<_TodoAdder> {
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         // ListView disables overflow error. If scrolling becomes desired, remove `NeverScrollableScrollPhysics`
         // NOTE: overflow error happens just during animation; also it is not visible on Release build.
+        // child: ScrollConfiguration(
+        // behavior: _NoHighlightBehavior(),
         child: ListView(
           physics: NeverScrollableScrollPhysics(),
           children: <Widget>[
@@ -392,10 +410,7 @@ class _TodoAdderState extends State<_TodoAdder> {
       behavior: HitTestBehavior.opaque,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(24.0),
-          border: Border.all(color: ColorfulApp.of(context).colors.dark),
-        ),
+        decoration: roundedShape(context),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
