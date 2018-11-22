@@ -18,26 +18,19 @@ class TodoDao {
         (it) => it.where((e) => e.status == TodoStatus.finished).toList(),
       );
 
-  Stream<List<TodoEntity>> filtered(String filter) => filter == 'All'
-      ? active
-      : _data.stream().map(
-          // (it) => it.where((e) => e.status == TodoStatus.active && e.tags.contains(filter)).toList(),
-          (it) {
-          return it
-              .where(
-                (e) => e.status == TodoStatus.active && e.tags.contains(filter),
-              )
-              .toList();
-        });
+  Stream<String> get filter => _filter.stream();
 
   final _data = InMemory<BuiltList<TodoEntity>>();
+  final _filter = InMemory<String>();
 
   TodoDao() {
     _loadFromDisk();
+    _filter.add('All');
+    _filter.seedValue = 'All';
+  }
 
-    _data.stream().listen((data) {
-      print(data);
-    });
+  void setFilter(String value) {
+    _filter.add(value);
   }
 
   void _loadFromDisk() async {

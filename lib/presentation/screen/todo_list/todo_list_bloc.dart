@@ -7,6 +7,7 @@ import 'package:tasking/domain/interactor/task.dart';
 import 'package:tasking/presentation/app.dart';
 import 'package:tasking/presentation/screen/todo_list/todo_list_actions.dart';
 import 'package:tasking/utils/string_utils.dart';
+import 'package:tuple/tuple.dart';
 
 import 'todo_list_state.dart';
 
@@ -20,8 +21,8 @@ class TodoListBloc {
     seedValue: TodoListState(),
   );
 
-  StreamSubscription<List<TodoEntity>> _todosSubscription;
   StreamSubscription<Task> _diskAccessSubscription;
+  StreamSubscription<Tuple2<String, List<TodoEntity>>> _todosSubscription;
 
   TodoListBloc() {
     _actions.stream.listen((action) {
@@ -37,10 +38,19 @@ class TodoListBloc {
       }
     });
 
-    _todosSubscription = dependencies.todoInteractor.filtered(_state.value.filter).listen((todos) {
-      _state.add(_state.value.rebuild(
-        (b) => b..todos = ListBuilder(todos),
-      ));
+    _todosSubscription = Observable.combineLatest2(
+      dependencies.todoInteractor.filter,
+      dependencies.todoInteractor.active,
+      (a, b) => Tuple2<String, List<TodoEntity>>(a, b),
+    ).listen((data) {
+      var list = [];
+      if (data.item1 == 'All') {
+        list = data.item2;
+      } else {
+        list = data.item2.where((e) => e.tags.contains(data.item1)).toList();
+      }
+
+      _state.add(_state.value.rebuild((b) => b..todos = ListBuilder(list)));
     });
   }
 
@@ -85,14 +95,7 @@ class TodoListBloc {
     final filter = action.filter;
 
     _state.add(_state.value.rebuild((b) => b..filter = filter));
-
-    _todosSubscription?.cancel();
-    // Needs to be here, to update `filter` parameter
-    _todosSubscription = dependencies.todoInteractor.filtered(_state.value.filter).listen((todos) {
-      _state.add(_state.value.rebuild(
-        (b) => b..todos = ListBuilder(todos),
-      ));
-    });
+    dependencies.todoInteractor.setFilter(filter);
   }
 
   void dispose() {

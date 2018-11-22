@@ -13,7 +13,11 @@ class TodoRepository {
   Stream<List<TodoEntity>> get all => dao.all;
   Stream<List<TodoEntity>> get active => dao.active;
   Stream<List<TodoEntity>> get finished => dao.finished;
-  Stream<List<TodoEntity>> filtered(String filter) => dao.filtered(filter);
+  Stream<String> get filter => dao.filter;
+
+  void setFilter(String value) {
+    dao.setFilter(value);
+  }
 
   Future<Task> add(TodoEntity todo) async {
     final result = await dao.add(todo);
