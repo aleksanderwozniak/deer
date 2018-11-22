@@ -23,7 +23,7 @@ abstract class TodoEntity implements Built<TodoEntity, TodoEntityBuilder> {
     String description = '',
     BuiltList<BulletEntity> bulletPoints,
     BuiltList<String> tags,
-    TodoStatus status = TodoStatus.unassigned,
+    TodoStatus status = TodoStatus.active,
     DateTime addedDate,
     DateTime dueDate,
   }) =>
@@ -38,12 +38,12 @@ abstract class TodoEntity implements Built<TodoEntity, TodoEntityBuilder> {
       );
 }
 
-enum TodoStatus { unassigned, finished }
+enum TodoStatus { active, finished }
 
 TodoStatus parse(String input) {
   switch (input) {
-    case 'unassigned':
-      return TodoStatus.unassigned;
+    case 'active':
+      return TodoStatus.active;
       break;
     case 'finished':
       return TodoStatus.finished;

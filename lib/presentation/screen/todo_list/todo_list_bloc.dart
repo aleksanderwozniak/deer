@@ -20,8 +20,8 @@ class TodoListBloc {
     seedValue: TodoListState(),
   );
 
-  StreamSubscription<List<TodoEntity>> _unassignedTodos;
-  StreamSubscription<Task> _diskAccessTask;
+  StreamSubscription<List<TodoEntity>> _todosSubscription;
+  StreamSubscription<Task> _diskAccessSubscription;
 
   TodoListBloc() {
     _actions.stream.listen((action) {
@@ -29,12 +29,15 @@ class TodoListBloc {
         case PerformOnTodo:
           _onPerform(action);
           break;
+        case FilterBy:
+          _onFilterBy(action);
+          break;
         default:
           assert(false);
       }
     });
 
-    _unassignedTodos = dependencies.todoInteractor.unassigned.listen((todos) {
+    _todosSubscription = dependencies.todoInteractor.filtered(_state.value.filter).listen((todos) {
       _state.add(_state.value.rebuild(
         (b) => b..todos = ListBuilder(todos),
       ));
@@ -62,8 +65,8 @@ class TodoListBloc {
       return;
     }
 
-    _diskAccessTask?.cancel();
-    _diskAccessTask = dependencies.todoInteractor.add(todo).listen((task) {
+    _diskAccessSubscription?.cancel();
+    _diskAccessSubscription = dependencies.todoInteractor.add(todo).listen((task) {
       _state.add(_state.value.rebuild((b) => b..diskAccessTask = task));
     });
   }
@@ -72,9 +75,23 @@ class TodoListBloc {
     final todoBuilder = todo.toBuilder();
     todoBuilder.status = TodoStatus.finished;
 
-    _diskAccessTask?.cancel();
-    _diskAccessTask = dependencies.todoInteractor.update(todoBuilder.build()).listen((task) {
+    _diskAccessSubscription?.cancel();
+    _diskAccessSubscription = dependencies.todoInteractor.update(todoBuilder.build()).listen((task) {
       _state.add(_state.value.rebuild((b) => b..diskAccessTask = task));
+    });
+  }
+
+  void _onFilterBy(FilterBy action) {
+    final filter = action.filter;
+
+    _state.add(_state.value.rebuild((b) => b..filter = filter));
+
+    _todosSubscription?.cancel();
+    // Needs to be here, to update `filter` parameter
+    _todosSubscription = dependencies.todoInteractor.filtered(_state.value.filter).listen((todos) {
+      _state.add(_state.value.rebuild(
+        (b) => b..todos = ListBuilder(todos),
+      ));
     });
   }
 
@@ -82,7 +99,7 @@ class TodoListBloc {
     _actions.close();
     _state.close();
 
-    _unassignedTodos?.cancel();
-    _diskAccessTask?.cancel();
+    _todosSubscription?.cancel();
+    _diskAccessSubscription?.cancel();
   }
 }

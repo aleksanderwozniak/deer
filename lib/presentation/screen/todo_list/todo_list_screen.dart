@@ -103,6 +103,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
         iconTheme: IconThemeData(color: ColorfulApp.of(context).colors.dark),
         title: Text(widget.title),
         centerTitle: true,
+        bottom: _buildFilter(state),
         leading: IconButton(
           icon: Icon(Icons.color_lens),
           tooltip: 'Change theme',
@@ -123,6 +124,41 @@ class _TodoListScreenState extends State<TodoListScreen> {
         ],
       ),
       body: SafeArea(top: true, bottom: true, child: _buildBody(state)),
+    );
+  }
+
+  Widget _buildFilter(TodoListState state) {
+    final filters = presetTags.toList();
+    filters.insert(0, 'All');
+
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(40.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              Text('Filter by:'),
+              const SizedBox(width: 8.0),
+              DropdownButton<String>(
+                isDense: true,
+                value: state.filter,
+                items: filters
+                    .map((f) => DropdownMenuItem<String>(
+                          child: Text(f),
+                          value: f,
+                        ))
+                    .toList(),
+                onChanged: (filter) => _bloc.actions.add(FilterBy(filter: filter)),
+              ),
+              const SizedBox(width: 12.0),
+            ],
+          ),
+          const SizedBox(height: 12.0),
+        ],
+      ),
     );
   }
 

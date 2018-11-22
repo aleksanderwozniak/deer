@@ -5,7 +5,7 @@ class PerformOnTodo {
   final TodoEntity todo;
   final Operation operation;
 
-  PerformOnTodo({
+  const PerformOnTodo({
     @required this.todo,
     @required this.operation,
   })  : assert(todo != null),
@@ -13,3 +13,9 @@ class PerformOnTodo {
 }
 
 enum Operation { add, archive }
+
+class FilterBy {
+  final String filter;
+
+  const FilterBy({this.filter}) : assert(filter != null);
+}

@@ -11,8 +11,9 @@ class TodoRepository {
   }) : assert(dao != null);
 
   Stream<List<TodoEntity>> get all => dao.all;
-  Stream<List<TodoEntity>> get unassigned => dao.unassigned;
+  Stream<List<TodoEntity>> get active => dao.active;
   Stream<List<TodoEntity>> get finished => dao.finished;
+  Stream<List<TodoEntity>> filtered(String filter) => dao.filtered(filter);
 
   Future<Task> add(TodoEntity todo) async {
     final result = await dao.add(todo);

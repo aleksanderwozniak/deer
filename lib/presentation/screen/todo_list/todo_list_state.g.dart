@@ -25,18 +25,24 @@ class _$TodoListState extends TodoListState {
   @override
   final bool todoNameHasError;
   @override
+  final String filter;
+  @override
   final Task diskAccessTask;
 
   factory _$TodoListState([void updates(TodoListStateBuilder b)]) =>
       (new TodoListStateBuilder()..update(updates)).build();
 
-  _$TodoListState._({this.todos, this.todoNameHasError, this.diskAccessTask})
+  _$TodoListState._(
+      {this.todos, this.todoNameHasError, this.filter, this.diskAccessTask})
       : super._() {
     if (todos == null) {
       throw new BuiltValueNullFieldError('TodoListState', 'todos');
     }
     if (todoNameHasError == null) {
       throw new BuiltValueNullFieldError('TodoListState', 'todoNameHasError');
+    }
+    if (filter == null) {
+      throw new BuiltValueNullFieldError('TodoListState', 'filter');
     }
     if (diskAccessTask == null) {
       throw new BuiltValueNullFieldError('TodoListState', 'diskAccessTask');
@@ -56,12 +62,15 @@ class _$TodoListState extends TodoListState {
     return other is TodoListState &&
         todos == other.todos &&
         todoNameHasError == other.todoNameHasError &&
+        filter == other.filter &&
         diskAccessTask == other.diskAccessTask;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc($jc(0, todos.hashCode), todoNameHasError.hashCode),
+    return $jf($jc(
+        $jc($jc($jc(0, todos.hashCode), todoNameHasError.hashCode),
+            filter.hashCode),
         diskAccessTask.hashCode));
   }
 
@@ -70,6 +79,7 @@ class _$TodoListState extends TodoListState {
     return (newBuiltValueToStringHelper('TodoListState')
           ..add('todos', todos)
           ..add('todoNameHasError', todoNameHasError)
+          ..add('filter', filter)
           ..add('diskAccessTask', diskAccessTask))
         .toString();
   }
@@ -89,6 +99,10 @@ class TodoListStateBuilder
   set todoNameHasError(bool todoNameHasError) =>
       _$this._todoNameHasError = todoNameHasError;
 
+  String _filter;
+  String get filter => _$this._filter;
+  set filter(String filter) => _$this._filter = filter;
+
   Task _diskAccessTask;
   Task get diskAccessTask => _$this._diskAccessTask;
   set diskAccessTask(Task diskAccessTask) =>
@@ -100,6 +114,7 @@ class TodoListStateBuilder
     if (_$v != null) {
       _todos = _$v.todos?.toBuilder();
       _todoNameHasError = _$v.todoNameHasError;
+      _filter = _$v.filter;
       _diskAccessTask = _$v.diskAccessTask;
       _$v = null;
     }
@@ -127,6 +142,7 @@ class TodoListStateBuilder
           new _$TodoListState._(
               todos: todos.build(),
               todoNameHasError: todoNameHasError,
+              filter: filter,
               diskAccessTask: diskAccessTask);
     } catch (_) {
       String _$failedField;
