@@ -11,6 +11,7 @@ import 'package:tasking/presentation/shared/helper/date_formatter.dart';
 import 'package:tasking/presentation/shared/resources.dart';
 import 'package:tasking/presentation/shared/widgets/box_decoration.dart';
 import 'package:tasking/presentation/shared/widgets/buttons.dart';
+import 'package:tasking/presentation/shared/widgets/dropdown.dart' as CustomDropdown;
 import 'package:tasking/presentation/shared/widgets/tag_action_chip.dart';
 import 'package:tasking/presentation/shared/widgets/tile.dart';
 
@@ -133,7 +134,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
     filters.insert(0, 'All');
 
     return PreferredSize(
-      preferredSize: const Size.fromHeight(36.0),
+      preferredSize: const Size.fromHeight(40.0),
       child: Padding(
         padding: const EdgeInsets.only(bottom: 8.0, right: 8.0),
         child: Align(
@@ -147,12 +148,12 @@ class _TodoListScreenState extends State<TodoListScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
                 decoration: roundedShape(context),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
+                child: CustomDropdown.DropdownButtonHideUnderline(
+                  child: CustomDropdown.DropdownButton<String>(
                     isDense: true,
                     value: state.filter,
                     items: filters
-                        .map((f) => DropdownMenuItem<String>(
+                        .map((f) => CustomDropdown.DropdownMenuItem<String>(
                               child: Text(f),
                               value: f,
                             ))
@@ -174,23 +175,26 @@ class _TodoListScreenState extends State<TodoListScreen> {
       child: Column(
         children: <Widget>[
           Expanded(
-            child: ListView.builder(
-              itemCount: state.todos.length,
-              controller: _todoListScrollController,
-              itemBuilder: (context, index) {
-                final todo = state.todos[index];
-                return Dismissible(
-                  key: Key(todo.addedDate.toIso8601String()),
-                  background: _buildDismissibleBackground(leftToRight: true),
-                  secondaryBackground: _buildDismissibleBackground(leftToRight: false),
-                  onDismissed: (_) => _archiveTodo(todo),
-                  child: TodoTile(
-                    todo: todo,
-                    onTap: () => _showDetails(todo),
+            child: state.todos.length == 0
+                // TODO: beautify
+                ? Center(child: Text('Todo list is empty!'))
+                : ListView.builder(
+                    itemCount: state.todos.length,
+                    controller: _todoListScrollController,
+                    itemBuilder: (context, index) {
+                      final todo = state.todos[index];
+                      return Dismissible(
+                        key: Key(todo.addedDate.toIso8601String()),
+                        background: _buildDismissibleBackground(leftToRight: true),
+                        secondaryBackground: _buildDismissibleBackground(leftToRight: false),
+                        onDismissed: (_) => _archiveTodo(todo),
+                        child: TodoTile(
+                          todo: todo,
+                          onTap: () => _showDetails(todo),
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
           ),
           _TodoAdder(
             onAdd: _addTodo,
@@ -221,7 +225,6 @@ class _TodoListScreenState extends State<TodoListScreen> {
   }
 }
 
-// TODO: Expanded TodoAdder might overflow vertically, esp. w/ visible keyboard
 class _TodoAdder extends StatefulWidget {
   final TextEditingController todoNameController;
   final _AddTaskCallback onAdd;
@@ -244,12 +247,13 @@ class _TodoAdder extends StatefulWidget {
 class _TodoAdderState extends State<_TodoAdder> {
   final double _collapsedHeight = 97.0;
   final double _expandedHeight = 294.0;
-  // final double _expandedHeight = 220.0;
 
   bool _isExpanded;
   double _height;
   DateTime _dueDate;
   List<String> _tags;
+
+  FocusNode _focusNode;
 
   @override
   void initState() {
@@ -257,6 +261,13 @@ class _TodoAdderState extends State<_TodoAdder> {
     _isExpanded = false;
     _tags = [];
     _height = _collapsedHeight;
+
+    _focusNode = FocusNode();
+    _focusNode.addListener(() {
+      if (_focusNode.hasFocus) {
+        _animate(showExpansion: false);
+      }
+    });
   }
 
   void _selectDate() async {
@@ -284,6 +295,18 @@ class _TodoAdderState extends State<_TodoAdder> {
     } else {
       _tags.add(tag);
     }
+  }
+
+  void _animate({bool showExpansion}) {
+    setState(() {
+      _isExpanded = showExpansion ?? !_isExpanded;
+      _height = _isExpanded ? _expandedHeight : _collapsedHeight;
+
+      if (_isExpanded) {
+        _focusNode.unfocus();
+        FocusScope.of(context).requestFocus(FocusNode());
+      }
+    });
   }
 
   @override
@@ -326,23 +349,14 @@ class _TodoAdderState extends State<_TodoAdder> {
   Widget _buildHeader() {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      // onTap: () {
-      //   setState(() {
-      //     _isExpanded = !_isExpanded;
-      //     _height = _isExpanded ? _expandedHeight : _collapsedHeight;
-      //   });
-      // },
-      // -----------
-      // Replacement for `onTap`
-      // TODO: Test on real device
-      onVerticalDragDown: (_) {
-        setState(() {
-          _isExpanded = !_isExpanded;
-          _height = _isExpanded ? _expandedHeight : _collapsedHeight;
-        });
+      onVerticalDragStart: (_) {
+        _animate();
       },
       child: Center(
-        child: Icon(_isExpanded ? Icons.arrow_drop_down : Icons.arrow_drop_up),
+        child: Icon(
+          _isExpanded ? Icons.arrow_drop_down : Icons.arrow_drop_up,
+          color: ColorfulApp.of(context).colors.darkest,
+        ),
       ),
     );
   }
@@ -354,6 +368,7 @@ class _TodoAdderState extends State<_TodoAdder> {
         const SizedBox(width: 18.0),
         Expanded(
           child: TextField(
+            focusNode: _focusNode,
             controller: widget.todoNameController,
             maxLength: 50,
             maxLengthEnforced: true,
@@ -389,8 +404,6 @@ class _TodoAdderState extends State<_TodoAdder> {
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         // ListView disables overflow error. If scrolling becomes desired, remove `NeverScrollableScrollPhysics`
         // NOTE: overflow error happens just during animation; also it is not visible on Release build.
-        // child: ScrollConfiguration(
-        // behavior: _NoHighlightBehavior(),
         child: ListView(
           physics: NeverScrollableScrollPhysics(),
           children: <Widget>[
