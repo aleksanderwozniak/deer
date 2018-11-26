@@ -14,6 +14,7 @@ import 'package:tasking/presentation/shared/widgets/buttons.dart';
 import 'package:tasking/presentation/shared/widgets/dropdown.dart' as CustomDropdown;
 import 'package:tasking/presentation/shared/widgets/tag_action_chip.dart';
 import 'package:tasking/presentation/shared/widgets/tile.dart';
+import 'package:tasking/utils/string_utils.dart';
 
 import 'todo_list_bloc.dart';
 import 'todo_list_state.dart';
@@ -103,7 +104,9 @@ class _TodoListScreenState extends State<TodoListScreen> {
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(color: ColorfulApp.of(context).colors.dark),
-        title: Text(widget.title),
+        // title: Text(widget.title),
+        // TODO: for testing colorful themes
+        title: Text(enumToString(ColorfulApp.of(context).colors.currentTheme)),
         centerTitle: true,
         bottom: _buildFilter(state),
         leading: IconButton(

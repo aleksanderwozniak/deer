@@ -11,8 +11,10 @@ enum ColorfulTheme {
   standard,
   pink,
   blue,
-  green,
   arcticBlue,
+  mix,
+  burgundy,
+  green,
 }
 
 class ColorfulApp extends StatefulWidget {
@@ -76,6 +78,12 @@ class ColorfulAppState extends State<ColorfulApp> {
           break;
         case ColorfulTheme.arcticBlue:
           colors = ColorThemeData.arcticBlue();
+          break;
+        case ColorfulTheme.mix:
+          colors = ColorThemeData.mix();
+          break;
+        case ColorfulTheme.burgundy:
+          colors = ColorThemeData.burgundy();
           break;
       }
     });
@@ -181,4 +189,22 @@ class ColorThemeData {
         _dark = AppColors.arcticBlue4,
         _darkest = AppColors.arcticBlue5,
         _brightGradient = AppColors.arcticBlueGradient;
+
+  ColorThemeData.mix()
+      : _currentTheme = ColorfulTheme.mix,
+        _brightest = AppColors.mix1,
+        _bright = AppColors.mix2,
+        _medium = AppColors.mix3,
+        _dark = AppColors.mix4,
+        _darkest = AppColors.mix5,
+        _brightGradient = AppColors.mixGradient;
+
+  ColorThemeData.burgundy()
+      : _currentTheme = ColorfulTheme.burgundy,
+        _brightest = AppColors.burgundy1,
+        _bright = AppColors.burgundy2,
+        _medium = AppColors.burgundy3,
+        _dark = AppColors.burgundy4,
+        _darkest = AppColors.burgundy5,
+        _brightGradient = AppColors.burgundyGradient;
 }
