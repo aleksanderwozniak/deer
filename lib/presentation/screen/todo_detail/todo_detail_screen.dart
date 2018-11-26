@@ -215,62 +215,95 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
   }
 
   Widget _buildDate(TodoDetailState state) {
+    final children = [
+      Text(
+        'Added on:',
+        style: TextStyle().copyWith(fontSize: 12.0, color: ColorfulApp.of(context).colors.dark),
+      ),
+      const SizedBox(height: 8.0),
+      Row(
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          const SizedBox(width: 20.0),
+          Expanded(
+            child: Text(
+              DateFormatter.safeFormatDays(state.todo.addedDate),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          const SizedBox(width: 8.0),
+          Expanded(
+            child: Text(
+              DateFormatter.safeFormatFull(state.todo.addedDate),
+              textAlign: TextAlign.right,
+            ),
+          ),
+        ],
+      ),
+      const SizedBox(height: 24.0),
+      Text(
+        'Due by:',
+        style: TextStyle().copyWith(fontSize: 12.0, color: ColorfulApp.of(context).colors.dark),
+      ),
+      const SizedBox(height: 8.0),
+      Row(
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          const SizedBox(width: 20.0),
+          Expanded(
+            child: Text(
+              DateFormatter.safeFormatDays(state.todo.dueDate),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          const SizedBox(width: 8.0),
+          Expanded(
+            child: Text(
+              DateFormatter.safeFormatFull(state.todo.dueDate),
+              textAlign: TextAlign.right,
+            ),
+          ),
+        ],
+      ),
+    ];
+
+    if (state.todo.finishedDate != null) {
+      children.addAll([
+        const SizedBox(height: 24.0),
+        Text(
+          'Finished on:',
+          style: TextStyle().copyWith(fontSize: 12.0, color: ColorfulApp.of(context).colors.dark),
+        ),
+        const SizedBox(height: 8.0),
+        Row(
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            const SizedBox(width: 20.0),
+            Expanded(
+              child: Text(
+                DateFormatter.safeFormatDays(state.todo.finishedDate),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            const SizedBox(width: 8.0),
+            Expanded(
+              child: Text(
+                DateFormatter.safeFormatFull(state.todo.finishedDate),
+                textAlign: TextAlign.right,
+              ),
+            ),
+          ],
+        ),
+      ]);
+    }
+
     return ShadedBox(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Text(
-            'Added on:',
-            style: TextStyle().copyWith(fontSize: 12.0, color: ColorfulApp.of(context).colors.dark),
-          ),
-          const SizedBox(height: 8.0),
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              const SizedBox(width: 20.0),
-              Expanded(
-                child: Text(
-                  DateFormatter.safeFormatDays(state.todo.addedDate),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              const SizedBox(width: 8.0),
-              Expanded(
-                child: Text(
-                  DateFormatter.safeFormatFull(state.todo.addedDate),
-                  textAlign: TextAlign.right,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 24.0),
-          Text(
-            'Due by:',
-            style: TextStyle().copyWith(fontSize: 12.0, color: ColorfulApp.of(context).colors.dark),
-          ),
-          const SizedBox(height: 8.0),
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              const SizedBox(width: 20.0),
-              Expanded(
-                child: Text(
-                  DateFormatter.safeFormatDays(state.todo.dueDate),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              const SizedBox(width: 8.0),
-              Expanded(
-                child: Text(
-                  DateFormatter.safeFormatFull(state.todo.dueDate),
-                  textAlign: TextAlign.right,
-                ),
-              ),
-            ],
-          ),
-        ],
+        children: children,
       ),
     );
   }
