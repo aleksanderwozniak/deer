@@ -109,13 +109,8 @@ class _TodoListScreenState extends State<TodoListScreen> {
         leading: IconButton(
           icon: Icon(Icons.color_lens),
           tooltip: 'Change theme',
-          onPressed: () {
-            // TODO -> this is for testing
-            final currentTheme = ColorfulApp.of(context).colors.currentTheme;
-            ColorfulApp.of(context).updateColorTheme(
-              currentTheme == ColorfulTheme.pink ? ColorfulTheme.blue : ColorfulTheme.pink,
-            );
-          },
+          // [WIP]
+          onPressed: () => ColorfulApp.of(context).nextColorTheme(),
         ),
         actions: <Widget>[
           IconButton(

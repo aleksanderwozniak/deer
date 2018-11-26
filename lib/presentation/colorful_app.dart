@@ -8,8 +8,11 @@ typedef Widget AppBuilder(BuildContext context, ThemeData data);
 const String _colorfulThemeKey = 'colorfulTheme';
 
 enum ColorfulTheme {
+  standard,
   pink,
   blue,
+  green,
+  arcticBlue,
 }
 
 class ColorfulApp extends StatefulWidget {
@@ -36,28 +39,51 @@ class ColorfulAppState extends State<ColorfulApp> {
     super.initState();
 
     // Hack, needed since _loadColorTheme is async
-    colors = ColorThemeData.pink();
+    colors = ColorThemeData.standard();
     _loadColorTheme();
   }
 
-  void _setColorTheme(ColorfulTheme theme) {
-    switch (theme) {
-      case ColorfulTheme.pink:
-        setState(() {
-          colors = ColorThemeData.pink();
-        });
-        break;
-      case ColorfulTheme.blue:
-        setState(() {
-          colors = ColorThemeData.blue();
-        });
-        break;
+  void nextColorTheme() {
+    final currentTheme = colors._currentTheme;
+    var id = ColorfulTheme.values.indexOf(currentTheme);
+
+    if (id == ColorfulTheme.values.length - 1) {
+      // resets counter, but also avoids `standard`
+      id = 1;
+    } else {
+      id++;
     }
+
+    final newTheme = ColorfulTheme.values.elementAt(id);
+
+    updateColorTheme(newTheme);
+  }
+
+  void _setColorTheme(ColorfulTheme theme) {
+    setState(() {
+      switch (theme) {
+        case ColorfulTheme.standard:
+          colors = ColorThemeData.standard();
+          break;
+        case ColorfulTheme.pink:
+          colors = ColorThemeData.pink();
+          break;
+        case ColorfulTheme.blue:
+          colors = ColorThemeData.blue();
+          break;
+        case ColorfulTheme.green:
+          colors = ColorThemeData.green();
+          break;
+        case ColorfulTheme.arcticBlue:
+          colors = ColorThemeData.arcticBlue();
+          break;
+      }
+    });
   }
 
   void _loadColorTheme() async {
     final prefs = await SharedPreferences.getInstance();
-    final theme = stringToEnum(prefs.getString(_colorfulThemeKey), ColorfulTheme.values) ?? ColorfulTheme.pink;
+    final theme = stringToEnum(prefs.getString(_colorfulThemeKey), ColorfulTheme.values) ?? ColorfulTheme.standard;
 
     _setColorTheme(theme);
   }
@@ -111,6 +137,15 @@ class ColorThemeData {
         ),
       );
 
+  ColorThemeData.standard()
+      : _currentTheme = ColorfulTheme.blue,
+        _brightest = AppColors.blue1,
+        _bright = AppColors.blue2,
+        _medium = AppColors.blue3,
+        _dark = AppColors.blue4,
+        _darkest = AppColors.blue5,
+        _brightGradient = AppColors.blueGradient;
+
   ColorThemeData.pink()
       : _currentTheme = ColorfulTheme.pink,
         _brightest = AppColors.pink1,
@@ -128,4 +163,22 @@ class ColorThemeData {
         _dark = AppColors.blue4,
         _darkest = AppColors.blue5,
         _brightGradient = AppColors.blueGradient;
+
+  ColorThemeData.green()
+      : _currentTheme = ColorfulTheme.green,
+        _brightest = AppColors.green1,
+        _bright = AppColors.green2,
+        _medium = AppColors.green3,
+        _dark = AppColors.green4,
+        _darkest = AppColors.green5,
+        _brightGradient = AppColors.greenGradient;
+
+  ColorThemeData.arcticBlue()
+      : _currentTheme = ColorfulTheme.arcticBlue,
+        _brightest = AppColors.arcticBlue1,
+        _bright = AppColors.arcticBlue2,
+        _medium = AppColors.arcticBlue3,
+        _dark = AppColors.arcticBlue4,
+        _darkest = AppColors.arcticBlue5,
+        _brightGradient = AppColors.arcticBlueGradient;
 }
