@@ -319,7 +319,7 @@ class _TextFieldState extends State<_TextField> {
           border: InputBorder.none,
           hintText: widget.hint,
           hintStyle: TextStyle().copyWith(
-            color: widget.showError ? ColorfulApp.of(context).colors.darkest : ColorfulApp.of(context).colors.medium,
+            color: widget.showError ? ColorfulApp.of(context).colors.error : ColorfulApp.of(context).colors.medium,
             fontSize: widget.fontSize,
           ),
         ),

@@ -34,6 +34,8 @@ class ArchiveListBloc {
     });
 
     _archivedTodos = dependencies.todoInteractor.finished.listen((todos) {
+      todos.sort((a, b) => a.finishedDate.compareTo(b.finishedDate));
+
       _state.add(_state.value.rebuild(
         (b) => b..archivedTodos = ListBuilder(todos),
       ));

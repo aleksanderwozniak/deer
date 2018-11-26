@@ -16,6 +16,7 @@ class TodoMapper {
       status: todo.status,
       addedDate: todo.addedDate,
       dueDate: todo.dueDate,
+      finishedDate: todo.finishedDate,
     );
   }
 
@@ -28,6 +29,7 @@ class TodoMapper {
       status: json.status,
       addedDate: json.addedDate,
       dueDate: json.dueDate,
+      finishedDate: json.finishedDate,
     );
   }
 

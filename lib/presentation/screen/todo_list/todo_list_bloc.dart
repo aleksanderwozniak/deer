@@ -84,6 +84,7 @@ class TodoListBloc {
   void _onArchive(TodoEntity todo) {
     final todoBuilder = todo.toBuilder();
     todoBuilder.status = TodoStatus.finished;
+    todoBuilder.finishedDate = DateTime.now();
 
     _diskAccessSubscription?.cancel();
     _diskAccessSubscription = dependencies.todoInteractor.update(todoBuilder.build()).listen((task) {

@@ -26,7 +26,7 @@ class TodoAvatar extends StatelessWidget {
           width: 1.0,
           color: ColorfulApp.of(context).colors.dark,
         ),
-        color: isLarge ? ColorfulApp.of(context).colors.brightest : AppColors.white1,
+        color: isLarge ? ColorfulApp.of(context).colors.pale : AppColors.white1,
       ),
       child: Center(child: _buildContentInCircle()),
     );

@@ -46,7 +46,7 @@ class _TagActionChipState extends State<TagActionChip> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(24.0),
           border: Border.all(color: ColorfulApp.of(context).colors.dark, width: 0.0),
-          color: _isSelected ? ColorfulApp.of(context).colors.brightest : AppColors.white1,
+          color: _isSelected ? ColorfulApp.of(context).colors.pale : AppColors.white1,
         ),
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
         child: Text(widget.title),

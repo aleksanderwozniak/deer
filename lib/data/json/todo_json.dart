@@ -11,6 +11,7 @@ class TodoJson {
   final TodoStatus status;
   final DateTime addedDate;
   final DateTime dueDate;
+  final DateTime finishedDate;
 
   const TodoJson({
     @required this.name,
@@ -20,6 +21,7 @@ class TodoJson {
     @required this.status,
     @required this.addedDate,
     this.dueDate,
+    this.finishedDate,
   })  : assert(name != null),
         assert(status != null),
         assert(addedDate != null);
@@ -37,6 +39,7 @@ class TodoJson {
       status: stringToEnum(inputJson['status'], TodoStatus.values),
       addedDate: DateTime.parse(inputJson['addedDate']),
       dueDate: inputJson['dueDate'] != null ? DateTime.parse(inputJson['dueDate']) : null,
+      finishedDate: inputJson['finishedDate'] != null ? DateTime.parse(inputJson['finishedDate']) : null,
     );
   }
 
@@ -50,6 +53,7 @@ class TodoJson {
       'status': enumToString(status),
       'addedDate': addedDate.toIso8601String(),
       'dueDate': dueDate?.toIso8601String(),
+      'finishedDate': finishedDate?.toIso8601String(),
     };
   }
 }

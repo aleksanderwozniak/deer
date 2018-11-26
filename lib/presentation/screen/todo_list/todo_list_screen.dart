@@ -102,20 +102,17 @@ class _TodoListScreenState extends State<TodoListScreen> {
     // Build your root view here
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(color: ColorfulApp.of(context).colors.dark),
+        // TODO: [WIP] testing different icon color
+        // iconTheme: IconThemeData(color: ColorfulApp.of(context).colors.dark),
+        iconTheme: IconThemeData(color: ColorfulApp.of(context).colors.medium),
         title: Text(widget.title),
         centerTitle: true,
         bottom: _buildFilter(state),
         leading: IconButton(
           icon: Icon(Icons.color_lens),
           tooltip: 'Change theme',
-          onPressed: () {
-            // TODO -> this is for testing
-            final currentTheme = ColorfulApp.of(context).colors.currentTheme;
-            ColorfulApp.of(context).updateColorTheme(
-              currentTheme == ColorfulTheme.pink ? ColorfulTheme.blue : ColorfulTheme.pink,
-            );
-          },
+          // [WIP]
+          onPressed: () => ColorfulApp.of(context).nextColorTheme(),
         ),
         actions: <Widget>[
           IconButton(
@@ -355,7 +352,7 @@ class _TodoAdderState extends State<_TodoAdder> {
       child: Center(
         child: Icon(
           _isExpanded ? Icons.arrow_drop_down : Icons.arrow_drop_up,
-          color: ColorfulApp.of(context).colors.darkest,
+          color: ColorfulApp.of(context).colors.error,
         ),
       ),
     );
@@ -380,7 +377,7 @@ class _TodoAdderState extends State<_TodoAdder> {
               border: UnderlineInputBorder(),
               hintText: widget.showError ? 'Name can\'t be empty' : 'New Todo',
               hintStyle: TextStyle().copyWith(
-                color: widget.showError ? ColorfulApp.of(context).colors.darkest : ColorfulApp.of(context).colors.medium,
+                color: widget.showError ? ColorfulApp.of(context).colors.error : ColorfulApp.of(context).colors.medium,
               ),
             ),
           ),

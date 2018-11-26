@@ -42,6 +42,34 @@ class _ArchiveListScreenState extends State<ArchiveListScreen> {
     _bloc.actions.add(ClearArchive());
   }
 
+  void _showConfirmationDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+            title: Text(
+              'Do you want to clear the Archive?',
+              style: TextStyle().copyWith(fontSize: 16.0),
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12.0),
+              side: BorderSide(width: 1.0, color: ColorfulApp.of(context).colors.dark),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                  child: Text('Yes'),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    _clearArchive();
+                  }),
+              FlatButton(
+                child: Text('No'),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ],
+          ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
@@ -91,7 +119,7 @@ class _ArchiveListScreenState extends State<ArchiveListScreen> {
             ),
             BottomButton(
               text: 'Clear',
-              onPressed: _clearArchive,
+              onPressed: _showConfirmationDialog,
             ),
           ],
         ),
