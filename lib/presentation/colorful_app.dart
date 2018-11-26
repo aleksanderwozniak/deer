@@ -9,12 +9,11 @@ const String _colorfulThemeKey = 'colorfulTheme';
 
 enum ColorfulTheme {
   standard,
-  pink,
-  blue,
+  salmon,
+  indigo,
+  mint,
   arcticBlue,
-  mix,
-  burgundy,
-  green,
+  golden,
 }
 
 class ColorfulApp extends StatefulWidget {
@@ -67,23 +66,20 @@ class ColorfulAppState extends State<ColorfulApp> {
         case ColorfulTheme.standard:
           colors = ColorThemeData.standard();
           break;
-        case ColorfulTheme.pink:
-          colors = ColorThemeData.pink();
+        case ColorfulTheme.salmon:
+          colors = ColorThemeData.salmon();
           break;
-        case ColorfulTheme.blue:
-          colors = ColorThemeData.blue();
+        case ColorfulTheme.indigo:
+          colors = ColorThemeData.indigo();
           break;
-        case ColorfulTheme.green:
-          colors = ColorThemeData.green();
+        case ColorfulTheme.mint:
+          colors = ColorThemeData.mint();
           break;
         case ColorfulTheme.arcticBlue:
           colors = ColorThemeData.arcticBlue();
           break;
-        case ColorfulTheme.mix:
-          colors = ColorThemeData.mix();
-          break;
-        case ColorfulTheme.burgundy:
-          colors = ColorThemeData.burgundy();
+        case ColorfulTheme.golden:
+          colors = ColorThemeData.golden();
           break;
       }
     });
@@ -113,20 +109,25 @@ class ColorThemeData {
   ColorfulTheme get currentTheme => _currentTheme;
   ColorfulTheme _currentTheme;
 
-  Color get brightest => _brightest;
-  Color _brightest;
+  // Main color - gradients, buttons, tags
+  Color get pale => _pale;
+  Color _pale;
 
+  // DismissibleBackground color
   Color get bright => _bright;
   Color _bright;
 
+  // Accent color, hint color
   Color get medium => _medium;
   Color _medium;
 
+  // Label color, border color, icon color
   Color get dark => _dark;
   Color _dark;
 
-  Color get darkest => _darkest;
-  Color _darkest;
+  // Error color
+  Color get error => _error;
+  Color _error;
 
   LinearGradient get brightGradient => _brightGradient;
   LinearGradient _brightGradient;
@@ -146,65 +147,56 @@ class ColorThemeData {
       );
 
   ColorThemeData.standard()
-      : _currentTheme = ColorfulTheme.blue,
-        _brightest = AppColors.blue1,
-        _bright = AppColors.blue2,
-        _medium = AppColors.blue3,
-        _dark = AppColors.blue4,
-        _darkest = AppColors.blue5,
-        _brightGradient = AppColors.blueGradient;
+      : _currentTheme = ColorfulTheme.indigo,
+        _pale = AppColors.indigo1,
+        _bright = AppColors.indigo2,
+        _medium = AppColors.indigo3,
+        _dark = AppColors.indigo4,
+        _error = AppColors.indigo5,
+        _brightGradient = AppColors.indigoGradient;
 
-  ColorThemeData.pink()
-      : _currentTheme = ColorfulTheme.pink,
-        _brightest = AppColors.pink1,
-        _bright = AppColors.pink2,
-        _medium = AppColors.pink3,
-        _dark = AppColors.pink4,
-        _darkest = AppColors.pink5,
-        _brightGradient = AppColors.pinkGradient;
+  ColorThemeData.salmon()
+      : _currentTheme = ColorfulTheme.salmon,
+        _pale = AppColors.salmon1,
+        _bright = AppColors.salmon2,
+        _medium = AppColors.salmon3,
+        _dark = AppColors.salmon4,
+        _error = AppColors.salmon5,
+        _brightGradient = AppColors.salmonGradient;
 
-  ColorThemeData.blue()
-      : _currentTheme = ColorfulTheme.blue,
-        _brightest = AppColors.blue1,
-        _bright = AppColors.blue2,
-        _medium = AppColors.blue3,
-        _dark = AppColors.blue4,
-        _darkest = AppColors.blue5,
-        _brightGradient = AppColors.blueGradient;
+  ColorThemeData.indigo()
+      : _currentTheme = ColorfulTheme.indigo,
+        _pale = AppColors.indigo1,
+        _bright = AppColors.indigo2,
+        _medium = AppColors.indigo3,
+        _dark = AppColors.indigo4,
+        _error = AppColors.indigo5,
+        _brightGradient = AppColors.indigoGradient;
 
-  ColorThemeData.green()
-      : _currentTheme = ColorfulTheme.green,
-        _brightest = AppColors.green1,
-        _bright = AppColors.green2,
-        _medium = AppColors.green3,
-        _dark = AppColors.green4,
-        _darkest = AppColors.green5,
-        _brightGradient = AppColors.greenGradient;
+  ColorThemeData.mint()
+      : _currentTheme = ColorfulTheme.mint,
+        _pale = AppColors.mint1,
+        _bright = AppColors.mint2,
+        _medium = AppColors.mint3,
+        _dark = AppColors.mint4,
+        _error = AppColors.mint5,
+        _brightGradient = AppColors.mintGradient;
 
   ColorThemeData.arcticBlue()
       : _currentTheme = ColorfulTheme.arcticBlue,
-        _brightest = AppColors.arcticBlue1,
+        _pale = AppColors.arcticBlue1,
         _bright = AppColors.arcticBlue2,
         _medium = AppColors.arcticBlue3,
         _dark = AppColors.arcticBlue4,
-        _darkest = AppColors.arcticBlue5,
+        _error = AppColors.arcticBlue5,
         _brightGradient = AppColors.arcticBlueGradient;
 
-  ColorThemeData.mix()
-      : _currentTheme = ColorfulTheme.mix,
-        _brightest = AppColors.mix1,
-        _bright = AppColors.mix2,
-        _medium = AppColors.mix3,
-        _dark = AppColors.mix4,
-        _darkest = AppColors.mix5,
-        _brightGradient = AppColors.mixGradient;
-
-  ColorThemeData.burgundy()
-      : _currentTheme = ColorfulTheme.burgundy,
-        _brightest = AppColors.burgundy1,
-        _bright = AppColors.burgundy2,
-        _medium = AppColors.burgundy3,
-        _dark = AppColors.burgundy4,
-        _darkest = AppColors.burgundy5,
-        _brightGradient = AppColors.burgundyGradient;
+  ColorThemeData.golden()
+      : _currentTheme = ColorfulTheme.golden,
+        _pale = AppColors.golden1,
+        _bright = AppColors.golden2,
+        _medium = AppColors.golden3,
+        _dark = AppColors.golden4,
+        _error = AppColors.golden5,
+        _brightGradient = AppColors.goldenGradient;
 }

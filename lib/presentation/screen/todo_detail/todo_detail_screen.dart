@@ -359,7 +359,7 @@ class _TagChip extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(24.0),
         border: Border.all(color: ColorfulApp.of(context).colors.dark, width: 0.5),
-        color: ColorfulApp.of(context).colors.brightest,
+        color: ColorfulApp.of(context).colors.pale,
       ),
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: Text(title),

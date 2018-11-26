@@ -3,67 +3,53 @@ import 'package:flutter/material.dart';
 class AppColors {
   const AppColors._();
 
-  static const Color pink1 = const Color(0xffffcece);
-  static const Color pink2 = const Color(0xffe8a9ab);
-  // static const Color pink2 = const Color(0xffff8282);
-  static const Color pink3 = const Color(0xffcc6868);
-  static const Color pink4 = const Color(0xff7f6767);
-  static const Color pink5 = const Color(0xff7f4141);
+  static const Color salmon1 = const Color(0xffFFCAC2);
+  static const Color salmon2 = const Color(0xffFFAFA3);
+  static const Color salmon3 = const Color(0xffFF998A);
+  static const Color salmon4 = const Color(0xff66433D);
+  static const Color salmon5 = const Color(0xff7F2D20);
 
-  static const Color blue1 = const Color(0xffceceff);
-  static const Color blue2 = const Color(0xffaba9e8);
-  static const Color blue3 = const Color(0xff6868cc);
-  static const Color blue4 = const Color(0xff67677f);
-  static const Color blue5 = const Color(0xff41417f);
+  static const Color indigo1 = const Color(0xffCCCFFF);
+  static const Color indigo2 = const Color(0xffB2B8FF);
+  static const Color indigo3 = const Color(0xff99A0FF);
+  static const Color indigo4 = const Color(0xff3D4066);
+  static const Color indigo5 = const Color(0xff20267F);
 
-  static const Color green1 = const Color(0xffceffce);
-  static const Color green2 = const Color(0xffabe8a9);
-  static const Color green3 = const Color(0xff68cc68);
-  static const Color green4 = const Color(0xff677f67);
-  static const Color green5 = const Color(0xff417f41);
+  static const Color mint1 = const Color(0xffADFFDC);
+  static const Color mint2 = const Color(0xff99FFD3);
+  static const Color mint3 = const Color(0xff2EE596);
+  static const Color mint4 = const Color(0xff3D6654);
+  static const Color mint5 = const Color(0xff207F56);
 
-  // [WIP]
-  static const Color arcticBlue1 = const Color(0xffcedcff);
-  static const Color arcticBlue2 = const Color(0xffa9b9e8);
-  static const Color arcticBlue3 = const Color(0xff6881cc);
-  static const Color arcticBlue4 = const Color(0xff676d7f);
-  static const Color arcticBlue5 = const Color(0xff41507f);
+  static const Color arcticBlue1 = const Color(0xffB2E8FF);
+  static const Color arcticBlue2 = const Color(0xff87D4F5);
+  static const Color arcticBlue3 = const Color(0xff52BDEB);
+  static const Color arcticBlue4 = const Color(0xff3D5A66);
+  static const Color arcticBlue5 = const Color(0xff20637F);
 
-  static const Color mix1 = const Color(0xff906765);
-  static const Color mix2 = const Color(0xff595c7c);
-  static const Color mix3 = const Color(0xff3a435e);
-  static const Color mix4 = const Color(0xff946b69);
-  static const Color mix5 = const Color(0xff50668c);
-
-  static const Color burgundy1 = const Color(0xffC93426);
-  static const Color burgundy2 = const Color(0xffA12B20);
-  static const Color burgundy3 = const Color(0xff751F17);
-  static const Color burgundy4 = const Color(0xff522C28);
-  static const Color burgundy5 = const Color(0xff4C110B);
-
-  // static const Color arcticBlue1 = const Color(0xffc6ecff);
-  // static const Color arcticBlue2 = const Color(0xffa0cde8);
-  // static const Color arcticBlue3 = const Color(0xff5799cc);
-  // static const Color arcticBlue4 = const Color(0xff566f7f);
-  // static const Color arcticBlue5 = const Color(0xff2a577f);
+  static const Color golden1 = const Color(0xffFFD7A3);
+  static const Color golden2 = const Color(0xffFFCA85);
+  static const Color golden3 = const Color(0xffFFBD66);
+  static const Color golden4 = const Color(0xff66543D);
+  static const Color golden5 = const Color(0xff7F5620);
 
   static const Color white1 = Colors.white;
   static const Color black1 = Colors.black;
 
-  static const LinearGradient pinkGradient = LinearGradient(
-    colors: [AppColors.white1, AppColors.pink1],
+  static const LinearGradient salmonGradient = LinearGradient(
+    colors: [AppColors.white1, AppColors.salmon1],
     begin: AlignmentDirectional.topCenter,
     end: AlignmentDirectional.bottomCenter,
   );
 
-  static const LinearGradient blueGradient = LinearGradient(
-    colors: [AppColors.white1, AppColors.blue1],
+  static const LinearGradient indigoGradient = LinearGradient(
+    colors: [AppColors.white1, AppColors.indigo1],
     begin: AlignmentDirectional.topCenter,
     end: AlignmentDirectional.bottomCenter,
   );
 
-  static const LinearGradient greenGradient = LinearGradient(
-    colors: [AppColors.white1, AppColors.green1],
+  static const LinearGradient mintGradient = LinearGradient(
+    colors: [AppColors.white1, AppColors.mint1],
     begin: AlignmentDirectional.topCenter,
     end: AlignmentDirectional.bottomCenter,
   );
@@ -74,14 +60,8 @@ class AppColors {
     end: AlignmentDirectional.bottomCenter,
   );
 
-  static const LinearGradient mixGradient = LinearGradient(
-    colors: [AppColors.white1, AppColors.mix1],
-    begin: AlignmentDirectional.topCenter,
-    end: AlignmentDirectional.bottomCenter,
-  );
-
-  static const LinearGradient burgundyGradient = LinearGradient(
-    colors: [AppColors.white1, AppColors.burgundy1],
+  static const LinearGradient goldenGradient = LinearGradient(
+    colors: [AppColors.white1, AppColors.golden1],
     begin: AlignmentDirectional.topCenter,
     end: AlignmentDirectional.bottomCenter,
   );

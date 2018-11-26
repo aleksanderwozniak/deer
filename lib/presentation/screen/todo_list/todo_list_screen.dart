@@ -14,7 +14,6 @@ import 'package:tasking/presentation/shared/widgets/buttons.dart';
 import 'package:tasking/presentation/shared/widgets/dropdown.dart' as CustomDropdown;
 import 'package:tasking/presentation/shared/widgets/tag_action_chip.dart';
 import 'package:tasking/presentation/shared/widgets/tile.dart';
-import 'package:tasking/utils/string_utils.dart';
 
 import 'todo_list_bloc.dart';
 import 'todo_list_state.dart';
@@ -103,10 +102,10 @@ class _TodoListScreenState extends State<TodoListScreen> {
     // Build your root view here
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(color: ColorfulApp.of(context).colors.dark),
-        // title: Text(widget.title),
-        // TODO: for testing colorful themes
-        title: Text(enumToString(ColorfulApp.of(context).colors.currentTheme)),
+        // TODO: [WIP] testing different icon color
+        // iconTheme: IconThemeData(color: ColorfulApp.of(context).colors.dark),
+        iconTheme: IconThemeData(color: ColorfulApp.of(context).colors.medium),
+        title: Text(widget.title),
         centerTitle: true,
         bottom: _buildFilter(state),
         leading: IconButton(
@@ -353,7 +352,7 @@ class _TodoAdderState extends State<_TodoAdder> {
       child: Center(
         child: Icon(
           _isExpanded ? Icons.arrow_drop_down : Icons.arrow_drop_up,
-          color: ColorfulApp.of(context).colors.darkest,
+          color: ColorfulApp.of(context).colors.error,
         ),
       ),
     );
@@ -378,7 +377,7 @@ class _TodoAdderState extends State<_TodoAdder> {
               border: UnderlineInputBorder(),
               hintText: widget.showError ? 'Name can\'t be empty' : 'New Todo',
               hintStyle: TextStyle().copyWith(
-                color: widget.showError ? ColorfulApp.of(context).colors.darkest : ColorfulApp.of(context).colors.medium,
+                color: widget.showError ? ColorfulApp.of(context).colors.error : ColorfulApp.of(context).colors.medium,
               ),
             ),
           ),
