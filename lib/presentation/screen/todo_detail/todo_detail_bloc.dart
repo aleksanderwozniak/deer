@@ -73,7 +73,12 @@ class TodoDetailBloc {
   }
 
   void _onRestoreTodo(TodoEntity todo) {
-    final updatedTodo = todo.rebuild((b) => b..status = TodoStatus.active);
+    final updatedTodo = todo.rebuild(
+      (b) => b
+        ..status = TodoStatus.active
+        ..finishedDate = null,
+    );
+
     dependencies.todoInteractor.update(updatedTodo);
   }
 

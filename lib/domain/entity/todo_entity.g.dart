@@ -34,6 +34,8 @@ class _$TodoEntity extends TodoEntity {
   final DateTime addedDate;
   @override
   final DateTime dueDate;
+  @override
+  final DateTime finishedDate;
 
   factory _$TodoEntity([void updates(TodoEntityBuilder b)]) =>
       (new TodoEntityBuilder()..update(updates)).build();
@@ -45,7 +47,8 @@ class _$TodoEntity extends TodoEntity {
       this.tags,
       this.status,
       this.addedDate,
-      this.dueDate})
+      this.dueDate,
+      this.finishedDate})
       : super._() {
     if (name == null) {
       throw new BuiltValueNullFieldError('TodoEntity', 'name');
@@ -81,7 +84,8 @@ class _$TodoEntity extends TodoEntity {
         tags == other.tags &&
         status == other.status &&
         addedDate == other.addedDate &&
-        dueDate == other.dueDate;
+        dueDate == other.dueDate &&
+        finishedDate == other.finishedDate;
   }
 
   @override
@@ -90,12 +94,14 @@ class _$TodoEntity extends TodoEntity {
         $jc(
             $jc(
                 $jc(
-                    $jc($jc($jc(0, name.hashCode), description.hashCode),
-                        bulletPoints.hashCode),
-                    tags.hashCode),
-                status.hashCode),
-            addedDate.hashCode),
-        dueDate.hashCode));
+                    $jc(
+                        $jc($jc($jc(0, name.hashCode), description.hashCode),
+                            bulletPoints.hashCode),
+                        tags.hashCode),
+                    status.hashCode),
+                addedDate.hashCode),
+            dueDate.hashCode),
+        finishedDate.hashCode));
   }
 
   @override
@@ -107,7 +113,8 @@ class _$TodoEntity extends TodoEntity {
           ..add('tags', tags)
           ..add('status', status)
           ..add('addedDate', addedDate)
-          ..add('dueDate', dueDate))
+          ..add('dueDate', dueDate)
+          ..add('finishedDate', finishedDate))
         .toString();
   }
 }
@@ -145,6 +152,11 @@ class TodoEntityBuilder implements Builder<TodoEntity, TodoEntityBuilder> {
   DateTime get dueDate => _$this._dueDate;
   set dueDate(DateTime dueDate) => _$this._dueDate = dueDate;
 
+  DateTime _finishedDate;
+  DateTime get finishedDate => _$this._finishedDate;
+  set finishedDate(DateTime finishedDate) =>
+      _$this._finishedDate = finishedDate;
+
   TodoEntityBuilder();
 
   TodoEntityBuilder get _$this {
@@ -156,6 +168,7 @@ class TodoEntityBuilder implements Builder<TodoEntity, TodoEntityBuilder> {
       _status = _$v.status;
       _addedDate = _$v.addedDate;
       _dueDate = _$v.dueDate;
+      _finishedDate = _$v.finishedDate;
       _$v = null;
     }
     return this;
@@ -186,7 +199,8 @@ class TodoEntityBuilder implements Builder<TodoEntity, TodoEntityBuilder> {
               tags: tags.build(),
               status: status,
               addedDate: addedDate,
-              dueDate: dueDate);
+              dueDate: dueDate,
+              finishedDate: finishedDate);
     } catch (_) {
       String _$failedField;
       try {
