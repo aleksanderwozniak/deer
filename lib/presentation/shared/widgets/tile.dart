@@ -5,43 +5,52 @@ import 'package:tasking/presentation/shared/widgets/todo_avatar.dart';
 
 class TodoTile extends StatelessWidget {
   final TodoEntity todo;
-  final VoidCallback onTap;
+  final VoidCallback onTileTap;
+  final VoidCallback onFavoriteTap;
 
   const TodoTile({
     Key key,
     @required this.todo,
-    @required this.onTap,
+    @required this.onTileTap,
+    this.onFavoriteTap,
   })  : assert(todo != null),
-        assert(onTap != null),
+        assert(onTileTap != null),
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final children = [
+      const SizedBox(width: 12.0),
+      TodoAvatar(text: todo.name),
+      const SizedBox(width: 8.0),
+      Expanded(
+        child: Text(
+          todo.name,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
+    ];
+
+    if (onFavoriteTap != null) {
+      children.addAll([
+        const SizedBox(width: 8.0),
+        _Favorite(
+          initialState: todo.isFavorite,
+          onTap: onFavoriteTap,
+        ),
+        const SizedBox(width: 8.0),
+      ]);
+    } else {
+      children.add(const SizedBox(width: 12.0));
+    }
+
     return GestureDetector(
-      onTap: onTap,
+      onTap: onTileTap,
       behavior: HitTestBehavior.opaque,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
-        child: Row(
-          children: <Widget>[
-            const SizedBox(width: 12.0),
-            TodoAvatar(text: todo.name),
-            const SizedBox(width: 8.0),
-            Expanded(
-              child: Text(
-                todo.name,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            const SizedBox(width: 8.0),
-            _Favorite(
-              initialState: false,
-              onTap: () {},
-            ),
-            const SizedBox(width: 8.0),
-          ],
-        ),
+        child: Row(children: children),
       ),
     );
   }
@@ -99,8 +108,7 @@ class _FavoriteState extends State<_Favorite> {
     return Icon(
       icon,
       size: 26.0,
-      // TODO: consider `colors.dark` for icons
-      color: ColorfulApp.of(context).colors.medium,
+      color: ColorfulApp.of(context).colors.dark,
     );
   }
 }

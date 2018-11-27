@@ -65,6 +65,9 @@ class TodoListBloc {
       case Operation.archive:
         _onArchive(todo);
         break;
+      case Operation.favorite:
+        _onFavorite(todo);
+        break;
     }
   }
 
@@ -85,6 +88,16 @@ class TodoListBloc {
     final todoBuilder = todo.toBuilder();
     todoBuilder.status = TodoStatus.finished;
     todoBuilder.finishedDate = DateTime.now();
+
+    _diskAccessSubscription?.cancel();
+    _diskAccessSubscription = dependencies.todoInteractor.update(todoBuilder.build()).listen((task) {
+      _state.add(_state.value.rebuild((b) => b..diskAccessTask = task));
+    });
+  }
+
+  void _onFavorite(TodoEntity todo) {
+    final todoBuilder = todo.toBuilder();
+    todoBuilder.isFavorite = !todo.isFavorite;
 
     _diskAccessSubscription?.cancel();
     _diskAccessSubscription = dependencies.todoInteractor.update(todoBuilder.build()).listen((task) {

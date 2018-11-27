@@ -75,6 +75,10 @@ class _TodoListScreenState extends State<TodoListScreen> {
     }
   }
 
+  void _favoriteTodo(TodoEntity todo) {
+    _bloc.actions.add(PerformOnTodo(operation: Operation.favorite, todo: todo));
+  }
+
   void _showDetails(TodoEntity todo) {
     Navigator.of(context).push(MaterialPageRoute(
       builder: (context) => TodoDetailScreen(todo: todo, editable: true),
@@ -187,7 +191,8 @@ class _TodoListScreenState extends State<TodoListScreen> {
                         onDismissed: (_) => _archiveTodo(todo),
                         child: TodoTile(
                           todo: todo,
-                          onTap: () => _showDetails(todo),
+                          onTileTap: () => _showDetails(todo),
+                          onFavoriteTap: () => _favoriteTodo(todo),
                         ),
                       );
                     },

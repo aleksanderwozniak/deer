@@ -112,7 +112,8 @@ class _ArchiveListScreenState extends State<ArchiveListScreen> {
                         final todo = state.archivedTodos[index];
                         return TodoTile(
                           todo: todo,
-                          onTap: () => _showDetails(todo),
+                          onTileTap: () => _showDetails(todo),
+                          onFavoriteTap: null,
                         );
                       },
                     ),
