@@ -132,7 +132,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
 
   Widget _buildFilter(TodoListState state) {
     final filters = presetTags.toList();
-    filters.insert(0, 'All');
+    filters.insertAll(0, ['All', 'Favorite']);
 
     return PreferredSize(
       preferredSize: const Size.fromHeight(40.0),
