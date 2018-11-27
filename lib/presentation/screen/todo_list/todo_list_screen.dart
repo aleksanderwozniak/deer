@@ -345,22 +345,32 @@ class _TodoAdderState extends State<_TodoAdder> {
       children.add(_buildBody());
     }
 
-    return AnimatedContainer(
-      duration: Duration(milliseconds: _millis),
-      height: _height,
-      constraints: BoxConstraints(minHeight: _height),
-      curve: Curves.easeOut,
-      decoration: BoxDecoration(
-        boxShadow: [BoxShadow(color: Colors.black54, blurRadius: 10.0)],
-        color: AppColors.white1,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(24.0),
-          topRight: Radius.circular(24.0),
+    // TODO: this might be in a wrong place, although it works perfectly
+    return WillPopScope(
+      onWillPop: () {
+        if (_isExpanded) {
+          _animate(showExpansion: false);
+        } else {
+          return Future(() => true);
+        }
+      },
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: _millis),
+        height: _height,
+        constraints: BoxConstraints(minHeight: _height),
+        curve: Curves.easeOut,
+        decoration: BoxDecoration(
+          boxShadow: [BoxShadow(color: Colors.black54, blurRadius: 10.0)],
+          color: AppColors.white1,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(24.0),
+            topRight: Radius.circular(24.0),
+          ),
         ),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: children,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: children,
+        ),
       ),
     );
   }
