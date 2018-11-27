@@ -43,13 +43,14 @@ class TodoListBloc {
       dependencies.todoInteractor.active,
       (a, b) => Tuple2<String, List<TodoEntity>>(a, b),
     ).listen((data) {
-      var list = [];
+      List<TodoEntity> list = [];
       if (data.item1 == 'All') {
         list = data.item2;
       } else {
         list = data.item2.where((e) => e.tags.contains(data.item1)).toList();
       }
 
+      list.sort((a, b) => a.isFavorite ? -1 : (b.isFavorite ? 1 : 0));
       _state.add(_state.value.rebuild((b) => b..todos = ListBuilder(list)));
     });
   }
