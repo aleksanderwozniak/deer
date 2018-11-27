@@ -5,6 +5,7 @@ import 'package:tasking/presentation/colorful_app.dart';
 import 'package:tasking/presentation/screen/archive_list/archive_list_actions.dart';
 import 'package:tasking/presentation/screen/todo_detail/todo_detail_screen.dart';
 import 'package:tasking/presentation/shared/widgets/buttons.dart';
+import 'package:tasking/presentation/shared/widgets/label.dart';
 import 'package:tasking/presentation/shared/widgets/tile.dart';
 
 import 'archive_list_bloc.dart';
@@ -104,8 +105,7 @@ class _ArchiveListScreenState extends State<ArchiveListScreen> {
           children: <Widget>[
             Expanded(
               child: state.archivedTodos.length == 0
-                  // TODO: beautify
-                  ? Center(child: Text('Archive is empty!'))
+                  ? buildCentralLabel(text: 'Archive is empty!', context: context)
                   : ListView.builder(
                       itemCount: state.archivedTodos.length,
                       itemBuilder: (context, index) {

@@ -12,6 +12,7 @@ import 'package:tasking/presentation/shared/resources.dart';
 import 'package:tasking/presentation/shared/widgets/box_decoration.dart';
 import 'package:tasking/presentation/shared/widgets/buttons.dart';
 import 'package:tasking/presentation/shared/widgets/dropdown.dart' as CustomDropdown;
+import 'package:tasking/presentation/shared/widgets/label.dart';
 import 'package:tasking/presentation/shared/widgets/tag_action_chip.dart';
 import 'package:tasking/presentation/shared/widgets/tile.dart';
 
@@ -174,8 +175,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
         children: <Widget>[
           Expanded(
             child: state.todos.length == 0
-                // TODO: beautify
-                ? Center(child: Text('Todo list is empty!'))
+                ? buildCentralLabel(text: 'Todo list is empty!', context: context)
                 : ListView.builder(
                     itemCount: state.todos.length,
                     controller: _todoListScrollController,

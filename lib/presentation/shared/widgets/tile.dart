@@ -33,14 +33,10 @@ class TodoTile extends StatelessWidget {
     ];
 
     if (onFavoriteTap != null) {
-      children.addAll([
-        const SizedBox(width: 8.0),
-        _Favorite(
-          initialState: todo.isFavorite,
-          onTap: onFavoriteTap,
-        ),
-        const SizedBox(width: 8.0),
-      ]);
+      children.add(_Favorite(
+        initialState: todo.isFavorite,
+        onTap: onFavoriteTap,
+      ));
     } else {
       children.add(const SizedBox(width: 12.0));
     }
@@ -48,8 +44,8 @@ class TodoTile extends StatelessWidget {
     return GestureDetector(
       onTap: onTileTap,
       behavior: HitTestBehavior.opaque,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: SizedBox(
+        height: 56.0,
         child: Row(children: children),
       ),
     );
@@ -93,7 +89,7 @@ class _FavoriteState extends State<_Favorite> {
       },
       child: Container(
         // Tap area
-        padding: const EdgeInsets.all(4.0),
+        padding: const EdgeInsets.all(12.0),
         child: AnimatedCrossFade(
           firstChild: _buildIcon(Icons.star_border),
           secondChild: _buildIcon(Icons.star),
