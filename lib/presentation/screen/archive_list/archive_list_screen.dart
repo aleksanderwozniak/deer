@@ -5,6 +5,7 @@ import 'package:tasking/presentation/colorful_app.dart';
 import 'package:tasking/presentation/screen/archive_list/archive_list_actions.dart';
 import 'package:tasking/presentation/screen/todo_detail/todo_detail_screen.dart';
 import 'package:tasking/presentation/shared/widgets/buttons.dart';
+import 'package:tasking/presentation/shared/widgets/label.dart';
 import 'package:tasking/presentation/shared/widgets/tile.dart';
 
 import 'archive_list_bloc.dart';
@@ -52,7 +53,7 @@ class _ArchiveListScreenState extends State<ArchiveListScreen> {
             ),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12.0),
-              side: BorderSide(width: 1.0, color: ColorfulApp.of(context).colors.dark),
+              side: BorderSide(width: 1.0, color: ColorfulApp.of(context).colors.bleak),
             ),
             actions: <Widget>[
               FlatButton(
@@ -85,7 +86,7 @@ class _ArchiveListScreenState extends State<ArchiveListScreen> {
     // Build your root view here
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(color: ColorfulApp.of(context).colors.dark),
+        iconTheme: IconThemeData(color: ColorfulApp.of(context).colors.bleak),
         centerTitle: true,
         title: Text('Archive'),
       ),
@@ -104,15 +105,15 @@ class _ArchiveListScreenState extends State<ArchiveListScreen> {
           children: <Widget>[
             Expanded(
               child: state.archivedTodos.length == 0
-                  // TODO: beautify
-                  ? Center(child: Text('Archive is empty!'))
+                  ? buildCentralLabel(text: 'Archive is empty!', context: context)
                   : ListView.builder(
                       itemCount: state.archivedTodos.length,
                       itemBuilder: (context, index) {
                         final todo = state.archivedTodos[index];
                         return TodoTile(
                           todo: todo,
-                          onTap: () => _showDetails(todo),
+                          onTileTap: () => _showDetails(todo),
+                          onFavoriteTap: null,
                         );
                       },
                     ),

@@ -61,7 +61,7 @@ class BulletList extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: ColorfulApp.of(context).colors.pale,
-        border: Border.all(color: ColorfulApp.of(context).colors.dark),
+        border: Border.all(color: ColorfulApp.of(context).colors.bleak),
       ),
     );
   }

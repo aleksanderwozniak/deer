@@ -12,7 +12,7 @@ class PerformOnTodo {
         assert(operation != null);
 }
 
-enum Operation { add, archive }
+enum Operation { add, archive, favorite }
 
 class FilterBy {
   final String filter;

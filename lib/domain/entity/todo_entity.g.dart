@@ -31,6 +31,8 @@ class _$TodoEntity extends TodoEntity {
   @override
   final TodoStatus status;
   @override
+  final bool isFavorite;
+  @override
   final DateTime addedDate;
   @override
   final DateTime dueDate;
@@ -46,6 +48,7 @@ class _$TodoEntity extends TodoEntity {
       this.bulletPoints,
       this.tags,
       this.status,
+      this.isFavorite,
       this.addedDate,
       this.dueDate,
       this.finishedDate})
@@ -65,6 +68,9 @@ class _$TodoEntity extends TodoEntity {
     if (status == null) {
       throw new BuiltValueNullFieldError('TodoEntity', 'status');
     }
+    if (isFavorite == null) {
+      throw new BuiltValueNullFieldError('TodoEntity', 'isFavorite');
+    }
   }
 
   @override
@@ -83,6 +89,7 @@ class _$TodoEntity extends TodoEntity {
         bulletPoints == other.bulletPoints &&
         tags == other.tags &&
         status == other.status &&
+        isFavorite == other.isFavorite &&
         addedDate == other.addedDate &&
         dueDate == other.dueDate &&
         finishedDate == other.finishedDate;
@@ -95,10 +102,14 @@ class _$TodoEntity extends TodoEntity {
             $jc(
                 $jc(
                     $jc(
-                        $jc($jc($jc(0, name.hashCode), description.hashCode),
-                            bulletPoints.hashCode),
-                        tags.hashCode),
-                    status.hashCode),
+                        $jc(
+                            $jc(
+                                $jc($jc(0, name.hashCode),
+                                    description.hashCode),
+                                bulletPoints.hashCode),
+                            tags.hashCode),
+                        status.hashCode),
+                    isFavorite.hashCode),
                 addedDate.hashCode),
             dueDate.hashCode),
         finishedDate.hashCode));
@@ -112,6 +123,7 @@ class _$TodoEntity extends TodoEntity {
           ..add('bulletPoints', bulletPoints)
           ..add('tags', tags)
           ..add('status', status)
+          ..add('isFavorite', isFavorite)
           ..add('addedDate', addedDate)
           ..add('dueDate', dueDate)
           ..add('finishedDate', finishedDate))
@@ -144,6 +156,10 @@ class TodoEntityBuilder implements Builder<TodoEntity, TodoEntityBuilder> {
   TodoStatus get status => _$this._status;
   set status(TodoStatus status) => _$this._status = status;
 
+  bool _isFavorite;
+  bool get isFavorite => _$this._isFavorite;
+  set isFavorite(bool isFavorite) => _$this._isFavorite = isFavorite;
+
   DateTime _addedDate;
   DateTime get addedDate => _$this._addedDate;
   set addedDate(DateTime addedDate) => _$this._addedDate = addedDate;
@@ -166,6 +182,7 @@ class TodoEntityBuilder implements Builder<TodoEntity, TodoEntityBuilder> {
       _bulletPoints = _$v.bulletPoints?.toBuilder();
       _tags = _$v.tags?.toBuilder();
       _status = _$v.status;
+      _isFavorite = _$v.isFavorite;
       _addedDate = _$v.addedDate;
       _dueDate = _$v.dueDate;
       _finishedDate = _$v.finishedDate;
@@ -198,6 +215,7 @@ class TodoEntityBuilder implements Builder<TodoEntity, TodoEntityBuilder> {
               bulletPoints: bulletPoints.build(),
               tags: tags.build(),
               status: status,
+              isFavorite: isFavorite,
               addedDate: addedDate,
               dueDate: dueDate,
               finishedDate: finishedDate);

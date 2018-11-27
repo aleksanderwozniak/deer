@@ -43,9 +43,11 @@ class TodoListBloc {
       dependencies.todoInteractor.active,
       (a, b) => Tuple2<String, List<TodoEntity>>(a, b),
     ).listen((data) {
-      var list = [];
+      List<TodoEntity> list = [];
       if (data.item1 == 'All') {
         list = data.item2;
+      } else if (data.item1 == 'Favorite') {
+        list = data.item2.where((e) => e.isFavorite).toList();
       } else {
         list = data.item2.where((e) => e.tags.contains(data.item1)).toList();
       }
@@ -64,6 +66,9 @@ class TodoListBloc {
         break;
       case Operation.archive:
         _onArchive(todo);
+        break;
+      case Operation.favorite:
+        _onFavorite(todo);
         break;
     }
   }
@@ -85,6 +90,16 @@ class TodoListBloc {
     final todoBuilder = todo.toBuilder();
     todoBuilder.status = TodoStatus.finished;
     todoBuilder.finishedDate = DateTime.now();
+
+    _diskAccessSubscription?.cancel();
+    _diskAccessSubscription = dependencies.todoInteractor.update(todoBuilder.build()).listen((task) {
+      _state.add(_state.value.rebuild((b) => b..diskAccessTask = task));
+    });
+  }
+
+  void _onFavorite(TodoEntity todo) {
+    final todoBuilder = todo.toBuilder();
+    todoBuilder.isFavorite = !todo.isFavorite;
 
     _diskAccessSubscription?.cancel();
     _diskAccessSubscription = dependencies.todoInteractor.update(todoBuilder.build()).listen((task) {

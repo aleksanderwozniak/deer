@@ -12,6 +12,7 @@ abstract class TodoEntity implements Built<TodoEntity, TodoEntityBuilder> {
   BuiltList<BulletEntity> get bulletPoints;
   BuiltList<String> get tags;
   TodoStatus get status;
+  bool get isFavorite;
   @nullable
   DateTime get addedDate;
   @nullable
@@ -26,6 +27,7 @@ abstract class TodoEntity implements Built<TodoEntity, TodoEntityBuilder> {
     BuiltList<BulletEntity> bulletPoints,
     BuiltList<String> tags,
     TodoStatus status = TodoStatus.active,
+    bool isFavorite = false,
     DateTime addedDate,
     DateTime dueDate,
     DateTime finishedDate,
@@ -36,6 +38,7 @@ abstract class TodoEntity implements Built<TodoEntity, TodoEntityBuilder> {
         bulletPoints: bulletPoints ?? BuiltList(),
         tags: tags ?? BuiltList(),
         status: status,
+        isFavorite: isFavorite,
         addedDate: addedDate,
         dueDate: dueDate,
         finishedDate: finishedDate,

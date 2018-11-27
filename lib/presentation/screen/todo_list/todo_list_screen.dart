@@ -12,6 +12,7 @@ import 'package:tasking/presentation/shared/resources.dart';
 import 'package:tasking/presentation/shared/widgets/box_decoration.dart';
 import 'package:tasking/presentation/shared/widgets/buttons.dart';
 import 'package:tasking/presentation/shared/widgets/dropdown.dart' as CustomDropdown;
+import 'package:tasking/presentation/shared/widgets/label.dart';
 import 'package:tasking/presentation/shared/widgets/tag_action_chip.dart';
 import 'package:tasking/presentation/shared/widgets/tile.dart';
 
@@ -75,6 +76,10 @@ class _TodoListScreenState extends State<TodoListScreen> {
     }
   }
 
+  void _favoriteTodo(TodoEntity todo) {
+    _bloc.actions.add(PerformOnTodo(operation: Operation.favorite, todo: todo));
+  }
+
   void _showDetails(TodoEntity todo) {
     Navigator.of(context).push(MaterialPageRoute(
       builder: (context) => TodoDetailScreen(todo: todo, editable: true),
@@ -102,16 +107,13 @@ class _TodoListScreenState extends State<TodoListScreen> {
     // Build your root view here
     return Scaffold(
       appBar: AppBar(
-        // TODO: [WIP] testing different icon color
-        // iconTheme: IconThemeData(color: ColorfulApp.of(context).colors.dark),
-        iconTheme: IconThemeData(color: ColorfulApp.of(context).colors.medium),
+        iconTheme: IconThemeData(color: ColorfulApp.of(context).colors.dark),
         title: Text(widget.title),
         centerTitle: true,
         bottom: _buildFilter(state),
         leading: IconButton(
           icon: Icon(Icons.color_lens),
           tooltip: 'Change theme',
-          // [WIP]
           onPressed: () => ColorfulApp.of(context).nextColorTheme(),
         ),
         actions: <Widget>[
@@ -128,7 +130,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
 
   Widget _buildFilter(TodoListState state) {
     final filters = presetTags.toList();
-    filters.insert(0, 'All');
+    filters.insertAll(0, ['All', 'Favorite']);
 
     return PreferredSize(
       preferredSize: const Size.fromHeight(40.0),
@@ -173,8 +175,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
         children: <Widget>[
           Expanded(
             child: state.todos.length == 0
-                // TODO: beautify
-                ? Center(child: Text('Todo list is empty!'))
+                ? buildCentralLabel(text: 'Todo list is empty!', context: context)
                 : ListView.builder(
                     itemCount: state.todos.length,
                     controller: _todoListScrollController,
@@ -187,7 +188,8 @@ class _TodoListScreenState extends State<TodoListScreen> {
                         onDismissed: (_) => _archiveTodo(todo),
                         child: TodoTile(
                           todo: todo,
-                          onTap: () => _showDetails(todo),
+                          onTileTap: () => _showDetails(todo),
+                          onFavoriteTap: () => _favoriteTodo(todo),
                         ),
                       );
                     },
@@ -242,14 +244,16 @@ class _TodoAdder extends StatefulWidget {
 }
 
 class _TodoAdderState extends State<_TodoAdder> {
-  final double _collapsedHeight = 97.0;
-  final double _expandedHeight = 294.0;
+  final double _collapsedHeight = 99.0;
+  final double _expandedHeight = 295.0;
+  final int _expansionMillis = 250;
+  final int _switchFocusMillis = 0;
 
+  int _millis;
   bool _isExpanded;
   double _height;
   DateTime _dueDate;
   List<String> _tags;
-
   FocusNode _focusNode;
 
   @override
@@ -258,10 +262,12 @@ class _TodoAdderState extends State<_TodoAdder> {
     _isExpanded = false;
     _tags = [];
     _height = _collapsedHeight;
+    _millis = _expansionMillis;
 
     _focusNode = FocusNode();
     _focusNode.addListener(() {
       if (_focusNode.hasFocus) {
+        _millis = _switchFocusMillis;
         _animate(showExpansion: false);
       }
     });
@@ -295,14 +301,27 @@ class _TodoAdderState extends State<_TodoAdder> {
   }
 
   void _animate({bool showExpansion}) {
-    setState(() {
-      _isExpanded = showExpansion ?? !_isExpanded;
-      _height = _isExpanded ? _expandedHeight : _collapsedHeight;
+    _isExpanded = showExpansion ?? !_isExpanded;
 
-      if (_isExpanded) {
+    if (_isExpanded) {
+      _millis = _expansionMillis;
+      if (_focusNode.hasFocus) {
         _focusNode.unfocus();
         FocusScope.of(context).requestFocus(FocusNode());
+        Future.delayed(const Duration(milliseconds: 150), () {
+          _runAnimation();
+        });
+      } else {
+        _runAnimation();
       }
+    } else {
+      _runAnimation();
+    }
+  }
+
+  void _runAnimation() {
+    setState(() {
+      _height = _isExpanded ? _expandedHeight : _collapsedHeight;
     });
   }
 
@@ -311,11 +330,10 @@ class _TodoAdderState extends State<_TodoAdder> {
     final children = [
       const SizedBox(height: 4.0),
       _buildHeader(),
-      const SizedBox(height: 4.0),
       _buildAdder(),
-      const SizedBox(height: 16.0),
+      const SizedBox(height: 6.0),
       Container(
-        color: ColorfulApp.of(context).colors.dark,
+        color: ColorfulApp.of(context).colors.bleak,
         height: 1.0,
       ),
     ];
@@ -324,21 +342,32 @@ class _TodoAdderState extends State<_TodoAdder> {
       children.add(_buildBody());
     }
 
-    return AnimatedContainer(
-      duration: Duration(milliseconds: 300),
-      constraints: BoxConstraints.expand(height: _height),
-      curve: Curves.easeOut,
-      decoration: BoxDecoration(
-        boxShadow: [BoxShadow(color: Colors.black54, blurRadius: 10.0)],
-        color: AppColors.white1,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(24.0),
-          topRight: Radius.circular(24.0),
+    // TODO: this might be in a wrong place, although it works perfectly
+    return WillPopScope(
+      onWillPop: () {
+        if (_isExpanded) {
+          _animate(showExpansion: false);
+        } else {
+          return Future(() => true);
+        }
+      },
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: _millis),
+        height: _height,
+        constraints: BoxConstraints(minHeight: _height),
+        curve: Curves.easeOut,
+        decoration: BoxDecoration(
+          boxShadow: [BoxShadow(color: Colors.black54, blurRadius: 10.0)],
+          color: AppColors.white1,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(24.0),
+            topRight: Radius.circular(24.0),
+          ),
         ),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: children,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: children,
+        ),
       ),
     );
   }
@@ -352,46 +381,49 @@ class _TodoAdderState extends State<_TodoAdder> {
       child: Center(
         child: Icon(
           _isExpanded ? Icons.arrow_drop_down : Icons.arrow_drop_up,
-          color: ColorfulApp.of(context).colors.error,
+          color: ColorfulApp.of(context).colors.dark,
         ),
       ),
     );
   }
 
   Widget _buildAdder() {
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      children: <Widget>[
-        const SizedBox(width: 18.0),
-        Expanded(
-          child: TextField(
-            focusNode: _focusNode,
-            controller: widget.todoNameController,
-            maxLength: 50,
-            maxLengthEnforced: true,
-            maxLines: null,
-            textInputAction: TextInputAction.done,
-            textCapitalization: TextCapitalization.sentences,
-            style: TextStyle().copyWith(fontSize: 16.0, color: AppColors.black1),
-            decoration: InputDecoration.collapsed(
-              border: UnderlineInputBorder(),
-              hintText: widget.showError ? 'Name can\'t be empty' : 'New Todo',
-              hintStyle: TextStyle().copyWith(
-                color: widget.showError ? ColorfulApp.of(context).colors.error : ColorfulApp.of(context).colors.medium,
+    return SizedBox(
+      height: 64.0,
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          const SizedBox(width: 18.0),
+          Expanded(
+            child: TextField(
+              focusNode: _focusNode,
+              controller: widget.todoNameController,
+              maxLength: 50,
+              maxLengthEnforced: true,
+              maxLines: null,
+              textInputAction: TextInputAction.done,
+              textCapitalization: TextCapitalization.sentences,
+              style: TextStyle().copyWith(fontSize: 16.0, color: AppColors.black1),
+              decoration: InputDecoration.collapsed(
+                border: UnderlineInputBorder(),
+                hintText: widget.showError ? 'Name can\'t be empty' : 'New Todo',
+                hintStyle: TextStyle().copyWith(
+                  color: widget.showError ? ColorfulApp.of(context).colors.dark : ColorfulApp.of(context).colors.medium,
+                ),
               ),
             ),
           ),
-        ),
-        const SizedBox(width: 16.0),
-        RoundButton(
-          text: 'Add',
-          onPressed: () {
-            widget.onAdd(_buildTodo());
-            widget.todoNameController.clear();
-          },
-        ),
-        const SizedBox(width: 16.0),
-      ],
+          const SizedBox(width: 16.0),
+          RoundButton(
+            text: 'Add',
+            onPressed: () {
+              widget.onAdd(_buildTodo());
+              widget.todoNameController.clear();
+            },
+          ),
+          const SizedBox(width: 16.0),
+        ],
+      ),
     );
   }
 
@@ -408,6 +440,7 @@ class _TodoAdderState extends State<_TodoAdder> {
             _buildTags(),
             const SizedBox(height: 18.0),
             _buildDate(),
+            const SizedBox(height: 18.0),
           ],
         ),
       ),
@@ -427,7 +460,7 @@ class _TodoAdderState extends State<_TodoAdder> {
           children: <Widget>[
             Text(
               'Due by:',
-              style: TextStyle().copyWith(fontSize: 12.0, color: ColorfulApp.of(context).colors.dark),
+              style: TextStyle().copyWith(fontSize: 12.0, color: ColorfulApp.of(context).colors.bleak),
             ),
             const SizedBox(height: 8.0),
             Row(
