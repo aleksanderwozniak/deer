@@ -121,24 +121,24 @@ class ColorThemeData {
   Color get medium => _medium;
   Color _medium;
 
-  // Label color, border color, icon color
+  // Icon color, error color
   Color get dark => _dark;
   Color _dark;
 
-  // Error color
-  Color get error => _error;
-  Color _error;
+  // Label color, border color
+  Color get bleak => _bleak;
+  Color _bleak;
 
   LinearGradient get brightGradient => _brightGradient;
   LinearGradient _brightGradient;
 
   ThemeData get theme => ThemeData(
         accentColor: _medium,
-        cursorColor: _dark,
+        cursorColor: _bleak,
         textSelectionColor: _bright,
         textSelectionHandleColor: _medium,
-        hintColor: _dark,
-        unselectedWidgetColor: _dark,
+        hintColor: _bleak,
+        unselectedWidgetColor: _bleak,
         primaryColor: AppColors.white1,
         canvasColor: AppColors.white1,
         textTheme: TextTheme(
@@ -151,8 +151,8 @@ class ColorThemeData {
         _pale = AppColors.indigo1,
         _bright = AppColors.indigo2,
         _medium = AppColors.indigo3,
-        _dark = AppColors.indigo4,
-        _error = AppColors.indigo5,
+        _bleak = AppColors.indigo4,
+        _dark = AppColors.indigo5,
         _brightGradient = AppColors.indigoGradient;
 
   ColorThemeData.salmon()
@@ -160,8 +160,8 @@ class ColorThemeData {
         _pale = AppColors.salmon1,
         _bright = AppColors.salmon2,
         _medium = AppColors.salmon3,
-        _dark = AppColors.salmon4,
-        _error = AppColors.salmon5,
+        _bleak = AppColors.salmon4,
+        _dark = AppColors.salmon5,
         _brightGradient = AppColors.salmonGradient;
 
   ColorThemeData.indigo()
@@ -169,8 +169,8 @@ class ColorThemeData {
         _pale = AppColors.indigo1,
         _bright = AppColors.indigo2,
         _medium = AppColors.indigo3,
-        _dark = AppColors.indigo4,
-        _error = AppColors.indigo5,
+        _bleak = AppColors.indigo4,
+        _dark = AppColors.indigo5,
         _brightGradient = AppColors.indigoGradient;
 
   ColorThemeData.mint()
@@ -178,8 +178,8 @@ class ColorThemeData {
         _pale = AppColors.mint1,
         _bright = AppColors.mint2,
         _medium = AppColors.mint3,
-        _dark = AppColors.mint4,
-        _error = AppColors.mint5,
+        _bleak = AppColors.mint4,
+        _dark = AppColors.mint5,
         _brightGradient = AppColors.mintGradient;
 
   ColorThemeData.arcticBlue()
@@ -187,8 +187,8 @@ class ColorThemeData {
         _pale = AppColors.arcticBlue1,
         _bright = AppColors.arcticBlue2,
         _medium = AppColors.arcticBlue3,
-        _dark = AppColors.arcticBlue4,
-        _error = AppColors.arcticBlue5,
+        _bleak = AppColors.arcticBlue4,
+        _dark = AppColors.arcticBlue5,
         _brightGradient = AppColors.arcticBlueGradient;
 
   ColorThemeData.golden()
@@ -196,7 +196,7 @@ class ColorThemeData {
         _pale = AppColors.golden1,
         _bright = AppColors.golden2,
         _medium = AppColors.golden3,
-        _dark = AppColors.golden4,
-        _error = AppColors.golden5,
+        _bleak = AppColors.golden4,
+        _dark = AppColors.golden5,
         _brightGradient = AppColors.goldenGradient;
 }

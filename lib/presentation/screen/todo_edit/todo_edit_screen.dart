@@ -81,7 +81,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          iconTheme: IconThemeData(color: ColorfulApp.of(context).colors.dark),
+          iconTheme: IconThemeData(color: ColorfulApp.of(context).colors.bleak),
           centerTitle: true,
           title: Text('Edit Todo'),
         ),
@@ -140,7 +140,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
         children: <Widget>[
           Text(
             'Description',
-            style: TextStyle().copyWith(color: ColorfulApp.of(context).colors.dark, fontSize: 12.0),
+            style: TextStyle().copyWith(color: ColorfulApp.of(context).colors.bleak, fontSize: 12.0),
           ),
           const SizedBox(height: 12.0),
           Padding(
@@ -165,7 +165,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
         children: <Widget>[
           Text(
             'Bullet points',
-            style: TextStyle().copyWith(color: ColorfulApp.of(context).colors.dark, fontSize: 12.0),
+            style: TextStyle().copyWith(color: ColorfulApp.of(context).colors.bleak, fontSize: 12.0),
           ),
           Padding(
             padding: const EdgeInsets.only(right: 20.0),
@@ -195,7 +195,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
         children: <Widget>[
           Text(
             'Tags',
-            style: TextStyle().copyWith(color: ColorfulApp.of(context).colors.dark, fontSize: 12.0),
+            style: TextStyle().copyWith(color: ColorfulApp.of(context).colors.bleak, fontSize: 12.0),
           ),
           const SizedBox(height: 4.0),
           Padding(
@@ -222,7 +222,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
           children: <Widget>[
             Text(
               'Due by:',
-              style: TextStyle().copyWith(fontSize: 12.0, color: ColorfulApp.of(context).colors.dark),
+              style: TextStyle().copyWith(fontSize: 12.0, color: ColorfulApp.of(context).colors.bleak),
             ),
             const SizedBox(height: 8.0),
             Row(
@@ -319,7 +319,7 @@ class _TextFieldState extends State<_TextField> {
           border: InputBorder.none,
           hintText: widget.hint,
           hintStyle: TextStyle().copyWith(
-            color: widget.showError ? ColorfulApp.of(context).colors.error : ColorfulApp.of(context).colors.medium,
+            color: widget.showError ? ColorfulApp.of(context).colors.dark : ColorfulApp.of(context).colors.medium,
             fontSize: widget.fontSize,
           ),
         ),

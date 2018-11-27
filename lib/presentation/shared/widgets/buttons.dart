@@ -23,7 +23,7 @@ class RoundButton extends StatelessWidget {
       color: ColorfulApp.of(context).colors.pale,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.0),
-        side: BorderSide(color: ColorfulApp.of(context).colors.dark),
+        side: BorderSide(color: ColorfulApp.of(context).colors.bleak),
       ),
     );
   }

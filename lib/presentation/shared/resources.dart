@@ -16,7 +16,7 @@ class AppColors {
   static const Color indigo5 = const Color(0xff20267F);
 
   static const Color mint1 = const Color(0xffADFFDC);
-  static const Color mint2 = const Color(0xff99FFD3);
+  static const Color mint2 = const Color(0xff6ee5b2);
   static const Color mint3 = const Color(0xff2EE596);
   static const Color mint4 = const Color(0xff3D6654);
   static const Color mint5 = const Color(0xff207F56);

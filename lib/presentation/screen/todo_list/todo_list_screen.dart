@@ -106,16 +106,13 @@ class _TodoListScreenState extends State<TodoListScreen> {
     // Build your root view here
     return Scaffold(
       appBar: AppBar(
-        // TODO: [WIP] testing different icon color
-        // iconTheme: IconThemeData(color: ColorfulApp.of(context).colors.dark),
-        iconTheme: IconThemeData(color: ColorfulApp.of(context).colors.medium),
+        iconTheme: IconThemeData(color: ColorfulApp.of(context).colors.dark),
         title: Text(widget.title),
         centerTitle: true,
         bottom: _buildFilter(state),
         leading: IconButton(
           icon: Icon(Icons.color_lens),
           tooltip: 'Change theme',
-          // [WIP]
           onPressed: () => ColorfulApp.of(context).nextColorTheme(),
         ),
         actions: <Widget>[
@@ -249,7 +246,7 @@ class _TodoAdder extends StatefulWidget {
 class _TodoAdderState extends State<_TodoAdder> {
   final double _collapsedHeight = 99.0;
   final double _expandedHeight = 295.0;
-  final int _expansionMillis = 300;
+  final int _expansionMillis = 250;
   final int _switchFocusMillis = 0;
 
   int _millis;
@@ -311,7 +308,7 @@ class _TodoAdderState extends State<_TodoAdder> {
       if (_focusNode.hasFocus) {
         _focusNode.unfocus();
         FocusScope.of(context).requestFocus(FocusNode());
-        Future.delayed(const Duration(milliseconds: 200), () {
+        Future.delayed(const Duration(milliseconds: 150), () {
           _runAnimation();
         });
       } else {
@@ -336,7 +333,7 @@ class _TodoAdderState extends State<_TodoAdder> {
       _buildAdder(),
       const SizedBox(height: 6.0),
       Container(
-        color: ColorfulApp.of(context).colors.dark,
+        color: ColorfulApp.of(context).colors.bleak,
         height: 1.0,
       ),
     ];
@@ -384,7 +381,7 @@ class _TodoAdderState extends State<_TodoAdder> {
       child: Center(
         child: Icon(
           _isExpanded ? Icons.arrow_drop_down : Icons.arrow_drop_up,
-          color: ColorfulApp.of(context).colors.error,
+          color: ColorfulApp.of(context).colors.dark,
         ),
       ),
     );
@@ -411,7 +408,7 @@ class _TodoAdderState extends State<_TodoAdder> {
                 border: UnderlineInputBorder(),
                 hintText: widget.showError ? 'Name can\'t be empty' : 'New Todo',
                 hintStyle: TextStyle().copyWith(
-                  color: widget.showError ? ColorfulApp.of(context).colors.error : ColorfulApp.of(context).colors.medium,
+                  color: widget.showError ? ColorfulApp.of(context).colors.dark : ColorfulApp.of(context).colors.medium,
                 ),
               ),
             ),
@@ -463,7 +460,7 @@ class _TodoAdderState extends State<_TodoAdder> {
           children: <Widget>[
             Text(
               'Due by:',
-              style: TextStyle().copyWith(fontSize: 12.0, color: ColorfulApp.of(context).colors.dark),
+              style: TextStyle().copyWith(fontSize: 12.0, color: ColorfulApp.of(context).colors.bleak),
             ),
             const SizedBox(height: 8.0),
             Row(

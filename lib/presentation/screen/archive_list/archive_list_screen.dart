@@ -52,7 +52,7 @@ class _ArchiveListScreenState extends State<ArchiveListScreen> {
             ),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12.0),
-              side: BorderSide(width: 1.0, color: ColorfulApp.of(context).colors.dark),
+              side: BorderSide(width: 1.0, color: ColorfulApp.of(context).colors.bleak),
             ),
             actions: <Widget>[
               FlatButton(
@@ -85,7 +85,7 @@ class _ArchiveListScreenState extends State<ArchiveListScreen> {
     // Build your root view here
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(color: ColorfulApp.of(context).colors.dark),
+        iconTheme: IconThemeData(color: ColorfulApp.of(context).colors.bleak),
         centerTitle: true,
         title: Text('Archive'),
       ),

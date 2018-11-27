@@ -45,7 +45,7 @@ class _TagActionChipState extends State<TagActionChip> {
         curve: Curves.easeOut,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(24.0),
-          border: Border.all(color: ColorfulApp.of(context).colors.dark, width: 0.0),
+          border: Border.all(color: ColorfulApp.of(context).colors.bleak, width: 0.0),
           color: _isSelected ? ColorfulApp.of(context).colors.pale : AppColors.white1,
         ),
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),

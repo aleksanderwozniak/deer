@@ -649,7 +649,7 @@ class _DropdownButtonState<T> extends State<DropdownButton<T>> with WidgetsBindi
   Color get _downArrowColor {
     // These colors are not defined in the Material Design spec.
     if (_enabled) {
-      return ColorfulApp.of(context).colors.error;
+      return ColorfulApp.of(context).colors.dark;
     } else {
       if (Theme.of(context).brightness == Brightness.light) {
         return Colors.grey.shade400;
