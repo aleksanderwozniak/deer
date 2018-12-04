@@ -104,7 +104,7 @@ class _FavoriteState extends State<_Favorite> {
     return Icon(
       icon,
       size: 26.0,
-      color: _isActive ? ColorfulApp.of(context).colors.dark : ColorfulApp.of(context).colors.bright,
+      color: _isActive ? ColorfulApp.of(context).colors.medium : ColorfulApp.of(context).colors.bright,
     );
   }
 }

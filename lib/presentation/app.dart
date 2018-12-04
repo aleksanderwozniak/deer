@@ -14,7 +14,7 @@ class App extends StatelessWidget {
     _sharedDependencies = dependencies;
   }
 
-  final String _title = 'Tasking';
+  final String _title = 'Todos';
 
   // This widget is the root of your application.
   @override
