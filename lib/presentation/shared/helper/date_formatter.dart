@@ -3,6 +3,20 @@ import 'package:intl/intl.dart';
 class DateFormatter {
   DateFormatter._();
 
+  static String formatFullWithTime(DateTime date) {
+    final formatter = DateFormat('H:m - EEEE, d.M.y');
+
+    return formatter.format(date);
+  }
+
+  static String safeFormatFullWithTime(DateTime date) {
+    if (date == null) {
+      return 'Not assigned';
+    }
+
+    return formatFullWithTime(date);
+  }
+
   static String formatFull(DateTime date) {
     final formatter = DateFormat('EEEE, d.M.y');
 
@@ -15,14 +29,6 @@ class DateFormatter {
     }
 
     return formatFull(date);
-  }
-
-  static String safeFormatDays(DateTime date) {
-    if (date == null) {
-      return '';
-    }
-
-    return formatDays(date);
   }
 
   static String formatDays(DateTime date) {
@@ -46,7 +52,7 @@ class DateFormatter {
       }
 
       if (daysAbs < 7) {
-        return DateFormat("'Last' EEEE ($daysAbs 'days ago')").format(date);
+        return DateFormat("$daysAbs 'days ago'").format(date);
       }
 
       if (daysAbs < 30) {
@@ -63,7 +69,7 @@ class DateFormatter {
       }
 
       if (days < 7) {
-        return DateFormat("'Next' EEEE ($days 'days')").format(date);
+        return DateFormat("In $days 'days'").format(date);
       }
 
       if (days < 30) {
@@ -74,6 +80,14 @@ class DateFormatter {
       final months = (days / 30).truncate();
       return _futurePlural(text: 'month', value: months);
     }
+  }
+
+  static String safeFormatDays(DateTime date) {
+    if (date == null) {
+      return '';
+    }
+
+    return formatDays(date);
   }
 
   static String _pastPlural({String text, int value}) {
@@ -88,7 +102,7 @@ class DateFormatter {
     if (value == 1) {
       return 'Next $text';
     } else {
-      return '$value ${text}s';
+      return 'In $value ${text}s';
     }
   }
 }

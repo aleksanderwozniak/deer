@@ -8,7 +8,13 @@ class UpdateField {
   });
 }
 
-enum FieldKey { name, description, bulletPoints, dueDate }
+enum FieldKey {
+  name,
+  description,
+  bulletPoints,
+  dueDate,
+  notificationDate,
+}
 
 class ToggleTag {
   final String tag;

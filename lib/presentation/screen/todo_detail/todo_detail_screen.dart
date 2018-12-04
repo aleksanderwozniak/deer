@@ -105,6 +105,10 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
       children.add(_buildBulletPoints(state));
     }
 
+    if (state.todo.notificationDate != null) {
+      children.add(_buildNotification(state));
+    }
+
     children.addAll([
       _buildDate(state),
       _buildFooterLabel(),
@@ -131,7 +135,11 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
       child: Column(
         children: <Widget>[
           const SizedBox(height: 12.0),
-          TodoAvatar(text: state.todo.name, isLarge: true),
+          TodoAvatar(
+            text: state.todo.name,
+            isLarge: true,
+            hasNotification: state.todo.notificationDate != null,
+          ),
           const SizedBox(height: 16.0),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -214,10 +222,41 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
     );
   }
 
+  Widget _buildNotification(TodoDetailState state) {
+    return ShadedBox(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Text(
+            'Notification:',
+            style: TextStyle().copyWith(fontSize: 12.0, color: ColorfulApp.of(context).colors.bleak),
+          ),
+          const SizedBox(height: 8.0),
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              const SizedBox(width: 20.0),
+              Text(
+                DateFormatter.safeFormatDays(state.todo.notificationDate),
+              ),
+              const SizedBox(width: 8.0),
+              Expanded(
+                child: Text(
+                  DateFormatter.safeFormatFullWithTime(state.todo.notificationDate),
+                  textAlign: TextAlign.right,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildDate(TodoDetailState state) {
     final children = [
       Text(
-        'Added on:',
+        'Added:',
         style: TextStyle().copyWith(fontSize: 12.0, color: ColorfulApp.of(context).colors.bleak),
       ),
       const SizedBox(height: 8.0),
@@ -225,12 +264,8 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           const SizedBox(width: 20.0),
-          Expanded(
-            child: Text(
-              DateFormatter.safeFormatDays(state.todo.addedDate),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
+          Text(
+            DateFormatter.safeFormatDays(state.todo.addedDate),
           ),
           const SizedBox(width: 8.0),
           Expanded(
@@ -243,7 +278,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
       ),
       const SizedBox(height: 24.0),
       Text(
-        'Due by:',
+        'Due:',
         style: TextStyle().copyWith(fontSize: 12.0, color: ColorfulApp.of(context).colors.bleak),
       ),
       const SizedBox(height: 8.0),
@@ -251,12 +286,8 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           const SizedBox(width: 20.0),
-          Expanded(
-            child: Text(
-              DateFormatter.safeFormatDays(state.todo.dueDate),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
+          Text(
+            DateFormatter.safeFormatDays(state.todo.dueDate),
           ),
           const SizedBox(width: 8.0),
           Expanded(
@@ -281,12 +312,8 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             const SizedBox(width: 20.0),
-            Expanded(
-              child: Text(
-                DateFormatter.safeFormatDays(state.todo.finishedDate),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
+            Text(
+              DateFormatter.safeFormatDays(state.todo.finishedDate),
             ),
             const SizedBox(width: 8.0),
             Expanded(

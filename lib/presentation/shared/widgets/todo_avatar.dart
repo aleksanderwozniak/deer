@@ -5,16 +5,46 @@ import 'package:tasking/presentation/shared/resources.dart';
 class TodoAvatar extends StatelessWidget {
   final String text;
   final bool isLarge;
+  final bool hasNotification;
 
   const TodoAvatar({
     Key key,
     @required this.text,
     this.isLarge = false,
+    this.hasNotification = false,
   })  : assert(text != null),
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    if (hasNotification) {
+      return _buildStack(context);
+    } else {
+      return _buildCircle(context);
+    }
+  }
+
+  Widget _buildStack(BuildContext context) {
+    final size = isLarge ? 24.0 : 16.0;
+
+    return Stack(
+      overflow: Overflow.visible,
+      children: <Widget>[
+        _buildCircle(context),
+        Positioned(
+          right: -1.0,
+          top: -1.0,
+          child: Icon(
+            Icons.notifications,
+            size: size,
+            color: ColorfulApp.of(context).colors.bleak,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCircle(BuildContext context) {
     final diameter = isLarge ? 64.0 : 40.0;
 
     return Container(

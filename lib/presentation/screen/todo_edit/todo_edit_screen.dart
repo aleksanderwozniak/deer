@@ -55,6 +55,34 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
     _bloc.actions.add(UpdateField(key: FieldKey.dueDate, value: date));
   }
 
+  void _setupNotification(TodoEditState state) async {
+    final date = await showDatePicker(
+      context: context,
+      initialDate: state.todo.notificationDate ?? DateTime.now(),
+      firstDate: DateTime(1970),
+      lastDate: DateTime(2050),
+    );
+
+    if (date == null) {
+      // clear notificationDate on cancel
+      _bloc.actions.add(UpdateField(key: FieldKey.notificationDate, value: null));
+      return;
+    }
+
+    final time = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+
+    if (time == null) {
+      _bloc.actions.add(UpdateField(key: FieldKey.notificationDate, value: null));
+      return;
+    }
+
+    final notificationDate = DateTime(date.year, date.month, date.day, time.hour, time.minute);
+    _bloc.actions.add(UpdateField(key: FieldKey.notificationDate, value: notificationDate));
+  }
+
   void _submit(TodoEditState state) {
     if (!state.todoNameHasError) {
       Navigator.of(context).pop(state.todo);
@@ -100,6 +128,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
               _buildDescription(state),
               _buildTags(state),
               _buildBulletPoints(),
+              _buildNotification(state),
               _buildDate(state),
             ],
           ),
@@ -158,28 +187,6 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
     );
   }
 
-  Widget _buildBulletPoints() {
-    return ShadedBox(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Text(
-            'Bullet points',
-            style: TextStyle().copyWith(color: ColorfulApp.of(context).colors.bleak, fontSize: 12.0),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 20.0),
-            child: EditableBulletList(
-              initialBulletPoints: widget.todo.bulletPoints.toList(),
-              onChanged: (bullets) => _bloc.actions.add(UpdateField(key: FieldKey.bulletPoints, value: bullets)),
-            ),
-          ),
-          const SizedBox(height: 12.0),
-        ],
-      ),
-    );
-  }
-
   Widget _buildTags(TodoEditState state) {
     final children = presetTags
         .map((tag) => TagActionChip(
@@ -212,6 +219,63 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
     );
   }
 
+  Widget _buildBulletPoints() {
+    return ShadedBox(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Text(
+            'Bullet points',
+            style: TextStyle().copyWith(color: ColorfulApp.of(context).colors.bleak, fontSize: 12.0),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 20.0),
+            child: EditableBulletList(
+              initialBulletPoints: widget.todo.bulletPoints.toList(),
+              onChanged: (bullets) => _bloc.actions.add(UpdateField(key: FieldKey.bulletPoints, value: bullets)),
+            ),
+          ),
+          const SizedBox(height: 12.0),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNotification(TodoEditState state) {
+    return ShadedBox(
+      child: GestureDetector(
+        onTap: () => _setupNotification(state),
+        behavior: HitTestBehavior.opaque,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Text(
+              'Notification:',
+              style: TextStyle().copyWith(fontSize: 12.0, color: ColorfulApp.of(context).colors.bleak),
+            ),
+            const SizedBox(height: 8.0),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                const SizedBox(width: 20.0),
+                Text(
+                  DateFormatter.safeFormatDays(state.todo.notificationDate),
+                ),
+                const SizedBox(width: 8.0),
+                Expanded(
+                  child: Text(
+                    DateFormatter.safeFormatFullWithTime(state.todo.notificationDate),
+                    textAlign: TextAlign.right,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildDate(TodoEditState state) {
     return ShadedBox(
       child: GestureDetector(
@@ -221,7 +285,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Text(
-              'Due by:',
+              'Due:',
               style: TextStyle().copyWith(fontSize: 12.0, color: ColorfulApp.of(context).colors.bleak),
             ),
             const SizedBox(height: 8.0),
@@ -229,12 +293,8 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
                 const SizedBox(width: 20.0),
-                Expanded(
-                  child: Text(
-                    DateFormatter.safeFormatDays(state.todo.dueDate),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
+                Text(
+                  DateFormatter.safeFormatDays(state.todo.dueDate),
                 ),
                 const SizedBox(width: 8.0),
                 Expanded(

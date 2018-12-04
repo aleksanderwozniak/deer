@@ -19,6 +19,8 @@ abstract class TodoEntity implements Built<TodoEntity, TodoEntityBuilder> {
   DateTime get dueDate;
   @nullable
   DateTime get finishedDate;
+  @nullable
+  DateTime get notificationDate;
 
   TodoEntity._();
   factory TodoEntity({
@@ -31,6 +33,7 @@ abstract class TodoEntity implements Built<TodoEntity, TodoEntityBuilder> {
     DateTime addedDate,
     DateTime dueDate,
     DateTime finishedDate,
+    DateTime notificationDate,
   }) =>
       _$TodoEntity._(
         name: name,
@@ -42,6 +45,7 @@ abstract class TodoEntity implements Built<TodoEntity, TodoEntityBuilder> {
         addedDate: addedDate,
         dueDate: dueDate,
         finishedDate: finishedDate,
+        notificationDate: notificationDate,
       );
 }
 

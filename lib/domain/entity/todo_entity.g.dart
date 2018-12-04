@@ -38,6 +38,8 @@ class _$TodoEntity extends TodoEntity {
   final DateTime dueDate;
   @override
   final DateTime finishedDate;
+  @override
+  final DateTime notificationDate;
 
   factory _$TodoEntity([void updates(TodoEntityBuilder b)]) =>
       (new TodoEntityBuilder()..update(updates)).build();
@@ -51,7 +53,8 @@ class _$TodoEntity extends TodoEntity {
       this.isFavorite,
       this.addedDate,
       this.dueDate,
-      this.finishedDate})
+      this.finishedDate,
+      this.notificationDate})
       : super._() {
     if (name == null) {
       throw new BuiltValueNullFieldError('TodoEntity', 'name');
@@ -92,7 +95,8 @@ class _$TodoEntity extends TodoEntity {
         isFavorite == other.isFavorite &&
         addedDate == other.addedDate &&
         dueDate == other.dueDate &&
-        finishedDate == other.finishedDate;
+        finishedDate == other.finishedDate &&
+        notificationDate == other.notificationDate;
   }
 
   @override
@@ -104,15 +108,17 @@ class _$TodoEntity extends TodoEntity {
                     $jc(
                         $jc(
                             $jc(
-                                $jc($jc(0, name.hashCode),
-                                    description.hashCode),
-                                bulletPoints.hashCode),
-                            tags.hashCode),
-                        status.hashCode),
-                    isFavorite.hashCode),
-                addedDate.hashCode),
-            dueDate.hashCode),
-        finishedDate.hashCode));
+                                $jc(
+                                    $jc($jc(0, name.hashCode),
+                                        description.hashCode),
+                                    bulletPoints.hashCode),
+                                tags.hashCode),
+                            status.hashCode),
+                        isFavorite.hashCode),
+                    addedDate.hashCode),
+                dueDate.hashCode),
+            finishedDate.hashCode),
+        notificationDate.hashCode));
   }
 
   @override
@@ -126,7 +132,8 @@ class _$TodoEntity extends TodoEntity {
           ..add('isFavorite', isFavorite)
           ..add('addedDate', addedDate)
           ..add('dueDate', dueDate)
-          ..add('finishedDate', finishedDate))
+          ..add('finishedDate', finishedDate)
+          ..add('notificationDate', notificationDate))
         .toString();
   }
 }
@@ -173,6 +180,11 @@ class TodoEntityBuilder implements Builder<TodoEntity, TodoEntityBuilder> {
   set finishedDate(DateTime finishedDate) =>
       _$this._finishedDate = finishedDate;
 
+  DateTime _notificationDate;
+  DateTime get notificationDate => _$this._notificationDate;
+  set notificationDate(DateTime notificationDate) =>
+      _$this._notificationDate = notificationDate;
+
   TodoEntityBuilder();
 
   TodoEntityBuilder get _$this {
@@ -186,6 +198,7 @@ class TodoEntityBuilder implements Builder<TodoEntity, TodoEntityBuilder> {
       _addedDate = _$v.addedDate;
       _dueDate = _$v.dueDate;
       _finishedDate = _$v.finishedDate;
+      _notificationDate = _$v.notificationDate;
       _$v = null;
     }
     return this;
@@ -218,7 +231,8 @@ class TodoEntityBuilder implements Builder<TodoEntity, TodoEntityBuilder> {
               isFavorite: isFavorite,
               addedDate: addedDate,
               dueDate: dueDate,
-              finishedDate: finishedDate);
+              finishedDate: finishedDate,
+              notificationDate: notificationDate);
     } catch (_) {
       String _$failedField;
       try {

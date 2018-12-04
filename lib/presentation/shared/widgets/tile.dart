@@ -21,7 +21,11 @@ class TodoTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final children = [
       const SizedBox(width: 12.0),
-      TodoAvatar(text: todo.name),
+      TodoAvatar(
+        text: todo.name,
+        isLarge: false,
+        hasNotification: todo.notificationDate != null,
+      ),
       const SizedBox(width: 8.0),
       Expanded(
         child: Text(
@@ -104,7 +108,7 @@ class _FavoriteState extends State<_Favorite> {
     return Icon(
       icon,
       size: 26.0,
-      color: _isActive ? ColorfulApp.of(context).colors.dark : ColorfulApp.of(context).colors.bright,
+      color: _isActive ? ColorfulApp.of(context).colors.medium : ColorfulApp.of(context).colors.bright,
     );
   }
 }
