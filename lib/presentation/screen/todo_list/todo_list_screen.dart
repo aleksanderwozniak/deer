@@ -15,6 +15,7 @@ import 'package:tasking/presentation/shared/widgets/dropdown.dart' as CustomDrop
 import 'package:tasking/presentation/shared/widgets/label.dart';
 import 'package:tasking/presentation/shared/widgets/tag_action_chip.dart';
 import 'package:tasking/presentation/shared/widgets/tile.dart';
+import 'package:tasking/utils/string_utils.dart';
 
 import 'todo_list_bloc.dart';
 import 'todo_list_state.dart';
@@ -92,6 +93,34 @@ class _TodoListScreenState extends State<TodoListScreen> {
     ));
   }
 
+  void _selectColorTheme() {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) => SimpleDialog(
+            title: Text(
+              'Select Color Theme',
+              style: TextStyle().copyWith(fontSize: 18.0),
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12.0),
+              side: BorderSide(width: 1.0, color: ColorfulApp.of(context).colors.bleak),
+            ),
+            children: ColorfulTheme.values
+                .skip(1)
+                .map((color) => SimpleDialogOption(
+                      child: _buildColorDialogOption(
+                        text: capitalize(enumToString(color)),
+                        mainColor: ColorfulApp.of(context).themeDataFromEnum(color).pale,
+                        borderColor: ColorfulApp.of(context).themeDataFromEnum(color).dark,
+                      ),
+                      onPressed: () => ColorfulApp.of(context).updateColorTheme(color),
+                    ))
+                .toList(),
+          ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
@@ -112,9 +141,9 @@ class _TodoListScreenState extends State<TodoListScreen> {
         centerTitle: true,
         bottom: _buildFilter(state),
         leading: IconButton(
-          icon: Icon(Icons.color_lens),
-          tooltip: 'Change theme',
-          onPressed: () => ColorfulApp.of(context).nextColorTheme(),
+          icon: Icon(Icons.settings),
+          tooltip: 'Settings',
+          onPressed: _selectColorTheme,
         ),
         actions: <Widget>[
           IconButton(
@@ -219,6 +248,28 @@ class _TodoListScreenState extends State<TodoListScreen> {
       alignment: alignment,
       decoration: BoxDecoration(
         gradient: LinearGradient(colors: colors),
+      ),
+    );
+  }
+
+  Widget _buildColorDialogOption({String text, Color mainColor, Color borderColor}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 3.0),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          Text(text),
+          Expanded(child: const SizedBox(width: 8.0)),
+          Container(
+            width: 16.0,
+            height: 16.0,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: mainColor,
+              border: Border.all(color: borderColor),
+            ),
+          ),
+        ],
       ),
     );
   }
