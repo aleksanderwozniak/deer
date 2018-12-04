@@ -56,6 +56,9 @@ class TodoEditBloc {
       case FieldKey.dueDate:
         state.todo.dueDate = action.value;
         break;
+      case FieldKey.notificationDate:
+        state.todo.notificationDate = action.value;
+        break;
     }
 
     _state.add(state.build());
