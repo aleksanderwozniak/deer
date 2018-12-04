@@ -100,7 +100,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
       builder: (context) => SimpleDialog(
             title: Text(
               'Select Color Theme',
-              style: TextStyle().copyWith(fontSize: 16.0),
+              style: TextStyle().copyWith(fontSize: 18.0),
             ),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12.0),

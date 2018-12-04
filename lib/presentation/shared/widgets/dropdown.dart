@@ -1,5 +1,7 @@
 // Copied from Flutter source
-// Changed Dropdown arrow color to match app design
+// - Changed Dropdown arrow color to match app design
+// - Changed menu's borderRadius
+// - Changed animation duration
 //-----------------
 
 // Copyright 2015 The Chromium Authors. All rights reserved.
@@ -11,7 +13,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:tasking/presentation/colorful_app.dart';
 
-const Duration _kDropdownMenuDuration = Duration(milliseconds: 300);
+const Duration _kDropdownMenuDuration = Duration(milliseconds: 400);
 const double _kMenuItemHeight = 48.0;
 const double _kDenseButtonHeight = 24.0;
 const EdgeInsets _kMenuItemPadding = EdgeInsets.symmetric(horizontal: 16.0);
@@ -31,7 +33,7 @@ class _DropdownMenuPainter extends CustomPainter {
                 // configuration in the paint() function and you must provide some sort
                 // of onChanged callback here.
                 color: color,
-                borderRadius: BorderRadius.circular(2.0),
+                borderRadius: BorderRadius.circular(24.0),
                 boxShadow: kElevationToShadow[elevation])
             .createBoxPainter(),
         super(repaint: resize);
@@ -149,6 +151,8 @@ class _DropdownMenuState<T> extends State<_DropdownMenu<T>> {
       children.add(FadeTransition(
         opacity: opacity,
         child: InkWell(
+          // TODO: modify InkWell?
+          // borderRadius: BorderRadius.circular(12.0),
           child: Container(
             padding: widget.padding,
             child: route.items[itemIndex],
