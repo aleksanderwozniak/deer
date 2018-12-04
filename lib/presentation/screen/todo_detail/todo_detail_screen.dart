@@ -135,7 +135,11 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
       child: Column(
         children: <Widget>[
           const SizedBox(height: 12.0),
-          TodoAvatar(text: state.todo.name, isLarge: true),
+          TodoAvatar(
+            text: state.todo.name,
+            isLarge: true,
+            hasNotification: state.todo.notificationDate != null,
+          ),
           const SizedBox(height: 16.0),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),

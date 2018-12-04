@@ -21,7 +21,11 @@ class TodoTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final children = [
       const SizedBox(width: 12.0),
-      TodoAvatar(text: todo.name),
+      TodoAvatar(
+        text: todo.name,
+        isLarge: false,
+        hasNotification: todo.notificationDate != null,
+      ),
       const SizedBox(width: 8.0),
       Expanded(
         child: Text(
