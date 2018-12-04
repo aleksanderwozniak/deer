@@ -44,44 +44,35 @@ class ColorfulAppState extends State<ColorfulApp> {
     _loadColorTheme();
   }
 
-  void nextColorTheme() {
-    final currentTheme = colors._currentTheme;
-    var id = ColorfulTheme.values.indexOf(currentTheme);
-
-    if (id == ColorfulTheme.values.length - 1) {
-      // resets counter, but also avoids `standard`
-      id = 1;
-    } else {
-      id++;
+  ColorThemeData themeDataFromEnum(ColorfulTheme theme) {
+    switch (theme) {
+      case ColorfulTheme.standard:
+        return ColorThemeData.standard();
+      case ColorfulTheme.salmon:
+        return ColorThemeData.salmon();
+      case ColorfulTheme.indigo:
+        return ColorThemeData.indigo();
+      case ColorfulTheme.mint:
+        return ColorThemeData.mint();
+      case ColorfulTheme.arcticBlue:
+        return ColorThemeData.arcticBlue();
+      case ColorfulTheme.golden:
+        return ColorThemeData.golden();
+      default:
+        return ColorThemeData.standard();
     }
+  }
 
-    final newTheme = ColorfulTheme.values.elementAt(id);
+  void updateColorTheme(ColorfulTheme theme) async {
+    _setColorTheme(theme);
 
-    updateColorTheme(newTheme);
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString(_colorfulThemeKey, enumToString(theme));
   }
 
   void _setColorTheme(ColorfulTheme theme) {
     setState(() {
-      switch (theme) {
-        case ColorfulTheme.standard:
-          colors = ColorThemeData.standard();
-          break;
-        case ColorfulTheme.salmon:
-          colors = ColorThemeData.salmon();
-          break;
-        case ColorfulTheme.indigo:
-          colors = ColorThemeData.indigo();
-          break;
-        case ColorfulTheme.mint:
-          colors = ColorThemeData.mint();
-          break;
-        case ColorfulTheme.arcticBlue:
-          colors = ColorThemeData.arcticBlue();
-          break;
-        case ColorfulTheme.golden:
-          colors = ColorThemeData.golden();
-          break;
-      }
+      colors = themeDataFromEnum(theme);
     });
   }
 
@@ -90,13 +81,6 @@ class ColorfulAppState extends State<ColorfulApp> {
     final theme = stringToEnum(prefs.getString(_colorfulThemeKey), ColorfulTheme.values) ?? ColorfulTheme.standard;
 
     _setColorTheme(theme);
-  }
-
-  void updateColorTheme(ColorfulTheme theme) async {
-    _setColorTheme(theme);
-
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setString(_colorfulThemeKey, enumToString(theme));
   }
 
   @override
