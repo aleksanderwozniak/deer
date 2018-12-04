@@ -253,21 +253,24 @@ class _TodoListScreenState extends State<TodoListScreen> {
   }
 
   Widget _buildColorDialogOption({String text, Color mainColor, Color borderColor}) {
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      children: <Widget>[
-        Text(text),
-        Expanded(child: const SizedBox(width: 8.0)),
-        Container(
-          width: 16.0,
-          height: 16.0,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: mainColor,
-            border: Border.all(color: borderColor),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 3.0),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          Text(text),
+          Expanded(child: const SizedBox(width: 8.0)),
+          Container(
+            width: 16.0,
+            height: 16.0,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: mainColor,
+              border: Border.all(color: borderColor),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

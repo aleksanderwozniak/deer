@@ -1,6 +1,6 @@
 // Copied from Flutter source
 // - Changed Dropdown arrow color to match app design
-// - Changed menu's borderRadius
+// - Changed menu's borderRadius w/ clipping
 // - Changed animation duration
 //-----------------
 
@@ -13,7 +13,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:tasking/presentation/colorful_app.dart';
 
-const Duration _kDropdownMenuDuration = Duration(milliseconds: 400);
+const Duration _kDropdownMenuDuration = Duration(milliseconds: 300);
 const double _kMenuItemHeight = 48.0;
 const double _kDenseButtonHeight = 24.0;
 const EdgeInsets _kMenuItemPadding = EdgeInsets.symmetric(horizontal: 16.0);
@@ -21,6 +21,7 @@ const EdgeInsetsGeometry _kAlignedButtonPadding = EdgeInsetsDirectional.only(sta
 const EdgeInsets _kUnalignedButtonPadding = EdgeInsets.zero;
 const EdgeInsets _kAlignedMenuMargin = EdgeInsets.zero;
 const EdgeInsetsGeometry _kUnalignedMenuMargin = EdgeInsetsDirectional.only(start: 16.0, end: 24.0);
+const double _kRadius = 24.0;
 
 class _DropdownMenuPainter extends CustomPainter {
   _DropdownMenuPainter({
@@ -33,7 +34,7 @@ class _DropdownMenuPainter extends CustomPainter {
                 // configuration in the paint() function and you must provide some sort
                 // of onChanged callback here.
                 color: color,
-                borderRadius: BorderRadius.circular(24.0),
+                borderRadius: BorderRadius.circular(_kRadius),
                 boxShadow: kElevationToShadow[elevation])
             .createBoxPainter(),
         super(repaint: resize);
@@ -174,23 +175,26 @@ class _DropdownMenuState<T> extends State<_DropdownMenu<T>> {
           selectedIndex: route.selectedIndex,
           resize: _resize,
         ),
-        child: Semantics(
-          scopesRoute: true,
-          namesRoute: true,
-          explicitChildNodes: true,
-          label: localizations.popupMenuLabel,
-          child: Material(
-            type: MaterialType.transparency,
-            textStyle: route.style,
-            child: ScrollConfiguration(
-              behavior: const _DropdownScrollBehavior(),
-              child: Scrollbar(
-                child: ListView(
-                  controller: widget.route.scrollController,
-                  padding: kMaterialListPadding,
-                  itemExtent: _kMenuItemHeight,
-                  shrinkWrap: true,
-                  children: children,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(_kRadius),
+          child: Semantics(
+            scopesRoute: true,
+            namesRoute: true,
+            explicitChildNodes: true,
+            label: localizations.popupMenuLabel,
+            child: Material(
+              type: MaterialType.transparency,
+              textStyle: route.style,
+              child: ScrollConfiguration(
+                behavior: const _DropdownScrollBehavior(),
+                child: Scrollbar(
+                  child: ListView(
+                    controller: widget.route.scrollController,
+                    padding: kMaterialListPadding,
+                    itemExtent: _kMenuItemHeight,
+                    shrinkWrap: true,
+                    children: children,
+                  ),
                 ),
               ),
             ),
