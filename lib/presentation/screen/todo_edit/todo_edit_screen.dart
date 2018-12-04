@@ -58,7 +58,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
   void _setupNotification(TodoEditState state) async {
     final date = await showDatePicker(
       context: context,
-      initialDate: state.todo.dueDate?.subtract(Duration(days: 1)) ?? DateTime.now(),
+      initialDate: state.todo.notificationDate ?? DateTime.now(),
       firstDate: DateTime(1970),
       lastDate: DateTime(2050),
     );

@@ -13,6 +13,7 @@ class TodoJson {
   final DateTime addedDate;
   final DateTime dueDate;
   final DateTime finishedDate;
+  final DateTime notificationDate;
 
   const TodoJson({
     @required this.name,
@@ -24,6 +25,7 @@ class TodoJson {
     @required this.addedDate,
     this.dueDate,
     this.finishedDate,
+    this.notificationDate,
   })  : assert(name != null),
         assert(status != null),
         assert(addedDate != null);
@@ -43,6 +45,7 @@ class TodoJson {
       addedDate: DateTime.parse(inputJson['addedDate']),
       dueDate: inputJson['dueDate'] != null ? DateTime.parse(inputJson['dueDate']) : null,
       finishedDate: inputJson['finishedDate'] != null ? DateTime.parse(inputJson['finishedDate']) : null,
+      notificationDate: inputJson['notificationDate'] != null ? DateTime.parse(inputJson['notificationDate']) : null,
     );
   }
 
@@ -58,6 +61,7 @@ class TodoJson {
       'addedDate': addedDate.toIso8601String(),
       'dueDate': dueDate?.toIso8601String(),
       'finishedDate': finishedDate?.toIso8601String(),
+      'notificationDate': notificationDate?.toIso8601String(),
     };
   }
 }
