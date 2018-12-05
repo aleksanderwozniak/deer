@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tasking/presentation/shared/resources.dart';
+import 'package:deer/presentation/shared/resources.dart';
 
 class BottomBox extends StatelessWidget {
   final Widget child;

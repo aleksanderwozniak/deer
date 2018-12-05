@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:tasking/domain/entity/tags.dart';
-import 'package:tasking/domain/entity/todo_entity.dart';
-import 'package:tasking/presentation/colorful_app.dart';
-import 'package:tasking/presentation/screen/todo_edit/todo_edit_actions.dart';
-import 'package:tasking/presentation/screen/todo_edit/todo_edit_bloc.dart';
-import 'package:tasking/presentation/screen/todo_edit/todo_edit_state.dart';
-import 'package:tasking/presentation/shared/helper/date_formatter.dart';
-import 'package:tasking/presentation/shared/resources.dart';
-import 'package:tasking/presentation/shared/widgets/box.dart';
-import 'package:tasking/presentation/shared/widgets/buttons.dart';
-import 'package:tasking/presentation/shared/widgets/editable_bullet_list.dart';
-import 'package:tasking/presentation/shared/widgets/tag_action_chip.dart';
+import 'package:deer/domain/entity/tags.dart';
+import 'package:deer/domain/entity/todo_entity.dart';
+import 'package:deer/presentation/colorful_app.dart';
+import 'package:deer/presentation/screen/todo_edit/todo_edit_actions.dart';
+import 'package:deer/presentation/screen/todo_edit/todo_edit_bloc.dart';
+import 'package:deer/presentation/screen/todo_edit/todo_edit_state.dart';
+import 'package:deer/presentation/shared/helper/date_formatter.dart';
+import 'package:deer/presentation/shared/resources.dart';
+import 'package:deer/presentation/shared/widgets/box.dart';
+import 'package:deer/presentation/shared/widgets/buttons.dart';
+import 'package:deer/presentation/shared/widgets/editable_bullet_list.dart';
+import 'package:deer/presentation/shared/widgets/tag_action_chip.dart';
 
 class TodoEditScreen extends StatefulWidget {
   final TodoEntity todo;

@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
-import 'package:tasking/data/json/bullet_json.dart';
-import 'package:tasking/domain/entity/todo_entity.dart';
-import 'package:tasking/utils/string_utils.dart';
+import 'package:deer/data/json/bullet_json.dart';
+import 'package:deer/domain/entity/todo_entity.dart';
+import 'package:deer/utils/string_utils.dart';
 
 class TodoJson {
   final String name;

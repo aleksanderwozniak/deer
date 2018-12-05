@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tasking/presentation/shared/resources.dart';
-import 'package:tasking/utils/string_utils.dart';
+import 'package:deer/presentation/shared/resources.dart';
+import 'package:deer/utils/string_utils.dart';
 
 typedef Widget AppBuilder(BuildContext context, ThemeData data);
 

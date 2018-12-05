@@ -1,8 +1,8 @@
 import 'package:built_collection/built_collection.dart';
-import 'package:tasking/data/json/bullet_json.dart';
-import 'package:tasking/data/json/todo_json.dart';
-import 'package:tasking/domain/entity/bullet_entity.dart';
-import 'package:tasking/domain/entity/todo_entity.dart';
+import 'package:deer/data/json/bullet_json.dart';
+import 'package:deer/data/json/todo_json.dart';
+import 'package:deer/domain/entity/bullet_entity.dart';
+import 'package:deer/domain/entity/todo_entity.dart';
 
 class TodoMapper {
   TodoMapper._();

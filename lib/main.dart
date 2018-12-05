@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:tasking/dependencies.dart';
-import 'package:tasking/presentation/app.dart';
+import 'package:deer/dependencies.dart';
+import 'package:deer/presentation/app.dart';
 
 void main() {
   SystemChrome.setPreferredOrientations([
