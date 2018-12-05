@@ -14,6 +14,7 @@ import 'package:deer/presentation/shared/widgets/dropdown.dart' as CustomDropdow
 import 'package:deer/presentation/shared/widgets/label.dart';
 import 'package:deer/presentation/shared/widgets/tag_action_chip.dart';
 import 'package:deer/presentation/shared/widgets/tile.dart';
+import 'package:deer/utils/notification_utils.dart';
 import 'package:deer/utils/string_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -67,6 +68,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
 
   // Place methods here
   void _archiveTodo(TodoEntity todo) {
+    cancelNotification(todo);
     _bloc.actions.add(PerformOnTodo(operation: Operation.archive, todo: todo));
   }
 
