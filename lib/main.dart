@@ -12,13 +12,6 @@ void main() {
   final dependencies = Dependencies.standard();
   final notificationManager = FlutterLocalNotificationsPlugin();
 
-  final initSettings = InitializationSettings(
-    AndroidInitializationSettings('deer_logo'),
-    IOSInitializationSettings(),
-  );
-
-  notificationManager.initialize(initSettings);
-
   runApp(App(
     dependencies: dependencies,
     notificationManager: notificationManager,
