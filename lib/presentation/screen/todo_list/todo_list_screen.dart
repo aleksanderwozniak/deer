@@ -1,6 +1,4 @@
 import 'package:built_collection/built_collection.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:deer/domain/entity/tags.dart';
 import 'package:deer/domain/entity/todo_entity.dart';
 import 'package:deer/presentation/colorful_app.dart';
@@ -16,6 +14,8 @@ import 'package:deer/presentation/shared/widgets/label.dart';
 import 'package:deer/presentation/shared/widgets/tag_action_chip.dart';
 import 'package:deer/presentation/shared/widgets/tile.dart';
 import 'package:deer/utils/string_utils.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 import 'todo_list_bloc.dart';
 import 'todo_list_state.dart';

@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:deer/domain/entity/tags.dart';
 import 'package:deer/domain/entity/todo_entity.dart';
+import 'package:deer/presentation/app.dart';
 import 'package:deer/presentation/colorful_app.dart';
 import 'package:deer/presentation/screen/todo_edit/todo_edit_actions.dart';
 import 'package:deer/presentation/screen/todo_edit/todo_edit_bloc.dart';
@@ -11,6 +11,13 @@ import 'package:deer/presentation/shared/widgets/box.dart';
 import 'package:deer/presentation/shared/widgets/buttons.dart';
 import 'package:deer/presentation/shared/widgets/editable_bullet_list.dart';
 import 'package:deer/presentation/shared/widgets/tag_action_chip.dart';
+import 'package:deer/utils/string_utils.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
+const String _kNotificationChannelId = 'ScheduledNotification';
+const String _kNotificationChannelName = 'Scheduled Notification';
+const String _kNotificationChannelDescription = 'Pushes a notification at a specified date';
 
 class TodoEditScreen extends StatefulWidget {
   final TodoEntity todo;
@@ -64,7 +71,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
     );
 
     if (date == null) {
-      // clear notificationDate on cancel
+      // clear when dialog is dismissed
       _bloc.actions.add(UpdateField(key: FieldKey.notificationDate, value: null));
       return;
     }
@@ -83,10 +90,49 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
     _bloc.actions.add(UpdateField(key: FieldKey.notificationDate, value: notificationDate));
   }
 
-  void _submit(TodoEditState state) {
+  Future _scheduleNotification(TodoEditState state, int id) async {
+    final notificationDetails = NotificationDetails(
+      AndroidNotificationDetails(
+        _kNotificationChannelId,
+        _kNotificationChannelName,
+        _kNotificationChannelDescription,
+        importance: Importance.Max,
+        priority: Priority.High,
+      ),
+      IOSNotificationDetails(),
+    );
+
+    await notificationManager.schedule(
+      id,
+      state.todo.name,
+      !isBlank(state.todo.description) ? state.todo.description : state.todo.bulletPoints.map((b) => '- ${b.text}').join('    '),
+      state.todo.notificationDate,
+      notificationDetails,
+      payload: state.todo.addedDate.toIso8601String(),
+    );
+  }
+
+  void _cancelNotification(int id) async {
+    await notificationManager.cancel(id);
+  }
+
+  void _submit(TodoEditState state) async {
     if (!state.todoNameHasError) {
+      final notificationId = _dateToUniqueInt(state.todo.addedDate);
+
+      if (state.todo.notificationDate == null) {
+        _cancelNotification(notificationId);
+      } else if (widget.todo.notificationDate == null || widget.todo.notificationDate.compareTo(state.todo.notificationDate) != 0) {
+        // Schedule a notification only when date has been set to a new (different) value
+        _scheduleNotification(state, notificationId);
+      }
+
       Navigator.of(context).pop(state.todo);
     }
+  }
+
+  int _dateToUniqueInt(DateTime date) {
+    return date.year * 10000 + date.minute * 100 + date.second;
   }
 
   @override
@@ -127,7 +173,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
               _buildName(state),
               _buildDescription(state),
               _buildTags(state),
-              _buildBulletPoints(),
+              _buildBulletPoints(state),
               _buildNotification(state),
               _buildDate(state),
             ],
@@ -219,7 +265,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
     );
   }
 
-  Widget _buildBulletPoints() {
+  Widget _buildBulletPoints(TodoEditState state) {
     return ShadedBox(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -231,7 +277,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
           Padding(
             padding: const EdgeInsets.only(right: 20.0),
             child: EditableBulletList(
-              initialBulletPoints: widget.todo.bulletPoints.toList(),
+              initialBulletPoints: state.todo.bulletPoints.toList(),
               onChanged: (bullets) => _bloc.actions.add(UpdateField(key: FieldKey.bulletPoints, value: bullets)),
             ),
           ),
