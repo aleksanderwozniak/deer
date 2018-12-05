@@ -59,8 +59,14 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
   }
 
   void _restore(TodoEntity todo) async {
-    scheduleNotification(todo);
-    _bloc.actions.add(PerformOnTodo(operation: Operation.restore, todo: todo));
+    final reschedule = todo.notificationDate?.isAfter(DateTime.now()) ?? false;
+    if (reschedule) {
+      scheduleNotification(todo);
+      _bloc.actions.add(PerformOnTodo(operation: Operation.restore, todo: todo));
+    } else {
+      _bloc.actions.add(PerformOnTodo(operation: Operation.cleanRestore, todo: todo));
+    }
+
     Navigator.of(context).pop();
   }
 
@@ -140,7 +146,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
           TodoAvatar(
             text: state.todo.name,
             isLarge: true,
-            hasNotification: state.todo.notificationDate != null,
+            hasNotification: state.todo.notificationDate != null && widget.editable,
           ),
           const SizedBox(height: 16.0),
           Padding(

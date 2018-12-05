@@ -1,5 +1,5 @@
-import 'package:flutter/foundation.dart';
 import 'package:deer/domain/entity/todo_entity.dart';
+import 'package:flutter/foundation.dart';
 
 class PerformOnTodo {
   final TodoEntity todo;
@@ -12,4 +12,9 @@ class PerformOnTodo {
         assert(operation != null);
 }
 
-enum Operation { update, restore, delete }
+enum Operation {
+  update,
+  restore,
+  cleanRestore,
+  delete,
+}

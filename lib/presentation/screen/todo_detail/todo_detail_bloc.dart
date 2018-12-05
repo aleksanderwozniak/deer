@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:deer/domain/entity/todo_entity.dart';
 import 'package:deer/domain/interactor/task.dart';
 import 'package:deer/presentation/app.dart';
+import 'package:flutter/foundation.dart';
+import 'package:rxdart/rxdart.dart';
 
 import 'todo_detail_actions.dart';
 import 'todo_detail_state.dart';
@@ -51,6 +51,9 @@ class TodoDetailBloc {
       case Operation.restore:
         _onRestoreTodo(action.todo);
         break;
+      case Operation.cleanRestore:
+        _onCleanRestoreTodo(action.todo);
+        break;
       case Operation.delete:
         _onDeleteTodo(action.todo);
         break;
@@ -70,6 +73,17 @@ class TodoDetailBloc {
     _state.add(_state.value.rebuild(
       (b) => b..todo = todo.toBuilder(),
     ));
+  }
+
+  void _onCleanRestoreTodo(TodoEntity todo) {
+    final updatedTodo = todo.rebuild(
+      (b) => b
+        ..status = TodoStatus.active
+        ..notificationDate = null
+        ..finishedDate = null,
+    );
+
+    dependencies.todoInteractor.update(updatedTodo);
   }
 
   void _onRestoreTodo(TodoEntity todo) {

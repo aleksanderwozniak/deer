@@ -1,12 +1,12 @@
 import 'dart:async';
 
 import 'package:built_collection/built_collection.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:deer/domain/entity/todo_entity.dart';
 import 'package:deer/domain/interactor/task.dart';
 import 'package:deer/presentation/app.dart';
 import 'package:deer/presentation/screen/todo_list/todo_list_actions.dart';
 import 'package:deer/utils/string_utils.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:tuple/tuple.dart';
 
 import 'todo_list_state.dart';
@@ -23,6 +23,7 @@ class TodoListBloc {
 
   StreamSubscription<Task> _diskAccessSubscription;
   StreamSubscription<Tuple2<String, List<TodoEntity>>> _todosSubscription;
+  // StreamSubscription _timerSubscription; // TODO
 
   TodoListBloc() {
     _actions.stream.listen((action) {
@@ -54,6 +55,25 @@ class TodoListBloc {
 
       _state.add(_state.value.rebuild((b) => b..todos = ListBuilder(list)));
     });
+
+    // TODO
+    // _timerSubscription = Observable.periodic(Duration(seconds: 8)).listen((_) {
+    //   print('Timer sub');
+
+    //   final builder = _state.value.todos.toBuilder();
+    //   builder.map((e) {
+    //     final clear = e.notificationDate?.isBefore(DateTime.now()) ?? false;
+    //     if (clear) {
+    //       final entityBuilder = e.toBuilder();
+    //       entityBuilder.notificationDate = null;
+    //       return entityBuilder.build();
+    //     } else {
+    //       return e;
+    //     }
+    //   });
+
+    //   _state.add(_state.value.rebuild((b) => b..todos = builder));
+    // });
   }
 
   void _onPerform(PerformOnTodo action) {
@@ -120,5 +140,6 @@ class TodoListBloc {
 
     _todosSubscription?.cancel();
     _diskAccessSubscription?.cancel();
+    // _timerSubscription?.cancel(); // TODO
   }
 }

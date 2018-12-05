@@ -1,18 +1,20 @@
-import 'package:flutter/material.dart';
 import 'package:deer/domain/entity/todo_entity.dart';
 import 'package:deer/presentation/colorful_app.dart';
 import 'package:deer/presentation/shared/widgets/todo_avatar.dart';
+import 'package:flutter/material.dart';
 
 class TodoTile extends StatelessWidget {
   final TodoEntity todo;
   final VoidCallback onTileTap;
   final VoidCallback onFavoriteTap;
+  final bool hasNotification;
 
   const TodoTile({
     Key key,
     @required this.todo,
     @required this.onTileTap,
     this.onFavoriteTap,
+    this.hasNotification = false,
   })  : assert(todo != null),
         assert(onTileTap != null),
         super(key: key);
@@ -24,7 +26,7 @@ class TodoTile extends StatelessWidget {
       TodoAvatar(
         text: todo.name,
         isLarge: false,
-        hasNotification: todo.notificationDate != null,
+        hasNotification: hasNotification,
       ),
       const SizedBox(width: 8.0),
       Expanded(
