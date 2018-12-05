@@ -4,8 +4,8 @@ import 'package:built_collection/built_collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:tasking/domain/entity/todo_entity.dart';
-import 'package:tasking/utils/string_utils.dart';
+import 'package:deer/domain/entity/todo_entity.dart';
+import 'package:deer/utils/string_utils.dart';
 
 import 'todo_edit_actions.dart';
 import 'todo_edit_state.dart';

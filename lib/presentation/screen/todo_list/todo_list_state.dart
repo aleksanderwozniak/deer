@@ -2,8 +2,8 @@ library todo_list_state;
 
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
-import 'package:tasking/domain/entity/todo_entity.dart';
-import 'package:tasking/domain/interactor/task.dart';
+import 'package:deer/domain/entity/todo_entity.dart';
+import 'package:deer/domain/interactor/task.dart';
 
 part 'todo_list_state.g.dart';
 

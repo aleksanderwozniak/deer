@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:built_collection/built_collection.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:tasking/domain/entity/todo_entity.dart';
-import 'package:tasking/domain/interactor/task.dart';
-import 'package:tasking/presentation/app.dart';
-import 'package:tasking/presentation/screen/todo_list/todo_list_actions.dart';
-import 'package:tasking/utils/string_utils.dart';
+import 'package:deer/domain/entity/todo_entity.dart';
+import 'package:deer/domain/interactor/task.dart';
+import 'package:deer/presentation/app.dart';
+import 'package:deer/presentation/screen/todo_list/todo_list_actions.dart';
+import 'package:deer/utils/string_utils.dart';
 import 'package:tuple/tuple.dart';
 
 import 'todo_list_state.dart';

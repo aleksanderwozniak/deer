@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
-import 'package:tasking/data/dao/dao.dart';
-import 'package:tasking/data/repository/todo_repository.dart';
-import 'package:tasking/domain/interactor/todo_interactor.dart';
+import 'package:deer/data/dao/dao.dart';
+import 'package:deer/data/repository/todo_repository.dart';
+import 'package:deer/domain/interactor/todo_interactor.dart';
 
 class Dependencies {
   final TodoInteractor todoInteractor;

@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:tasking/data/repository/todo_repository.dart';
-import 'package:tasking/domain/entity/todo_entity.dart';
-import 'package:tasking/domain/interactor/task.dart';
+import 'package:deer/data/repository/todo_repository.dart';
+import 'package:deer/domain/entity/todo_entity.dart';
+import 'package:deer/domain/interactor/task.dart';
 
 class TodoInteractor {
   final TodoRepository todoRepository;

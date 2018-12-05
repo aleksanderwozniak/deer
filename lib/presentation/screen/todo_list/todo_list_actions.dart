@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:tasking/domain/entity/todo_entity.dart';
+import 'package:deer/domain/entity/todo_entity.dart';
 
 class PerformOnTodo {
   final TodoEntity todo;

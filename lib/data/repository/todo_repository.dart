@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
-import 'package:tasking/data/dao/todo_dao.dart';
-import 'package:tasking/domain/entity/todo_entity.dart';
-import 'package:tasking/domain/interactor/task.dart';
+import 'package:deer/data/dao/todo_dao.dart';
+import 'package:deer/domain/entity/todo_entity.dart';
+import 'package:deer/domain/interactor/task.dart';
 
 class TodoRepository {
   final TodoDao dao;

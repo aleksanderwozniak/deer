@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:tasking/domain/entity/todo_entity.dart';
-import 'package:tasking/domain/interactor/task.dart';
-import 'package:tasking/presentation/colorful_app.dart';
-import 'package:tasking/presentation/screen/archive_list/archive_list_actions.dart';
-import 'package:tasking/presentation/screen/todo_detail/todo_detail_screen.dart';
-import 'package:tasking/presentation/shared/widgets/buttons.dart';
-import 'package:tasking/presentation/shared/widgets/label.dart';
-import 'package:tasking/presentation/shared/widgets/tile.dart';
+import 'package:deer/domain/entity/todo_entity.dart';
+import 'package:deer/domain/interactor/task.dart';
+import 'package:deer/presentation/colorful_app.dart';
+import 'package:deer/presentation/screen/archive_list/archive_list_actions.dart';
+import 'package:deer/presentation/screen/todo_detail/todo_detail_screen.dart';
+import 'package:deer/presentation/shared/widgets/buttons.dart';
+import 'package:deer/presentation/shared/widgets/label.dart';
+import 'package:deer/presentation/shared/widgets/tile.dart';
 
 import 'archive_list_bloc.dart';
 import 'archive_list_state.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tasking/presentation/colorful_app.dart';
+import 'package:deer/presentation/colorful_app.dart';
 
 Widget buildCentralLabel({String text, BuildContext context}) {
   return Center(

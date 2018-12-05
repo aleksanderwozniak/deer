@@ -2,7 +2,7 @@ library todo_entity;
 
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
-import 'package:tasking/domain/entity/bullet_entity.dart';
+import 'package:deer/domain/entity/bullet_entity.dart';
 
 part 'todo_entity.g.dart';
 
