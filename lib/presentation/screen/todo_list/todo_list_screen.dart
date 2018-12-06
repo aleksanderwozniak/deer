@@ -1,8 +1,7 @@
 import 'package:built_collection/built_collection.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:deer/domain/entity/tags.dart';
 import 'package:deer/domain/entity/todo_entity.dart';
+import 'package:deer/presentation/app.dart';
 import 'package:deer/presentation/colorful_app.dart';
 import 'package:deer/presentation/screen/archive_list/archive_list_screen.dart';
 import 'package:deer/presentation/screen/todo_detail/todo_detail_screen.dart';
@@ -15,7 +14,11 @@ import 'package:deer/presentation/shared/widgets/dropdown.dart' as CustomDropdow
 import 'package:deer/presentation/shared/widgets/label.dart';
 import 'package:deer/presentation/shared/widgets/tag_action_chip.dart';
 import 'package:deer/presentation/shared/widgets/tile.dart';
+import 'package:deer/utils/notification_utils.dart';
 import 'package:deer/utils/string_utils.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'todo_list_bloc.dart';
 import 'todo_list_state.dart';
@@ -45,6 +48,16 @@ class _TodoListScreenState extends State<TodoListScreen> {
     _bloc = TodoListBloc();
     _todoNameController = TextEditingController();
     _todoListScrollController = ScrollController();
+
+    final initSettings = InitializationSettings(
+      AndroidInitializationSettings('deer_logo'),
+      IOSInitializationSettings(),
+    );
+
+    notificationManager.initialize(
+      initSettings,
+      onSelectNotification: onSelectNotification,
+    );
   }
 
   @override
@@ -55,6 +68,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
 
   // Place methods here
   void _archiveTodo(TodoEntity todo) {
+    cancelNotification(todo);
     _bloc.actions.add(PerformOnTodo(operation: Operation.archive, todo: todo));
   }
 
@@ -119,6 +133,21 @@ class _TodoListScreenState extends State<TodoListScreen> {
                 .toList(),
           ),
     );
+  }
+
+  Future onSelectNotification(String payload) async {
+    // Payload should never be null; check just to be sure
+    if (payload != null) {
+      final todos = await dependencies.todoInteractor.active.first;
+      final notificationTodo = todos.firstWhere((e) => e.addedDate.toIso8601String().compareTo(payload) == 0);
+
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => TodoDetailScreen(todo: notificationTodo, editable: true),
+        ),
+      );
+    }
   }
 
   @override
@@ -219,6 +248,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
                           todo: todo,
                           onTileTap: () => _showDetails(todo),
                           onFavoriteTap: () => _favoriteTodo(todo),
+                          hasNotification: todo.notificationDate != null,
                         ),
                       );
                     },

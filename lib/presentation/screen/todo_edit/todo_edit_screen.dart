@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:deer/domain/entity/tags.dart';
 import 'package:deer/domain/entity/todo_entity.dart';
 import 'package:deer/presentation/colorful_app.dart';
@@ -11,6 +10,8 @@ import 'package:deer/presentation/shared/widgets/box.dart';
 import 'package:deer/presentation/shared/widgets/buttons.dart';
 import 'package:deer/presentation/shared/widgets/editable_bullet_list.dart';
 import 'package:deer/presentation/shared/widgets/tag_action_chip.dart';
+import 'package:deer/utils/notification_utils.dart';
+import 'package:flutter/material.dart';
 
 class TodoEditScreen extends StatefulWidget {
   final TodoEntity todo;
@@ -64,14 +65,14 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
     );
 
     if (date == null) {
-      // clear notificationDate on cancel
+      // clear when dialog is dismissed
       _bloc.actions.add(UpdateField(key: FieldKey.notificationDate, value: null));
       return;
     }
 
     final time = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay.now(),
+      initialTime: TimeOfDay.fromDateTime(state.todo.notificationDate ?? DateTime.now()),
     );
 
     if (time == null) {
@@ -83,8 +84,15 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
     _bloc.actions.add(UpdateField(key: FieldKey.notificationDate, value: notificationDate));
   }
 
-  void _submit(TodoEditState state) {
+  void _submit(TodoEditState state) async {
     if (!state.todoNameHasError) {
+      if (state.todo.notificationDate == null) {
+        cancelNotification(state.todo);
+      } else if (widget.todo.notificationDate == null || widget.todo.notificationDate.compareTo(state.todo.notificationDate) != 0) {
+        // Schedule a notification only when date has been set to a new (different) value
+        scheduleNotification(state.todo);
+      }
+
       Navigator.of(context).pop(state.todo);
     }
   }
@@ -127,7 +135,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
               _buildName(state),
               _buildDescription(state),
               _buildTags(state),
-              _buildBulletPoints(),
+              _buildBulletPoints(state),
               _buildNotification(state),
               _buildDate(state),
             ],
@@ -219,7 +227,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
     );
   }
 
-  Widget _buildBulletPoints() {
+  Widget _buildBulletPoints(TodoEditState state) {
     return ShadedBox(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -231,7 +239,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
           Padding(
             padding: const EdgeInsets.only(right: 20.0),
             child: EditableBulletList(
-              initialBulletPoints: widget.todo.bulletPoints.toList(),
+              initialBulletPoints: state.todo.bulletPoints.toList(),
               onChanged: (bullets) => _bloc.actions.add(UpdateField(key: FieldKey.bulletPoints, value: bullets)),
             ),
           ),

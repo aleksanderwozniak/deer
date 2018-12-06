@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:deer/domain/entity/todo_entity.dart';
 import 'package:deer/presentation/colorful_app.dart';
 import 'package:deer/presentation/screen/todo_edit/todo_edit_screen.dart';
@@ -7,7 +6,9 @@ import 'package:deer/presentation/shared/widgets/box.dart';
 import 'package:deer/presentation/shared/widgets/bullet_list.dart';
 import 'package:deer/presentation/shared/widgets/buttons.dart';
 import 'package:deer/presentation/shared/widgets/todo_avatar.dart';
+import 'package:deer/utils/notification_utils.dart';
 import 'package:deer/utils/string_utils.dart';
+import 'package:flutter/material.dart';
 import 'package:tuple/tuple.dart';
 
 import 'todo_detail_actions.dart';
@@ -57,8 +58,15 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
     }
   }
 
-  void _restore(TodoEntity todo) {
-    _bloc.actions.add(PerformOnTodo(operation: Operation.restore, todo: todo));
+  void _restore(TodoEntity todo) async {
+    final reschedule = todo.notificationDate?.isAfter(DateTime.now()) ?? false;
+    if (reschedule) {
+      scheduleNotification(todo);
+      _bloc.actions.add(PerformOnTodo(operation: Operation.restore, todo: todo));
+    } else {
+      _bloc.actions.add(PerformOnTodo(operation: Operation.cleanRestore, todo: todo));
+    }
+
     Navigator.of(context).pop();
   }
 
@@ -105,7 +113,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
       children.add(_buildBulletPoints(state));
     }
 
-    if (state.todo.notificationDate != null) {
+    if (state.todo.notificationDate != null && widget.editable) {
       children.add(_buildNotification(state));
     }
 
@@ -138,7 +146,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
           TodoAvatar(
             text: state.todo.name,
             isLarge: true,
-            hasNotification: state.todo.notificationDate != null,
+            hasNotification: state.todo.notificationDate != null && widget.editable,
           ),
           const SizedBox(height: 16.0),
           Padding(

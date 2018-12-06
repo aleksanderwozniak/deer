@@ -26,6 +26,9 @@ dependencies:
   built_collection:
   collection:
 
+  # notification
+  flutter_local_notifications:
+
   # platform
   shared_preferences:
 

@@ -1,11 +1,11 @@
 import 'dart:convert';
 
 import 'package:built_collection/built_collection.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:deer/data/dao/in_memory.dart';
 import 'package:deer/data/json/todo_json.dart';
 import 'package:deer/data/mapper/todo_mapper.dart';
 import 'package:deer/domain/entity/todo_entity.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TodoDao {
   Stream<List<TodoEntity>> get all => _data.stream().map((it) => it.toList());
@@ -116,5 +116,29 @@ class TodoDao {
     _data.add(data.build());
 
     return _saveToDisk();
+  }
+
+  Future<bool> clearNotifications() async {
+    bool cacheDirty = false;
+    final data = _data.value.toBuilder();
+
+    data.map((e) {
+      final clear = e.notificationDate?.isBefore(DateTime.now()) ?? false;
+      if (clear) {
+        cacheDirty = true;
+        return e.rebuild((b) => b..notificationDate = null);
+      } else {
+        return e;
+      }
+    });
+
+    if (cacheDirty) {
+      final list = data.build();
+      _data.add(list);
+      _data.seedValue = list;
+      return _saveToDisk();
+    } else {
+      return false;
+    }
   }
 }

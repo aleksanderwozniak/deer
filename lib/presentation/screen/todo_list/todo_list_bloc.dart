@@ -1,12 +1,12 @@
 import 'dart:async';
 
 import 'package:built_collection/built_collection.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:deer/domain/entity/todo_entity.dart';
 import 'package:deer/domain/interactor/task.dart';
 import 'package:deer/presentation/app.dart';
 import 'package:deer/presentation/screen/todo_list/todo_list_actions.dart';
 import 'package:deer/utils/string_utils.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:tuple/tuple.dart';
 
 import 'todo_list_state.dart';
@@ -23,6 +23,7 @@ class TodoListBloc {
 
   StreamSubscription<Task> _diskAccessSubscription;
   StreamSubscription<Tuple2<String, List<TodoEntity>>> _todosSubscription;
+  StreamSubscription _notificationSubscription;
 
   TodoListBloc() {
     _actions.stream.listen((action) {
@@ -54,6 +55,14 @@ class TodoListBloc {
 
       _state.add(_state.value.rebuild((b) => b..todos = ListBuilder(list)));
     });
+
+    Future.delayed(Duration(milliseconds: 500), () {
+      dependencies.todoInteractor.clearNotifications();
+    });
+
+    _notificationSubscription = Observable.periodic(Duration(seconds: 15)).listen(
+      (_) => dependencies.todoInteractor.clearNotifications(),
+    );
   }
 
   void _onPerform(PerformOnTodo action) {
@@ -120,5 +129,6 @@ class TodoListBloc {
 
     _todosSubscription?.cancel();
     _diskAccessSubscription?.cancel();
+    _notificationSubscription?.cancel();
   }
 }
