@@ -1,8 +1,8 @@
-import 'package:flutter/foundation.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:deer/data/repository/todo_repository.dart';
 import 'package:deer/domain/entity/todo_entity.dart';
 import 'package:deer/domain/interactor/task.dart';
+import 'package:flutter/foundation.dart';
+import 'package:rxdart/rxdart.dart';
 
 class TodoInteractor {
   final TodoRepository todoRepository;
@@ -34,5 +34,9 @@ class TodoInteractor {
 
   Stream<Task> clearArchive() {
     return Observable.fromFuture(todoRepository.clearArchive()).startWith(Task.running());
+  }
+
+  Stream<Task> clearNotifications() {
+    return Observable.fromFuture(todoRepository.clearNotifications()).startWith(Task.running());
   }
 }

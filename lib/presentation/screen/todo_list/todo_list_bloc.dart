@@ -23,7 +23,7 @@ class TodoListBloc {
 
   StreamSubscription<Task> _diskAccessSubscription;
   StreamSubscription<Tuple2<String, List<TodoEntity>>> _todosSubscription;
-  // StreamSubscription _timerSubscription; // TODO
+  StreamSubscription _notificationSubscription;
 
   TodoListBloc() {
     _actions.stream.listen((action) {
@@ -56,24 +56,9 @@ class TodoListBloc {
       _state.add(_state.value.rebuild((b) => b..todos = ListBuilder(list)));
     });
 
-    // TODO
-    // _timerSubscription = Observable.periodic(Duration(seconds: 8)).listen((_) {
-    //   print('Timer sub');
-
-    //   final builder = _state.value.todos.toBuilder();
-    //   builder.map((e) {
-    //     final clear = e.notificationDate?.isBefore(DateTime.now()) ?? false;
-    //     if (clear) {
-    //       final entityBuilder = e.toBuilder();
-    //       entityBuilder.notificationDate = null;
-    //       return entityBuilder.build();
-    //     } else {
-    //       return e;
-    //     }
-    //   });
-
-    //   _state.add(_state.value.rebuild((b) => b..todos = builder));
-    // });
+    _notificationSubscription = Observable.periodic(Duration(minutes: 1)).listen((_) {
+      dependencies.todoInteractor.clearNotifications();
+    });
   }
 
   void _onPerform(PerformOnTodo action) {
@@ -140,6 +125,6 @@ class TodoListBloc {
 
     _todosSubscription?.cancel();
     _diskAccessSubscription?.cancel();
-    // _timerSubscription?.cancel(); // TODO
+    _notificationSubscription?.cancel();
   }
 }

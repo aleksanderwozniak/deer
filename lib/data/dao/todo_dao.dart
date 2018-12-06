@@ -117,4 +117,26 @@ class TodoDao {
 
     return _saveToDisk();
   }
+
+  Future<bool> clearNotifications() async {
+    bool cacheDirty = false;
+    final data = _data.value.toBuilder();
+
+    data.map((e) {
+      final clear = e.notificationDate?.isBefore(DateTime.now()) ?? false;
+      if (clear) {
+        cacheDirty = true;
+        return e.rebuild((b) => b..notificationDate = null);
+      } else {
+        return e;
+      }
+    });
+
+    if (cacheDirty) {
+      _data.add(data.build());
+      return _saveToDisk();
+    } else {
+      return false;
+    }
+  }
 }

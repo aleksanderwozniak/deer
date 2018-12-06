@@ -1,7 +1,7 @@
-import 'package:flutter/foundation.dart';
 import 'package:deer/data/dao/todo_dao.dart';
 import 'package:deer/domain/entity/todo_entity.dart';
 import 'package:deer/domain/interactor/task.dart';
+import 'package:flutter/foundation.dart';
 
 class TodoRepository {
   final TodoDao dao;
@@ -36,6 +36,11 @@ class TodoRepository {
 
   Future<Task> clearArchive() async {
     final result = await dao.clearFinished();
+    return result ? Task.successful() : Task.failed();
+  }
+
+  Future<Task> clearNotifications() async {
+    final result = await dao.clearNotifications();
     return result ? Task.successful() : Task.failed();
   }
 }
