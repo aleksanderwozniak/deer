@@ -133,7 +133,9 @@ class TodoDao {
     });
 
     if (cacheDirty) {
-      _data.add(data.build());
+      final list = data.build();
+      _data.add(list);
+      _data.seedValue = list;
       return _saveToDisk();
     } else {
       return false;

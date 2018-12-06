@@ -139,11 +139,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
     // Payload should never be null; check just to be sure
     if (payload != null) {
       final todos = await dependencies.todoInteractor.active.first;
-      final todoBuilder = todos.firstWhere((e) => e.addedDate.toIso8601String().compareTo(payload) == 0).toBuilder();
-      todoBuilder.notificationDate = null;
-      final notificationTodo = todoBuilder.build();
-
-      dependencies.todoInteractor.update(notificationTodo);
+      final notificationTodo = todos.firstWhere((e) => e.addedDate.toIso8601String().compareTo(payload) == 0);
 
       await Navigator.push(
         context,

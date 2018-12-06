@@ -36,14 +36,16 @@ class TodoDetailBloc {
       }
     });
 
-    _clearNotification();
+    Future.delayed(Duration(milliseconds: 500), () {
+      _clearNotification();
+    });
+
     _notificationSubscription = Stream.periodic(Duration(seconds: 15)).listen(
       (_) => _clearNotification(),
     );
   }
 
   void _clearNotification() {
-    print('todo_detail_bloc: clear this notification'); // TODO
     final rebuild = _state.value.todo.notificationDate?.isBefore(DateTime.now()) ?? false;
 
     if (rebuild) {
