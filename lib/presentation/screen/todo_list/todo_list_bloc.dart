@@ -56,9 +56,13 @@ class TodoListBloc {
       _state.add(_state.value.rebuild((b) => b..todos = ListBuilder(list)));
     });
 
-    _notificationSubscription = Observable.periodic(Duration(minutes: 1)).listen((_) {
-      dependencies.todoInteractor.clearNotifications();
-    });
+    _clearNotifications();
+    _notificationSubscription = Stream.periodic(Duration(seconds: 30)).listen((_) => _clearNotifications());
+  }
+
+  void _clearNotifications() {
+    print('todo_list_bloc: clear all notifications'); // TODO
+    dependencies.todoInteractor.clearNotifications();
   }
 
   void _onPerform(PerformOnTodo action) {

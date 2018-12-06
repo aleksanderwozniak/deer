@@ -17,7 +17,8 @@ class TodoDetailBloc {
   Stream<TodoDetailState> get state => _state.stream.distinct();
   final BehaviorSubject<TodoDetailState> _state;
 
-  StreamSubscription<Task> _updateTask;
+  StreamSubscription<Task> _updateSubscription;
+  StreamSubscription _notificationSubscription;
 
   TodoDetailBloc({@required TodoEntity todo})
       : _state = BehaviorSubject<TodoDetailState>(
@@ -34,13 +35,32 @@ class TodoDetailBloc {
           assert(false);
       }
     });
+
+    _clearNotification();
+    _notificationSubscription = Stream.periodic(Duration(seconds: 15)).listen(
+      (_) => _clearNotification(),
+    );
+  }
+
+  void _clearNotification() {
+    print('todo_detail_bloc: clear this notification'); // TODO
+    final rebuild = _state.value.todo.notificationDate?.isBefore(DateTime.now()) ?? false;
+
+    if (rebuild) {
+      final todoBuilder = _state.value.todo.toBuilder();
+      todoBuilder.notificationDate = null;
+
+      dependencies.todoInteractor.update(todoBuilder.build());
+      _state.add(_state.value.rebuild((b) => b..todo = todoBuilder));
+    }
   }
 
   void dispose() {
     _actions.close();
     _state.close();
 
-    _updateTask?.cancel();
+    _updateSubscription?.cancel();
+    _notificationSubscription?.cancel();
   }
 
   void _onPerform(PerformOnTodo action) {
@@ -63,8 +83,8 @@ class TodoDetailBloc {
   }
 
   void _onUpdateTodo(TodoEntity todo) {
-    _updateTask?.cancel();
-    _updateTask = dependencies.todoInteractor.update(todo).listen((task) {
+    _updateSubscription?.cancel();
+    _updateSubscription = dependencies.todoInteractor.update(todo).listen((task) {
       _state.add(_state.value.rebuild(
         (b) => b..updateTask = task,
       ));

@@ -72,7 +72,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
 
     final time = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay.now(),
+      initialTime: TimeOfDay.fromDateTime(state.todo.notificationDate ?? DateTime.now()),
     );
 
     if (time == null) {
