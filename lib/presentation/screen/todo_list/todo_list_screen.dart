@@ -233,7 +233,11 @@ class _TodoListScreenState extends State<TodoListScreen> {
         children: <Widget>[
           Expanded(
             child: state.todos.length == 0
-                ? buildCentralLabel(text: 'Todo list is empty!', context: context)
+                ? Center(
+                    child: SingleChildScrollView(
+                      child: buildCentralLabel(text: 'Todo list is empty!', context: context),
+                    ),
+                  )
                 : ListView.builder(
                     itemCount: state.todos.length,
                     controller: _todoListScrollController,
@@ -540,7 +544,7 @@ class _TodoAdderState extends State<_TodoAdder> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Text(
-              'Due by:',
+              'Due:',
               style: TextStyle().copyWith(fontSize: 12.0, color: ColorfulApp.of(context).colors.bleak),
             ),
             const SizedBox(height: 8.0),
