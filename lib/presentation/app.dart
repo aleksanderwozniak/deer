@@ -30,6 +30,7 @@ class App extends StatelessWidget {
         return MaterialApp(
           title: _title,
           theme: theme,
+          // debugShowCheckedModeBanner: false, // removes debug ribbon
           home: TodoListScreen(title: _title),
         );
       },

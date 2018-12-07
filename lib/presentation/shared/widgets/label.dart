@@ -1,11 +1,12 @@
-import 'package:flutter/material.dart';
 import 'package:deer/presentation/colorful_app.dart';
+import 'package:flutter/material.dart';
 
 Widget buildCentralLabel({String text, BuildContext context}) {
   return Center(
     child: Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
+        const SizedBox(height: 8.0),
         Opacity(
           opacity: 0.66,
           child: Image.asset(
