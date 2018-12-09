@@ -12,6 +12,9 @@
 
 <div style="text-align: center"><table><tr>
   <td style="text-align: center">
+    <img src="https://github.com/aleksanderwozniak/deer/blob/assets/deer.gif" width="223" />
+  </td>
+  <td style="text-align: center">
     <img src="https://github.com/aleksanderwozniak/deer/blob/assets/indi_list.png" width="250" />
   </td>
   <td style="text-align: center">
