@@ -20,9 +20,11 @@ enum FieldKey {
 
 class SetImage {
   final File image;
+  final String localPath;
 
   const SetImage({
     this.image,
+    this.localPath,
   });
 }
 

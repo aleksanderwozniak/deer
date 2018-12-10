@@ -33,6 +33,8 @@ class _$TodoEntity extends TodoEntity {
   @override
   final bool isFavorite;
   @override
+  final String imagePath;
+  @override
   final DateTime addedDate;
   @override
   final DateTime dueDate;
@@ -51,6 +53,7 @@ class _$TodoEntity extends TodoEntity {
       this.tags,
       this.status,
       this.isFavorite,
+      this.imagePath,
       this.addedDate,
       this.dueDate,
       this.finishedDate,
@@ -74,6 +77,9 @@ class _$TodoEntity extends TodoEntity {
     if (isFavorite == null) {
       throw new BuiltValueNullFieldError('TodoEntity', 'isFavorite');
     }
+    if (imagePath == null) {
+      throw new BuiltValueNullFieldError('TodoEntity', 'imagePath');
+    }
   }
 
   @override
@@ -93,6 +99,7 @@ class _$TodoEntity extends TodoEntity {
         tags == other.tags &&
         status == other.status &&
         isFavorite == other.isFavorite &&
+        imagePath == other.imagePath &&
         addedDate == other.addedDate &&
         dueDate == other.dueDate &&
         finishedDate == other.finishedDate &&
@@ -109,12 +116,14 @@ class _$TodoEntity extends TodoEntity {
                         $jc(
                             $jc(
                                 $jc(
-                                    $jc($jc(0, name.hashCode),
-                                        description.hashCode),
-                                    bulletPoints.hashCode),
-                                tags.hashCode),
-                            status.hashCode),
-                        isFavorite.hashCode),
+                                    $jc(
+                                        $jc($jc(0, name.hashCode),
+                                            description.hashCode),
+                                        bulletPoints.hashCode),
+                                    tags.hashCode),
+                                status.hashCode),
+                            isFavorite.hashCode),
+                        imagePath.hashCode),
                     addedDate.hashCode),
                 dueDate.hashCode),
             finishedDate.hashCode),
@@ -130,6 +139,7 @@ class _$TodoEntity extends TodoEntity {
           ..add('tags', tags)
           ..add('status', status)
           ..add('isFavorite', isFavorite)
+          ..add('imagePath', imagePath)
           ..add('addedDate', addedDate)
           ..add('dueDate', dueDate)
           ..add('finishedDate', finishedDate)
@@ -167,6 +177,10 @@ class TodoEntityBuilder implements Builder<TodoEntity, TodoEntityBuilder> {
   bool get isFavorite => _$this._isFavorite;
   set isFavorite(bool isFavorite) => _$this._isFavorite = isFavorite;
 
+  String _imagePath;
+  String get imagePath => _$this._imagePath;
+  set imagePath(String imagePath) => _$this._imagePath = imagePath;
+
   DateTime _addedDate;
   DateTime get addedDate => _$this._addedDate;
   set addedDate(DateTime addedDate) => _$this._addedDate = addedDate;
@@ -195,6 +209,7 @@ class TodoEntityBuilder implements Builder<TodoEntity, TodoEntityBuilder> {
       _tags = _$v.tags?.toBuilder();
       _status = _$v.status;
       _isFavorite = _$v.isFavorite;
+      _imagePath = _$v.imagePath;
       _addedDate = _$v.addedDate;
       _dueDate = _$v.dueDate;
       _finishedDate = _$v.finishedDate;
@@ -229,6 +244,7 @@ class TodoEntityBuilder implements Builder<TodoEntity, TodoEntityBuilder> {
               tags: tags.build(),
               status: status,
               isFavorite: isFavorite,
+              imagePath: imagePath,
               addedDate: addedDate,
               dueDate: dueDate,
               finishedDate: finishedDate,

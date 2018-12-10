@@ -13,6 +13,7 @@ import 'package:deer/presentation/shared/widgets/buttons.dart';
 import 'package:deer/presentation/shared/widgets/editable_bullet_list.dart';
 import 'package:deer/presentation/shared/widgets/tag_action_chip.dart';
 import 'package:deer/utils/notification_utils.dart';
+import 'package:deer/utils/string_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
@@ -115,7 +116,8 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
     final File image = await ImagePicker.pickImage(source: source);
 
     if (image != null) {
-      _bloc.actions.add(SetImage(image: image));
+      final path = await _localPath;
+      _bloc.actions.add(SetImage(image: image, localPath: path));
     }
   }
 
@@ -137,6 +139,11 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
       } else if (widget.todo.notificationDate == null || widget.todo.notificationDate.compareTo(state.todo.notificationDate) != 0) {
         // Schedule a notification only when date has been set to a new (different) value
         scheduleNotification(state.todo);
+      }
+
+      if (!isBlank(state.todo.imagePath)) {
+        // Save image file in correct path
+        await state.image.copy(state.todo.imagePath);
       }
 
       Navigator.of(context).pop(state.todo);

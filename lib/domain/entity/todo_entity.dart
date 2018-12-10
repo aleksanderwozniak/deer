@@ -13,6 +13,7 @@ abstract class TodoEntity implements Built<TodoEntity, TodoEntityBuilder> {
   BuiltList<String> get tags;
   TodoStatus get status;
   bool get isFavorite;
+  String get imagePath;
   @nullable
   DateTime get addedDate;
   @nullable
@@ -30,6 +31,7 @@ abstract class TodoEntity implements Built<TodoEntity, TodoEntityBuilder> {
     BuiltList<String> tags,
     TodoStatus status = TodoStatus.active,
     bool isFavorite = false,
+    String imagePath = '',
     DateTime addedDate,
     DateTime dueDate,
     DateTime finishedDate,
@@ -42,6 +44,7 @@ abstract class TodoEntity implements Built<TodoEntity, TodoEntityBuilder> {
         tags: tags ?? BuiltList(),
         status: status,
         isFavorite: isFavorite,
+        imagePath: imagePath,
         addedDate: addedDate,
         dueDate: dueDate,
         finishedDate: finishedDate,
