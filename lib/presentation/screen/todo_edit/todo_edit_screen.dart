@@ -115,10 +115,9 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
   void _pickImage(ImageSource source) async {
     final File image = await ImagePicker.pickImage(source: source);
 
-    if (image != null) {
-      final path = await _localPath;
-      _bloc.actions.add(SetImage(image: image, localPath: path));
-    }
+    // null values (aka dismissing dialog) will remove the image
+    final path = image != null ? await _localPath : null;
+    _bloc.actions.add(SetImage(image: image, localPath: path));
   }
 
   Future<String> get _localPath async {
@@ -129,6 +128,16 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
   void _zoomImage(File image) {
     if (image != null) {
       Navigator.push(context, MaterialPageRoute(builder: (context) => Image.file(image)));
+    }
+  }
+
+  File _getImageSrc(TodoEditState state) {
+    if (state.image != null) {
+      return state.image;
+    } else if (!isBlank(state.todo.imagePath)) {
+      return File(state.todo.imagePath);
+    } else {
+      return null;
     }
   }
 
@@ -304,6 +313,9 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
   }
 
   Widget _buildImage(TodoEditState state) {
+    final src = _getImageSrc(state);
+    final image = src != null ? Image.file(src, filterQuality: FilterQuality.low) : null;
+
     return ShadedBox(
       child: Column(
         children: <Widget>[
@@ -318,7 +330,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
               ),
               width: 200.0,
               height: 200.0,
-              child: state.image != null ? Image.file(state.image, filterQuality: FilterQuality.low) : null,
+              child: image,
             ),
           ),
           FlatButton(
