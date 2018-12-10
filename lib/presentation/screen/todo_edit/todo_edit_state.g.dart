@@ -23,12 +23,15 @@ class _$TodoEditState extends TodoEditState {
   @override
   final TodoEntity todo;
   @override
+  final File image;
+  @override
   final bool todoNameHasError;
 
   factory _$TodoEditState([void updates(TodoEditStateBuilder b)]) =>
       (new TodoEditStateBuilder()..update(updates)).build();
 
-  _$TodoEditState._({this.todo, this.todoNameHasError}) : super._() {
+  _$TodoEditState._({this.todo, this.image, this.todoNameHasError})
+      : super._() {
     if (todo == null) {
       throw new BuiltValueNullFieldError('TodoEditState', 'todo');
     }
@@ -49,18 +52,21 @@ class _$TodoEditState extends TodoEditState {
     if (identical(other, this)) return true;
     return other is TodoEditState &&
         todo == other.todo &&
+        image == other.image &&
         todoNameHasError == other.todoNameHasError;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, todo.hashCode), todoNameHasError.hashCode));
+    return $jf($jc(
+        $jc($jc(0, todo.hashCode), image.hashCode), todoNameHasError.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('TodoEditState')
           ..add('todo', todo)
+          ..add('image', image)
           ..add('todoNameHasError', todoNameHasError))
         .toString();
   }
@@ -74,6 +80,10 @@ class TodoEditStateBuilder
   TodoEntityBuilder get todo => _$this._todo ??= new TodoEntityBuilder();
   set todo(TodoEntityBuilder todo) => _$this._todo = todo;
 
+  File _image;
+  File get image => _$this._image;
+  set image(File image) => _$this._image = image;
+
   bool _todoNameHasError;
   bool get todoNameHasError => _$this._todoNameHasError;
   set todoNameHasError(bool todoNameHasError) =>
@@ -84,6 +94,7 @@ class TodoEditStateBuilder
   TodoEditStateBuilder get _$this {
     if (_$v != null) {
       _todo = _$v.todo?.toBuilder();
+      _image = _$v.image;
       _todoNameHasError = _$v.todoNameHasError;
       _$v = null;
     }
@@ -109,7 +120,9 @@ class TodoEditStateBuilder
     try {
       _$result = _$v ??
           new _$TodoEditState._(
-              todo: todo.build(), todoNameHasError: todoNameHasError);
+              todo: todo.build(),
+              image: image,
+              todoNameHasError: todoNameHasError);
     } catch (_) {
       String _$failedField;
       try {

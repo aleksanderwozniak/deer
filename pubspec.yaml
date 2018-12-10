@@ -29,6 +29,10 @@ dependencies:
   # notification
   flutter_local_notifications:
 
+  # images
+  image_picker:
+  path_provider:
+
   # platform
   shared_preferences:
 

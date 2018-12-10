@@ -1,3 +1,5 @@
+import 'dart:io';
+
 class UpdateField {
   final FieldKey key;
   final dynamic value;
@@ -14,6 +16,14 @@ enum FieldKey {
   bulletPoints,
   dueDate,
   notificationDate,
+}
+
+class SetImage {
+  final File image;
+
+  const SetImage({
+    this.image,
+  });
 }
 
 class ToggleTag {

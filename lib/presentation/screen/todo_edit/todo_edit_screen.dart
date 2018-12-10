@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:deer/domain/entity/tags.dart';
 import 'package:deer/domain/entity/todo_entity.dart';
 import 'package:deer/presentation/colorful_app.dart';
@@ -12,6 +14,8 @@ import 'package:deer/presentation/shared/widgets/editable_bullet_list.dart';
 import 'package:deer/presentation/shared/widgets/tag_action_chip.dart';
 import 'package:deer/utils/notification_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 
 class TodoEditScreen extends StatefulWidget {
   final TodoEntity todo;
@@ -84,6 +88,48 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
     _bloc.actions.add(UpdateField(key: FieldKey.notificationDate, value: notificationDate));
   }
 
+  void _chooseImageSource() async {
+    final ImageSource source = await showDialog<ImageSource>(
+      context: context,
+      builder: (context) => AlertDialog(
+            content: Text('Choose image source'),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Gallery'),
+                onPressed: () => Navigator.pop(context, ImageSource.gallery),
+              ),
+              FlatButton(
+                child: Text('Camera'),
+                onPressed: () => Navigator.pop(context, ImageSource.camera),
+              ),
+            ],
+          ),
+    );
+
+    if (source != null) {
+      _pickImage(source);
+    }
+  }
+
+  void _pickImage(ImageSource source) async {
+    final File image = await ImagePicker.pickImage(source: source);
+
+    if (image != null) {
+      _bloc.actions.add(SetImage(image: image));
+    }
+  }
+
+  Future<String> get _localPath async {
+    final directory = await getApplicationDocumentsDirectory();
+    return directory.path;
+  }
+
+  void _zoomImage(File image) {
+    if (image != null) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => Image.file(image)));
+    }
+  }
+
   void _submit(TodoEditState state) async {
     if (!state.todoNameHasError) {
       if (state.todo.notificationDate == null) {
@@ -136,6 +182,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
               _buildDescription(state),
               _buildTags(state),
               _buildBulletPoints(state),
+              _buildImage(state),
               _buildNotification(state),
               _buildDate(state),
             ],
@@ -244,6 +291,36 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
             ),
           ),
           const SizedBox(height: 12.0),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildImage(TodoEditState state) {
+    return ShadedBox(
+      child: Column(
+        children: <Widget>[
+          const SizedBox(height: 8.0),
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => _zoomImage(state.image),
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(),
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              width: 200.0,
+              height: 200.0,
+              child: state.image != null ? Image.file(state.image, filterQuality: FilterQuality.low) : null,
+            ),
+          ),
+          FlatButton(
+            child: Text(
+              'Select an image',
+              style: TextStyle().copyWith(color: ColorfulApp.of(context).colors.bleak, fontSize: 12.0),
+            ),
+            onPressed: _chooseImageSource,
+          ),
         ],
       ),
     );

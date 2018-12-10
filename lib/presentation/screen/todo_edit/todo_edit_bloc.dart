@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:built_collection/built_collection.dart';
+import 'package:deer/domain/entity/todo_entity.dart';
+import 'package:deer/utils/string_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:deer/domain/entity/todo_entity.dart';
-import 'package:deer/utils/string_utils.dart';
 
 import 'todo_edit_actions.dart';
 import 'todo_edit_state.dart';
@@ -29,6 +29,9 @@ class TodoEditBloc {
           break;
         case ToggleTag:
           _onToggleTag(action);
+          break;
+        case SetImage:
+          _onSetImage(action);
           break;
       }
     });
@@ -77,5 +80,9 @@ class TodoEditBloc {
 
     tags.sort();
     _state.add(state.build());
+  }
+
+  void _onSetImage(SetImage action) {
+    _state.add(_state.value.rebuild((b) => b..image = action.image));
   }
 }
