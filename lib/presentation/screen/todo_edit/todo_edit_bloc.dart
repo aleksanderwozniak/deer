@@ -84,9 +84,8 @@ class TodoEditBloc {
 
   void _onSetImage(SetImage action) {
     final state = _state.value.toBuilder();
-    final pathKey = _state.value.todo.addedDate.toString();
     state.image = action.image;
-    state.todo.imagePath = action.localPath != null ? '${action.localPath}/$pathKey.png' : '';
+    state.todo.imagePath = action.image?.path ?? '';
 
     _state.add(state.build());
   }

@@ -10,13 +10,14 @@ import 'package:deer/presentation/shared/helper/date_formatter.dart';
 import 'package:deer/presentation/shared/resources.dart';
 import 'package:deer/presentation/shared/widgets/box.dart';
 import 'package:deer/presentation/shared/widgets/buttons.dart';
+import 'package:deer/presentation/shared/widgets/dialogs.dart';
 import 'package:deer/presentation/shared/widgets/editable_bullet_list.dart';
+import 'package:deer/presentation/shared/widgets/image_file.dart';
 import 'package:deer/presentation/shared/widgets/tag_action_chip.dart';
 import 'package:deer/utils/notification_utils.dart';
 import 'package:deer/utils/string_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
 
 class TodoEditScreen extends StatefulWidget {
   final TodoEntity todo;
@@ -92,15 +93,15 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
   void _chooseImageSource() async {
     final ImageSource source = await showDialog<ImageSource>(
       context: context,
-      builder: (context) => AlertDialog(
-            content: Text('Choose image source'),
+      builder: (context) => RoundedAlertDialog(
+            title: 'Choose the image source',
             actions: <Widget>[
-              FlatButton(
-                child: Text('Gallery'),
+              FlatRoundButton(
+                text: 'Gallery',
                 onPressed: () => Navigator.pop(context, ImageSource.gallery),
               ),
-              FlatButton(
-                child: Text('Camera'),
+              FlatRoundButton(
+                text: 'Camera',
                 onPressed: () => Navigator.pop(context, ImageSource.camera),
               ),
             ],
@@ -115,14 +116,8 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
   void _pickImage(ImageSource source) async {
     final File image = await ImagePicker.pickImage(source: source);
 
-    // null values (aka dismissing dialog) will remove the image
-    final path = image != null ? await _localPath : null;
-    _bloc.actions.add(SetImage(image: image, localPath: path));
-  }
-
-  Future<String> get _localPath async {
-    final directory = await getApplicationDocumentsDirectory();
-    return directory.path;
+    // null value (aka dismissing dialog) will remove the image
+    _bloc.actions.add(SetImage(image: image));
   }
 
   void _zoomImage(File image) {
@@ -148,11 +143,6 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
       } else if (widget.todo.notificationDate == null || widget.todo.notificationDate.compareTo(state.todo.notificationDate) != 0) {
         // Schedule a notification only when date has been set to a new (different) value
         scheduleNotification(state.todo);
-      }
-
-      if (!isBlank(state.todo.imagePath)) {
-        // Save image file in correct path
-        await state.image.copy(state.todo.imagePath);
       }
 
       Navigator.of(context).pop(state.todo);
@@ -314,7 +304,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
 
   Widget _buildImage(TodoEditState state) {
     final src = _getImageSrc(state);
-    final image = src != null ? Image.file(src, filterQuality: FilterQuality.low) : null;
+    final image = src != null ? imageFile(src) : imageFilePlaceholder();
 
     return ShadedBox(
       child: Column(
@@ -323,21 +313,12 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
           GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () => _zoomImage(state.image),
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(),
-                borderRadius: BorderRadius.circular(20.0),
-              ),
-              width: 200.0,
-              height: 200.0,
-              child: image,
-            ),
+            child: image,
           ),
-          FlatButton(
-            child: Text(
-              'Select an image',
-              style: TextStyle().copyWith(color: ColorfulApp.of(context).colors.bleak, fontSize: 12.0),
-            ),
+          FlatRoundButton(
+            text: 'Select an image',
+            style: TextStyle().copyWith(color: ColorfulApp.of(context).colors.bleak, fontSize: 12.0),
+            radius: 16.0,
             onPressed: _chooseImageSource,
           ),
         ],

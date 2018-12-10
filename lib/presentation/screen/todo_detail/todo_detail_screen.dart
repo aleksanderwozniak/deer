@@ -7,6 +7,7 @@ import 'package:deer/presentation/shared/helper/date_formatter.dart';
 import 'package:deer/presentation/shared/widgets/box.dart';
 import 'package:deer/presentation/shared/widgets/bullet_list.dart';
 import 'package:deer/presentation/shared/widgets/buttons.dart';
+import 'package:deer/presentation/shared/widgets/image_file.dart';
 import 'package:deer/presentation/shared/widgets/todo_avatar.dart';
 import 'package:deer/utils/notification_utils.dart';
 import 'package:deer/utils/string_utils.dart';
@@ -243,21 +244,13 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
   }
 
   Widget _buildImage(TodoDetailState state) {
-    final image = File(state.todo.imagePath);
+    final file = File(state.todo.imagePath);
     return ShadedBox(
       child: Center(
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
-          onTap: () => _zoomImage(image),
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border.all(),
-              borderRadius: BorderRadius.circular(20.0),
-            ),
-            width: 200.0,
-            height: 200.0,
-            child: Image.file(image, filterQuality: FilterQuality.low),
-          ),
+          onTap: () => _zoomImage(file),
+          child: imageFile(file),
         ),
       ),
     );
