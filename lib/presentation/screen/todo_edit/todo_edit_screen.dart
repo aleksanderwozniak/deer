@@ -347,8 +347,10 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
               behavior: HitTestBehavior.opaque,
               onTap: () => hasImage ? _zoomImage(src) : _chooseImageSource(),
               onLongPress: () {
-                HapticFeedback.vibrate();
-                _showRemoveImageDialog();
+                if (hasImage) {
+                  HapticFeedback.vibrate();
+                  _showRemoveImageDialog();
+                }
               },
               child: image,
             ),

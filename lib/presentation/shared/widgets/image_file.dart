@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:deer/presentation/shared/resources.dart';
 import 'package:flutter/material.dart';
 
 Widget imageFile(File file) {
@@ -22,7 +23,7 @@ Widget imageFile(File file) {
   );
 }
 
-Widget imageFilePlaceholder() {
+Widget imageFilePlaceholder({double size = 128.0, double iconSize = 28.0}) {
   return Container(
     decoration: ShapeDecoration(
       shape: RoundedRectangleBorder(
@@ -30,9 +31,13 @@ Widget imageFilePlaceholder() {
         borderRadius: BorderRadius.circular(20.0),
       ),
     ),
-    width: 128,
-    height: 128,
-    // TODO: add custom icon
-    child: Icon(Icons.add, size: 36.0),
+    width: size,
+    height: size,
+    child: Stack(
+      children: <Widget>[
+        Center(child: Container(color: AppColors.black1, height: iconSize, width: 1.0)),
+        Center(child: Container(color: AppColors.black1, height: 1.0, width: iconSize)),
+      ],
+    ),
   );
 }
