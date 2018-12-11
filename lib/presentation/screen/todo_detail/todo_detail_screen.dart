@@ -12,6 +12,7 @@ import 'package:deer/presentation/shared/widgets/todo_avatar.dart';
 import 'package:deer/utils/notification_utils.dart';
 import 'package:deer/utils/string_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:tuple/tuple.dart';
 
 import 'todo_detail_actions.dart';
@@ -80,7 +81,10 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
 
   void _zoomImage(File image) {
     if (image != null) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => Image.file(image)));
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => PhotoView(imageProvider: FileImage(image))),
+      );
     }
   }
 
@@ -123,7 +127,11 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
     }
 
     if (!isBlank(state.todo.imagePath)) {
-      children.add(_buildImage(state));
+      final file = File(state.todo.imagePath);
+
+      if (file.existsSync()) {
+        children.add(_buildImage(file));
+      }
     }
 
     if (state.todo.notificationDate != null && widget.editable) {
@@ -243,8 +251,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
     );
   }
 
-  Widget _buildImage(TodoDetailState state) {
-    final file = File(state.todo.imagePath);
+  Widget _buildImage(File file) {
     return ShadedBox(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

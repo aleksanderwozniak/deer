@@ -17,7 +17,9 @@ import 'package:deer/presentation/shared/widgets/tag_action_chip.dart';
 import 'package:deer/utils/notification_utils.dart';
 import 'package:deer/utils/string_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:photo_view/photo_view.dart';
 
 class TodoEditScreen extends StatefulWidget {
   final TodoEntity todo;
@@ -123,7 +125,12 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
 
   void _zoomImage(File image) {
     if (image != null) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => Image.file(image)));
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PhotoView(imageProvider: FileImage(image)),
+        ),
+      );
     }
   }
 
@@ -323,7 +330,8 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
 
   Widget _buildImage(TodoEditState state) {
     final src = _getImageSrc(state);
-    final image = src != null ? imageFile(src) : imageFilePlaceholder();
+    final hasImage = src != null && src.existsSync();
+    final image = hasImage ? imageFile(src) : imageFilePlaceholder();
 
     return ShadedBox(
       child: Column(
@@ -337,8 +345,11 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
           Center(
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
-              onTap: () => src != null ? _zoomImage(state.image) : _chooseImageSource(),
-              onLongPress: _showRemoveImageDialog,
+              onTap: () => hasImage ? _zoomImage(src) : _chooseImageSource(),
+              onLongPress: () {
+                HapticFeedback.vibrate();
+                _showRemoveImageDialog();
+              },
               child: image,
             ),
           ),

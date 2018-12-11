@@ -31,6 +31,7 @@ dependencies:
 
   # images
   image_picker:
+  photo_view:
 
   # platform
   shared_preferences:
