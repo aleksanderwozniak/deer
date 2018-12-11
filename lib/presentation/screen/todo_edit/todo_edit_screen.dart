@@ -116,14 +116,33 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
   void _pickImage(ImageSource source) async {
     final File image = await ImagePicker.pickImage(source: source);
 
-    // null value (aka dismissing dialog) will remove the image
-    _bloc.actions.add(SetImage(image: image));
+    if (image != null) {
+      _bloc.actions.add(SetImage(image: image));
+    }
   }
 
   void _zoomImage(File image) {
     if (image != null) {
       Navigator.push(context, MaterialPageRoute(builder: (context) => Image.file(image)));
     }
+  }
+
+  void _showRemoveImageDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => RoundedAlertDialog(
+            title: 'Do you want to remove this image?',
+            actions: <Widget>[
+              FlatRoundButton(
+                  text: 'Remove',
+                  onPressed: () {
+                    _bloc.actions.add(SetImage(image: null));
+                    Navigator.pop(context);
+                  }),
+              FlatRoundButton(text: 'Cancel', onPressed: () => Navigator.pop(context)),
+            ],
+          ),
+    );
   }
 
   File _getImageSrc(TodoEditState state) {
@@ -308,19 +327,22 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
 
     return ShadedBox(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          const SizedBox(height: 8.0),
-          GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () => _zoomImage(state.image),
-            child: image,
+          Text(
+            'Image:',
+            style: TextStyle().copyWith(fontSize: 12.0, color: ColorfulApp.of(context).colors.bleak),
           ),
-          FlatRoundButton(
-            text: 'Select an image',
-            style: TextStyle().copyWith(color: ColorfulApp.of(context).colors.bleak, fontSize: 12.0),
-            radius: 16.0,
-            onPressed: _chooseImageSource,
+          const SizedBox(height: 12.0),
+          Center(
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => src != null ? _zoomImage(state.image) : _chooseImageSource(),
+              onLongPress: _showRemoveImageDialog,
+              child: image,
+            ),
           ),
+          const SizedBox(height: 4.0),
         ],
       ),
     );

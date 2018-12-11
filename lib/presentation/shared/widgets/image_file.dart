@@ -30,7 +30,9 @@ Widget imageFilePlaceholder() {
         borderRadius: BorderRadius.circular(20.0),
       ),
     ),
-    width: 200,
-    height: 200,
+    width: 128,
+    height: 128,
+    // TODO: add custom icon
+    child: Icon(Icons.add, size: 36.0),
   );
 }

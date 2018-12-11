@@ -246,12 +246,23 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
   Widget _buildImage(TodoDetailState state) {
     final file = File(state.todo.imagePath);
     return ShadedBox(
-      child: Center(
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () => _zoomImage(file),
-          child: imageFile(file),
-        ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            'Image:',
+            style: TextStyle().copyWith(fontSize: 12.0, color: ColorfulApp.of(context).colors.bleak),
+          ),
+          const SizedBox(height: 12.0),
+          Center(
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => _zoomImage(file),
+              child: imageFile(file),
+            ),
+          ),
+          const SizedBox(height: 4.0),
+        ],
       ),
     );
   }
