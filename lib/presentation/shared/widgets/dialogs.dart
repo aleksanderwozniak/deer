@@ -4,8 +4,14 @@ import 'package:flutter/material.dart';
 class RoundedAlertDialog extends StatelessWidget {
   final String title;
   final List<Widget> actions;
+  final Widget content;
 
-  const RoundedAlertDialog({Key key, this.title, this.actions}) : super(key: key);
+  const RoundedAlertDialog({
+    Key key,
+    this.title,
+    this.actions,
+    this.content,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +24,7 @@ class RoundedAlertDialog extends StatelessWidget {
         borderRadius: BorderRadius.circular(12.0),
         side: BorderSide(width: 1.0, color: ColorfulApp.of(context).colors.bleak),
       ),
+      content: content,
       actions: actions,
     );
   }
