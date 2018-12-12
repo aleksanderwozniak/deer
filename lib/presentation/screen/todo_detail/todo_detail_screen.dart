@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:deer/domain/entity/todo_entity.dart';
 import 'package:deer/presentation/colorful_app.dart';
 import 'package:deer/presentation/screen/todo_edit/todo_edit_screen.dart';
@@ -5,10 +7,12 @@ import 'package:deer/presentation/shared/helper/date_formatter.dart';
 import 'package:deer/presentation/shared/widgets/box.dart';
 import 'package:deer/presentation/shared/widgets/bullet_list.dart';
 import 'package:deer/presentation/shared/widgets/buttons.dart';
+import 'package:deer/presentation/shared/widgets/image_file.dart';
 import 'package:deer/presentation/shared/widgets/todo_avatar.dart';
 import 'package:deer/utils/notification_utils.dart';
 import 'package:deer/utils/string_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:tuple/tuple.dart';
 
 import 'todo_detail_actions.dart';
@@ -75,6 +79,15 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
     Navigator.of(context).pop();
   }
 
+  void _zoomImage(File image) {
+    if (image != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => PhotoView(imageProvider: FileImage(image))),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
@@ -111,6 +124,14 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
 
     if (state.todo.bulletPoints.isNotEmpty) {
       children.add(_buildBulletPoints(state));
+    }
+
+    if (!isBlank(state.todo.imagePath)) {
+      final file = File(state.todo.imagePath);
+
+      if (file.existsSync()) {
+        children.add(_buildImage(file));
+      }
     }
 
     if (state.todo.notificationDate != null && widget.editable) {
@@ -185,25 +206,6 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
     );
   }
 
-  Widget _buildBulletPoints(TodoDetailState state) {
-    return ShadedBox(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Text(
-            'Bullet points:',
-            style: TextStyle().copyWith(fontSize: 12.0, color: ColorfulApp.of(context).colors.bleak),
-          ),
-          const SizedBox(height: 8.0),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: BulletList(entries: state.todo.bulletPoints.toList()),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildTags(TodoDetailState state) {
     final children = state.todo.tags.map((tag) => _TagChip(title: tag)).toList();
 
@@ -225,6 +227,48 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
               children: children,
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBulletPoints(TodoDetailState state) {
+    return ShadedBox(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Text(
+            'Bullet points:',
+            style: TextStyle().copyWith(fontSize: 12.0, color: ColorfulApp.of(context).colors.bleak),
+          ),
+          const SizedBox(height: 8.0),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: BulletList(entries: state.todo.bulletPoints.toList()),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildImage(File file) {
+    return ShadedBox(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            'Image:',
+            style: TextStyle().copyWith(fontSize: 12.0, color: ColorfulApp.of(context).colors.bleak),
+          ),
+          const SizedBox(height: 12.0),
+          Center(
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => _zoomImage(file),
+              child: imageFile(file),
+            ),
+          ),
+          const SizedBox(height: 4.0),
         ],
       ),
     );

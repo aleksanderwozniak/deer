@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:deer/presentation/colorful_app.dart';
 import 'package:deer/presentation/shared/widgets/box.dart';
+import 'package:flutter/material.dart';
 import 'package:tuple/tuple.dart';
 
 class RoundButton extends StatelessWidget {
@@ -24,6 +24,34 @@ class RoundButton extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.0),
         side: BorderSide(color: ColorfulApp.of(context).colors.bleak),
+      ),
+    );
+  }
+}
+
+class FlatRoundButton extends StatelessWidget {
+  final String text;
+  final VoidCallback onPressed;
+  final double radius;
+  final TextStyle style;
+
+  FlatRoundButton({
+    Key key,
+    @required this.text,
+    @required this.onPressed,
+    this.radius = 8.0,
+    this.style,
+  })  : assert(text != null),
+        assert(onPressed != null),
+        super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return FlatButton(
+      child: Text(text, style: style),
+      onPressed: onPressed,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(radius),
       ),
     );
   }

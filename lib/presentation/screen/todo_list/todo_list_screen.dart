@@ -4,12 +4,14 @@ import 'package:deer/domain/entity/todo_entity.dart';
 import 'package:deer/presentation/app.dart';
 import 'package:deer/presentation/colorful_app.dart';
 import 'package:deer/presentation/screen/archive_list/archive_list_screen.dart';
+import 'package:deer/presentation/screen/privacy.dart';
 import 'package:deer/presentation/screen/todo_detail/todo_detail_screen.dart';
 import 'package:deer/presentation/screen/todo_list/todo_list_actions.dart';
 import 'package:deer/presentation/shared/helper/date_formatter.dart';
 import 'package:deer/presentation/shared/resources.dart';
 import 'package:deer/presentation/shared/widgets/box_decoration.dart';
 import 'package:deer/presentation/shared/widgets/buttons.dart';
+import 'package:deer/presentation/shared/widgets/dialogs.dart';
 import 'package:deer/presentation/shared/widgets/dropdown.dart' as CustomDropdown;
 import 'package:deer/presentation/shared/widgets/label.dart';
 import 'package:deer/presentation/shared/widgets/tag_action_chip.dart';
@@ -24,6 +26,8 @@ import 'todo_list_bloc.dart';
 import 'todo_list_state.dart';
 
 typedef void _AddTaskCallback(TodoEntity task);
+
+enum MenuEntry { colors, privacy }
 
 class TodoListScreen extends StatefulWidget {
   final String title;
@@ -135,6 +139,47 @@ class _TodoListScreenState extends State<TodoListScreen> {
     );
   }
 
+  void _showPrivacyPolicyDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) => RoundedAlertDialog(
+            title: 'Privacy Policy',
+            content: SingleChildScrollView(
+              child: Text(shortPrivacyPolicy, textAlign: TextAlign.center),
+            ),
+            actions: <Widget>[
+              FlatRoundButton(
+                text: 'Read more',
+                onPressed: _showFullPrivacyPolicy,
+              ),
+              FlatRoundButton(
+                text: 'Close',
+                onPressed: () => Navigator.pop(context),
+              ),
+            ],
+          ),
+    );
+  }
+
+  void _showFullPrivacyPolicy() {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => PrivacyScreen(),
+      fullscreenDialog: true,
+    ));
+  }
+
+  void _onMenuEntryTapped(MenuEntry entry) {
+    switch (entry) {
+      case MenuEntry.colors:
+        _selectColorTheme();
+        break;
+      case MenuEntry.privacy:
+        _showPrivacyPolicyDialog();
+        break;
+    }
+  }
+
   Future onSelectNotification(String payload) async {
     // Payload should never be null; check just to be sure
     if (payload != null) {
@@ -169,10 +214,18 @@ class _TodoListScreenState extends State<TodoListScreen> {
         title: Text(widget.title),
         centerTitle: true,
         bottom: _buildFilter(state),
-        leading: IconButton(
-          icon: Icon(Icons.settings),
-          tooltip: 'Settings',
-          onPressed: _selectColorTheme,
+        leading: PopupMenuButton(
+          onSelected: _onMenuEntryTapped,
+          itemBuilder: (BuildContext context) => <PopupMenuEntry<MenuEntry>>[
+                const PopupMenuItem<MenuEntry>(
+                  value: MenuEntry.colors,
+                  child: Text('Color Theme'),
+                ),
+                const PopupMenuItem<MenuEntry>(
+                  value: MenuEntry.privacy,
+                  child: Text('Privacy Policy'),
+                ),
+              ],
         ),
         actions: <Widget>[
           IconButton(

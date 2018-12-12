@@ -4,6 +4,7 @@ import 'package:deer/presentation/colorful_app.dart';
 import 'package:deer/presentation/screen/archive_list/archive_list_actions.dart';
 import 'package:deer/presentation/screen/todo_detail/todo_detail_screen.dart';
 import 'package:deer/presentation/shared/widgets/buttons.dart';
+import 'package:deer/presentation/shared/widgets/dialogs.dart';
 import 'package:deer/presentation/shared/widgets/label.dart';
 import 'package:deer/presentation/shared/widgets/tile.dart';
 import 'package:flutter/material.dart';
@@ -46,24 +47,17 @@ class _ArchiveListScreenState extends State<ArchiveListScreen> {
   void _showConfirmationDialog() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-            title: Text(
-              'Do you want to clear the Archive?',
-              style: TextStyle().copyWith(fontSize: 16.0),
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12.0),
-              side: BorderSide(width: 1.0, color: ColorfulApp.of(context).colors.bleak),
-            ),
+      builder: (context) => RoundedAlertDialog(
+            title: 'Do you want to clear the Archive?',
             actions: <Widget>[
-              FlatButton(
-                  child: Text('Yes'),
+              FlatRoundButton(
+                  text: 'Yes',
                   onPressed: () {
                     Navigator.pop(context);
                     _clearArchive();
                   }),
-              FlatButton(
-                child: Text('No'),
+              FlatRoundButton(
+                text: 'No',
                 onPressed: () => Navigator.pop(context),
               ),
             ],

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:deer/domain/entity/tags.dart';
 import 'package:deer/domain/entity/todo_entity.dart';
 import 'package:deer/presentation/colorful_app.dart';
@@ -8,10 +10,16 @@ import 'package:deer/presentation/shared/helper/date_formatter.dart';
 import 'package:deer/presentation/shared/resources.dart';
 import 'package:deer/presentation/shared/widgets/box.dart';
 import 'package:deer/presentation/shared/widgets/buttons.dart';
+import 'package:deer/presentation/shared/widgets/dialogs.dart';
 import 'package:deer/presentation/shared/widgets/editable_bullet_list.dart';
+import 'package:deer/presentation/shared/widgets/image_file.dart';
 import 'package:deer/presentation/shared/widgets/tag_action_chip.dart';
 import 'package:deer/utils/notification_utils.dart';
+import 'package:deer/utils/string_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:photo_view/photo_view.dart';
 
 class TodoEditScreen extends StatefulWidget {
   final TodoEntity todo;
@@ -84,6 +92,76 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
     _bloc.actions.add(UpdateField(key: FieldKey.notificationDate, value: notificationDate));
   }
 
+  void _chooseImageSource() async {
+    final ImageSource source = await showDialog<ImageSource>(
+      context: context,
+      builder: (context) => RoundedAlertDialog(
+            title: 'Choose the image source',
+            actions: <Widget>[
+              FlatRoundButton(
+                text: 'Gallery',
+                onPressed: () => Navigator.pop(context, ImageSource.gallery),
+              ),
+              FlatRoundButton(
+                text: 'Camera',
+                onPressed: () => Navigator.pop(context, ImageSource.camera),
+              ),
+            ],
+          ),
+    );
+
+    if (source != null) {
+      _pickImage(source);
+    }
+  }
+
+  void _pickImage(ImageSource source) async {
+    final File image = await ImagePicker.pickImage(source: source);
+
+    if (image != null) {
+      _bloc.actions.add(SetImage(image: image));
+    }
+  }
+
+  void _zoomImage(File image) {
+    if (image != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PhotoView(imageProvider: FileImage(image)),
+        ),
+      );
+    }
+  }
+
+  void _showRemoveImageDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => RoundedAlertDialog(
+            title: 'Do you want to remove this image?',
+            actions: <Widget>[
+              FlatRoundButton(
+                  text: 'Remove',
+                  onPressed: () {
+                    _bloc.actions.add(SetImage(image: null));
+                    Navigator.pop(context);
+                  }),
+              FlatRoundButton(text: 'Cancel', onPressed: () => Navigator.pop(context)),
+            ],
+          ),
+    );
+  }
+
+  File _getImageSrc(TodoEditState state) {
+    if (state.image != null) {
+      return state.image;
+    } else if (!isBlank(state.todo.imagePath)) {
+      return File(state.todo.imagePath);
+    } else {
+      return null;
+    }
+  }
+
   void _submit(TodoEditState state) async {
     if (!state.todoNameHasError) {
       if (state.todo.notificationDate == null) {
@@ -136,6 +214,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
               _buildDescription(state),
               _buildTags(state),
               _buildBulletPoints(state),
+              _buildImage(state),
               _buildNotification(state),
               _buildDate(state),
             ],
@@ -244,6 +323,39 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
             ),
           ),
           const SizedBox(height: 12.0),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildImage(TodoEditState state) {
+    final src = _getImageSrc(state);
+    final hasImage = src != null && src.existsSync();
+    final image = hasImage ? imageFile(src) : imageFilePlaceholder();
+
+    return ShadedBox(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            'Image:',
+            style: TextStyle().copyWith(fontSize: 12.0, color: ColorfulApp.of(context).colors.bleak),
+          ),
+          const SizedBox(height: 12.0),
+          Center(
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => hasImage ? _zoomImage(src) : _chooseImageSource(),
+              onLongPress: () {
+                if (hasImage) {
+                  HapticFeedback.vibrate();
+                  _showRemoveImageDialog();
+                }
+              },
+              child: image,
+            ),
+          ),
+          const SizedBox(height: 4.0),
         ],
       ),
     );

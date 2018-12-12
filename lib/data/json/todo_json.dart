@@ -1,7 +1,7 @@
-import 'package:flutter/foundation.dart';
 import 'package:deer/data/json/bullet_json.dart';
 import 'package:deer/domain/entity/todo_entity.dart';
 import 'package:deer/utils/string_utils.dart';
+import 'package:flutter/foundation.dart';
 
 class TodoJson {
   final String name;
@@ -10,6 +10,7 @@ class TodoJson {
   final List<String> tags;
   final TodoStatus status;
   final bool isFavorite;
+  final String imagePath;
   final DateTime addedDate;
   final DateTime dueDate;
   final DateTime finishedDate;
@@ -22,6 +23,7 @@ class TodoJson {
     this.tags,
     @required this.status,
     this.isFavorite,
+    this.imagePath,
     @required this.addedDate,
     this.dueDate,
     this.finishedDate,
@@ -42,6 +44,7 @@ class TodoJson {
       tags: inputJson['tags'] != null ? tags : const [],
       status: stringToEnum(inputJson['status'], TodoStatus.values),
       isFavorite: inputJson['isFavorite'],
+      imagePath: inputJson['imagePath'] != null ? inputJson['imagePath'] : '',
       addedDate: DateTime.parse(inputJson['addedDate']),
       dueDate: inputJson['dueDate'] != null ? DateTime.parse(inputJson['dueDate']) : null,
       finishedDate: inputJson['finishedDate'] != null ? DateTime.parse(inputJson['finishedDate']) : null,
@@ -58,6 +61,7 @@ class TodoJson {
       'tags': tags,
       'status': enumToString(status),
       'isFavorite': isFavorite,
+      'imagePath': imagePath,
       'addedDate': addedDate.toIso8601String(),
       'dueDate': dueDate?.toIso8601String(),
       'finishedDate': finishedDate?.toIso8601String(),
