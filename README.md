@@ -8,6 +8,12 @@
   Minimalist Todo Planner app built around the idea of efficiency and clean aesthetic.
 </h4>
 
+<div align="center">
+  <a href="https://github.com/Solido/awesome-flutter">
+     <img src="https://img.shields.io/badge/awesome-flutter-52bdeb.svg?longCache=true&style=for-the-badge" alt="Awesome Flutter" />
+  </a>
+</div>
+
 ## Showcase
 
 <div style="text-align: center"><table><tr>
