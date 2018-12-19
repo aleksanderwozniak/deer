@@ -47,17 +47,9 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
-    signingConfigs {
-        release {
-            storeFile file(keystoreProperties['storeFile'])
-            storePassword keystoreProperties['storePassword']
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-        }
-    }
     buildTypes {
         release {
-            signingConfig signingConfigs.release
+            signingConfig signingConfigs.debug
         }
     }
 }
