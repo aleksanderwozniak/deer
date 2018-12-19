@@ -34,6 +34,11 @@ class TodoRepository {
     return result ? Task.successful() : Task.failed();
   }
 
+  Future<Task> archiveTodo(TodoEntity todo) async {
+    final result = await dao.archiveTodo(todo);
+    return result ? Task.successful() : Task.failed();
+  }
+
   Future<Task> reorder(int oldIndex, int newIndex) async {
     final result = await dao.reorder(oldIndex, newIndex);
     return result ? Task.successful() : Task.failed();

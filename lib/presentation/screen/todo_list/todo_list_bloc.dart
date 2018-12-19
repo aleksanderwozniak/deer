@@ -104,7 +104,7 @@ class TodoListBloc {
     todoBuilder.finishedDate = DateTime.now();
 
     _diskAccessSubscription?.cancel();
-    _diskAccessSubscription = dependencies.todoInteractor.update(todoBuilder.build()).listen((task) {
+    _diskAccessSubscription = dependencies.todoInteractor.archiveTodo(todoBuilder.build()).listen((task) {
       _state.add(_state.value.rebuild((b) => b..diskAccessTask = task));
     });
   }
