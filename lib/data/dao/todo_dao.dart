@@ -110,6 +110,18 @@ class TodoDao {
     return _saveToDisk();
   }
 
+  Future<bool> reorder(int oldIndex, int newIndex) {
+    final data = _data.value.toBuilder();
+    final todo = data[oldIndex];
+    final index = newIndex < oldIndex ? newIndex : newIndex - 1;
+
+    data.removeAt(oldIndex);
+    data.insert(index, todo);
+    _data.add(data.build());
+
+    return _saveToDisk();
+  }
+
   Future<bool> clearFinished() {
     final data = _data.value.toBuilder();
     data.removeWhere((e) => e.status == TodoStatus.finished);

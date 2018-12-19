@@ -19,7 +19,6 @@ import 'package:deer/presentation/shared/widgets/tile.dart';
 import 'package:deer/utils/notification_utils.dart';
 import 'package:deer/utils/string_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'todo_list_bloc.dart';
@@ -79,20 +78,20 @@ class _TodoListScreenState extends State<TodoListScreen> {
   void _addTodo(TodoEntity todo) {
     _bloc.actions.add(PerformOnTodo(operation: Operation.add, todo: todo));
 
-    // [WIP] A workaround for `todoNameHasError`
-    if (todo.name.trim().isNotEmpty) {
-      // Because sometimes last item is skipped (see below)
-      final lastItemExtent = 60.0;
+    // TODO
+    // // Auto-scrolls to bottom of the ListView
+    // if (todo.name.trim().isNotEmpty) {
+    //   // Because sometimes last item is skipped (see below)
+    //   final lastItemExtent = 60.0;
 
-      // Auto-scrolls to bottom of the ListView
-      SchedulerBinding.instance.addPostFrameCallback((_) {
-        _todoListScrollController.animateTo(
-          _todoListScrollController.position.maxScrollExtent + lastItemExtent,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        );
-      });
-    }
+    //   SchedulerBinding.instance.addPostFrameCallback((_) {
+    //     _todoListScrollController.animateTo(
+    //       _todoListScrollController.position.maxScrollExtent + lastItemExtent,
+    //       duration: const Duration(milliseconds: 300),
+    //       curve: Curves.easeOut,
+    //     );
+    //   });
+    // }
   }
 
   void _favoriteTodo(TodoEntity todo) {
@@ -291,11 +290,11 @@ class _TodoListScreenState extends State<TodoListScreen> {
                       child: buildCentralLabel(text: 'Todo list is empty!', context: context),
                     ),
                   )
-                : ListView.builder(
-                    itemCount: state.todos.length,
-                    controller: _todoListScrollController,
-                    itemBuilder: (context, index) {
-                      final todo = state.todos[index];
+                : ReorderableListView(
+                    onReorder: (oldIndex, newIndex) {
+                      _bloc.actions.add(ReorderTodo(oldIndex: oldIndex, newIndex: newIndex));
+                    },
+                    children: state.todos.map((todo) {
                       return Dismissible(
                         key: Key(todo.addedDate.toIso8601String()),
                         background: _buildDismissibleBackground(leftToRight: true),
@@ -308,7 +307,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
                           hasNotification: todo.notificationDate != null,
                         ),
                       );
-                    },
+                    }).toList(),
                   ),
           ),
           _TodoAdder(

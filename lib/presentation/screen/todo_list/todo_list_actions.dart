@@ -1,5 +1,5 @@
-import 'package:flutter/foundation.dart';
 import 'package:deer/domain/entity/todo_entity.dart';
+import 'package:flutter/foundation.dart';
 
 class PerformOnTodo {
   final TodoEntity todo;
@@ -14,8 +14,19 @@ class PerformOnTodo {
 
 enum Operation { add, archive, favorite }
 
+class ReorderTodo {
+  final int oldIndex;
+  final int newIndex;
+
+  const ReorderTodo({
+    @required this.oldIndex,
+    @required this.newIndex,
+  })  : assert(oldIndex != null),
+        assert(newIndex != null);
+}
+
 class FilterBy {
   final String filter;
 
-  const FilterBy({this.filter}) : assert(filter != null);
+  const FilterBy({@required this.filter}) : assert(filter != null);
 }
