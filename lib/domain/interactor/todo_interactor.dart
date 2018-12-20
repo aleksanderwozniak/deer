@@ -32,6 +32,10 @@ class TodoInteractor {
     return Observable.fromFuture(todoRepository.update(todo)).startWith(Task.running());
   }
 
+  Stream<Task> restoreTodo(TodoEntity todo) {
+    return Observable.fromFuture(todoRepository.restoreTodo(todo)).startWith(Task.running());
+  }
+
   Stream<Task> archiveTodo(TodoEntity todo) {
     return Observable.fromFuture(todoRepository.archiveTodo(todo)).startWith(Task.running());
   }

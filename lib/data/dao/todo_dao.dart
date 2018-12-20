@@ -78,7 +78,9 @@ class TodoDao {
 
   Future<bool> add(TodoEntity todo) {
     final data = _data.value.toBuilder();
-    data.add(todo);
+    int index = _data.value.lastIndexWhere((it) => it.status == TodoStatus.active) + 1;
+
+    data.insert(index, todo);
     _data.add(data.build());
 
     return _saveToDisk();
@@ -110,7 +112,7 @@ class TodoDao {
     return _saveToDisk();
   }
 
-  Future<bool> archiveTodo(TodoEntity todo) async {
+  Future<bool> pushUpdatedBottom(TodoEntity todo) async {
     if (_data.value == null) {
       return false;
     }
