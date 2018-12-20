@@ -32,6 +32,18 @@ class TodoInteractor {
     return Observable.fromFuture(todoRepository.update(todo)).startWith(Task.running());
   }
 
+  Stream<Task> restoreTodo(TodoEntity todo) {
+    return Observable.fromFuture(todoRepository.restoreTodo(todo)).startWith(Task.running());
+  }
+
+  Stream<Task> archiveTodo(TodoEntity todo) {
+    return Observable.fromFuture(todoRepository.archiveTodo(todo)).startWith(Task.running());
+  }
+
+  Stream<Task> reorder(int oldIndex, int newIndex) {
+    return Observable.fromFuture(todoRepository.reorder(oldIndex, newIndex)).startWith(Task.running());
+  }
+
   Stream<Task> clearArchive() {
     return Observable.fromFuture(todoRepository.clearArchive()).startWith(Task.running());
   }

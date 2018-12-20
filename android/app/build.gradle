@@ -47,8 +47,20 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
+    // MARK: Uncomment for public release builds
+    // signingConfigs {
+    //     release {
+    //         storeFile file(keystoreProperties['storeFile'])
+    //         storePassword keystoreProperties['storePassword']
+    //         keyAlias keystoreProperties['keyAlias']
+    //         keyPassword keystoreProperties['keyPassword']
+    //     }
+    // }
+
     buildTypes {
         release {
+            // MARK: Uncomment for public release builds
+            // signingConfig signingConfigs.release
             signingConfig signingConfigs.debug
         }
     }

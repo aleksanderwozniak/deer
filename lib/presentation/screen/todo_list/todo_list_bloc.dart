@@ -31,6 +31,9 @@ class TodoListBloc {
         case PerformOnTodo:
           _onPerform(action);
           break;
+        case ReorderTodo:
+          _onReorder(action);
+          break;
         case FilterBy:
           _onFilterBy(action);
           break;
@@ -101,7 +104,7 @@ class TodoListBloc {
     todoBuilder.finishedDate = DateTime.now();
 
     _diskAccessSubscription?.cancel();
-    _diskAccessSubscription = dependencies.todoInteractor.update(todoBuilder.build()).listen((task) {
+    _diskAccessSubscription = dependencies.todoInteractor.archiveTodo(todoBuilder.build()).listen((task) {
       _state.add(_state.value.rebuild((b) => b..diskAccessTask = task));
     });
   }
@@ -112,6 +115,13 @@ class TodoListBloc {
 
     _diskAccessSubscription?.cancel();
     _diskAccessSubscription = dependencies.todoInteractor.update(todoBuilder.build()).listen((task) {
+      _state.add(_state.value.rebuild((b) => b..diskAccessTask = task));
+    });
+  }
+
+  void _onReorder(ReorderTodo action) {
+    _diskAccessSubscription?.cancel();
+    _diskAccessSubscription = dependencies.todoInteractor.reorder(action.oldIndex, action.newIndex).listen((task) {
       _state.add(_state.value.rebuild((b) => b..diskAccessTask = task));
     });
   }

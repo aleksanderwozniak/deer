@@ -84,6 +84,8 @@ class _FavoriteState extends State<_Favorite> {
 
   @override
   Widget build(BuildContext context) {
+    final duration = const Duration(milliseconds: 250);
+
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
@@ -91,7 +93,8 @@ class _FavoriteState extends State<_Favorite> {
           _isActive = !_isActive;
         });
 
-        widget.onTap();
+        // Handle onTap callback when animation is finished
+        Future.delayed(duration, widget.onTap);
       },
       child: Container(
         // Tap area
@@ -99,7 +102,7 @@ class _FavoriteState extends State<_Favorite> {
         child: AnimatedCrossFade(
           firstChild: _buildIcon(Icons.star_border),
           secondChild: _buildIcon(Icons.star),
-          duration: const Duration(milliseconds: 250),
+          duration: duration,
           crossFadeState: _isActive ? CrossFadeState.showSecond : CrossFadeState.showFirst,
         ),
       ),

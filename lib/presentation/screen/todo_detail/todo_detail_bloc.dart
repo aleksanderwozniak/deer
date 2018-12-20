@@ -105,7 +105,7 @@ class TodoDetailBloc {
         ..finishedDate = null,
     );
 
-    dependencies.todoInteractor.update(updatedTodo);
+    dependencies.todoInteractor.restoreTodo(updatedTodo);
   }
 
   void _onRestoreTodo(TodoEntity todo) {
@@ -115,7 +115,7 @@ class TodoDetailBloc {
         ..finishedDate = null,
     );
 
-    dependencies.todoInteractor.update(updatedTodo);
+    dependencies.todoInteractor.restoreTodo(updatedTodo);
   }
 
   void _onDeleteTodo(TodoEntity todo) {

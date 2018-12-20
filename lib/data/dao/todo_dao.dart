@@ -78,7 +78,9 @@ class TodoDao {
 
   Future<bool> add(TodoEntity todo) {
     final data = _data.value.toBuilder();
-    data.add(todo);
+    int index = _data.value.lastIndexWhere((it) => it.status == TodoStatus.active) + 1;
+
+    data.insert(index, todo);
     _data.add(data.build());
 
     return _saveToDisk();
@@ -105,6 +107,53 @@ class TodoDao {
 
     final data = _data.value.toBuilder();
     data[_data.value.indexOf(current.first)] = todo;
+    _data.add(data.build());
+
+    return _saveToDisk();
+  }
+
+  Future<bool> pushUpdatedBottom(TodoEntity todo) async {
+    if (_data.value == null) {
+      return false;
+    }
+
+    final current = _data.value.firstWhere((it) => it.addedDate.compareTo(todo.addedDate) == 0, orElse: null);
+    if (current == null) {
+      return false;
+    }
+
+    final data = _data.value.toBuilder();
+    data.remove(current);
+    data.add(todo);
+    _data.add(data.build());
+
+    return _saveToDisk();
+  }
+
+  Future<bool> reorder(int oldIndex, int newIndex) async {
+    final data = _data.value.toBuilder();
+    final currentFilter = await filter.first;
+    newIndex = newIndex < oldIndex ? newIndex : newIndex - 1;
+    var oldId;
+    var newId;
+
+    if (currentFilter == 'All') {
+      oldId = oldIndex;
+      newId = newIndex;
+    } else if (currentFilter == 'Favorite') {
+      final currentList = _data.value.where((it) => it.isFavorite);
+      oldId = _data.value.indexOf(currentList.elementAt(oldIndex));
+      newId = _data.value.indexOf(currentList.elementAt(newIndex));
+    } else {
+      final currentList = _data.value.where((it) => it.tags.contains(currentFilter));
+      oldId = _data.value.indexOf(currentList.elementAt(oldIndex));
+      newId = _data.value.indexOf(currentList.elementAt(newIndex));
+    }
+
+    final todo = data[oldId];
+
+    data.removeAt(oldId);
+    data.insert(newId, todo);
     _data.add(data.build());
 
     return _saveToDisk();
