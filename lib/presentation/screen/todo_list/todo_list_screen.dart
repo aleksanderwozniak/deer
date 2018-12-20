@@ -14,11 +14,13 @@ import 'package:deer/presentation/shared/widgets/buttons.dart';
 import 'package:deer/presentation/shared/widgets/dialogs.dart';
 import 'package:deer/presentation/shared/widgets/dropdown.dart' as CustomDropdown;
 import 'package:deer/presentation/shared/widgets/label.dart';
+import 'package:deer/presentation/shared/widgets/reorderable_list.dart' as CustomList;
 import 'package:deer/presentation/shared/widgets/tag_action_chip.dart';
 import 'package:deer/presentation/shared/widgets/tile.dart';
 import 'package:deer/utils/notification_utils.dart';
 import 'package:deer/utils/string_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'todo_list_bloc.dart';
@@ -43,14 +45,14 @@ class _TodoListScreenState extends State<TodoListScreen> {
   // Place variables here
   TodoListBloc _bloc;
   TextEditingController _todoNameController;
-  ScrollController _todoListScrollController;
+  ScrollController _listScrollController;
 
   @override
   void initState() {
     super.initState();
     _bloc = TodoListBloc();
     _todoNameController = TextEditingController();
-    _todoListScrollController = ScrollController();
+    _listScrollController = ScrollController();
 
     final initSettings = InitializationSettings(
       AndroidInitializationSettings('deer_logo'),
@@ -78,20 +80,19 @@ class _TodoListScreenState extends State<TodoListScreen> {
   void _addTodo(TodoEntity todo) {
     _bloc.actions.add(PerformOnTodo(operation: Operation.add, todo: todo));
 
-    // TODO
-    // // Auto-scrolls to bottom of the ListView
-    // if (todo.name.trim().isNotEmpty) {
-    //   // Because sometimes last item is skipped (see below)
-    //   final lastItemExtent = 60.0;
+    // Auto-scrolls to bottom of the ListView
+    if (todo.name.trim().isNotEmpty) {
+      // Because sometimes last item is skipped (see below)
+      final lastItemExtent = 60.0;
 
-    //   SchedulerBinding.instance.addPostFrameCallback((_) {
-    //     _todoListScrollController.animateTo(
-    //       _todoListScrollController.position.maxScrollExtent + lastItemExtent,
-    //       duration: const Duration(milliseconds: 300),
-    //       curve: Curves.easeOut,
-    //     );
-    //   });
-    // }
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        _listScrollController.animateTo(
+          _listScrollController.position.maxScrollExtent + lastItemExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      });
+    }
   }
 
   void _favoriteTodo(TodoEntity todo) {
@@ -290,7 +291,8 @@ class _TodoListScreenState extends State<TodoListScreen> {
                       child: buildCentralLabel(text: 'Todo list is empty!', context: context),
                     ),
                   )
-                : ReorderableListView(
+                : CustomList.ReorderableListView(
+                    scrollController: _listScrollController,
                     onReorder: (oldIndex, newIndex) {
                       _bloc.actions.add(ReorderTodo(oldIndex: oldIndex, newIndex: newIndex));
                     },
