@@ -391,7 +391,7 @@ class _TodoAdderState extends State<_TodoAdder> {
   int _millis;
   bool _isExpanded;
   double _height;
-  DateTime _dueDate;
+  DateTime _notificationDate;
   List<String> _tags;
   FocusNode _focusNode;
 
@@ -412,22 +412,36 @@ class _TodoAdderState extends State<_TodoAdder> {
     });
   }
 
-  void _selectDate() async {
-    // set initialDate to tomorrow by default
-    final tomorrow = DateTime.now().add(Duration(days: 1));
-
+  void _setupNotification() async {
     final date = await showDatePicker(
       context: context,
-      initialDate: _dueDate ?? tomorrow,
+      initialDate: _notificationDate ?? DateTime.now(),
       firstDate: DateTime(1970),
       lastDate: DateTime(2050),
     );
 
-    // Null check prevents user from resetting dueDate.
-    // I've decided the reset is a wanted feature.
-    // if (date != null) {
+    if (date == null) {
+      // clear when dialog is dismissed
+      setState(() {
+        _notificationDate = null;
+      });
+      return;
+    }
+
+    final time = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.fromDateTime(_notificationDate ?? DateTime.now()),
+    );
+
+    if (time == null) {
+      setState(() {
+        _notificationDate = null;
+      });
+      return;
+    }
+
     setState(() {
-      _dueDate = date;
+      _notificationDate = DateTime(date.year, date.month, date.day, time.hour, time.minute);
     });
   }
 
@@ -578,7 +592,7 @@ class _TodoAdderState extends State<_TodoAdder> {
             const SizedBox(height: 18.0),
             _buildTags(),
             const SizedBox(height: 18.0),
-            _buildDate(),
+            _buildNotification(),
             const SizedBox(height: 18.0),
           ],
         ),
@@ -586,9 +600,9 @@ class _TodoAdderState extends State<_TodoAdder> {
     );
   }
 
-  Widget _buildDate() {
+  Widget _buildNotification() {
     return GestureDetector(
-      onTap: _selectDate,
+      onTap: _setupNotification,
       behavior: HitTestBehavior.opaque,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
@@ -598,7 +612,7 @@ class _TodoAdderState extends State<_TodoAdder> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Text(
-              'Due:',
+              'Notification:',
               style: TextStyle().copyWith(fontSize: 12.0, color: ColorfulApp.of(context).colors.bleak),
             ),
             const SizedBox(height: 8.0),
@@ -608,14 +622,14 @@ class _TodoAdderState extends State<_TodoAdder> {
                 const SizedBox(width: 20.0),
                 Expanded(
                   child: Text(
-                    DateFormatter.safeFormatDays(_dueDate),
+                    DateFormatter.safeFormatDays(_notificationDate),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 const SizedBox(width: 8.0),
                 Text(
-                  DateFormatter.safeFormatFull(_dueDate),
+                  DateFormatter.safeFormatFullWithTime(_notificationDate),
                   textAlign: TextAlign.right,
                 ),
               ],
@@ -649,12 +663,18 @@ class _TodoAdderState extends State<_TodoAdder> {
   TodoEntity _buildTodo() {
     _tags.sort();
 
-    return TodoEntity(
+    final todo = TodoEntity(
       name: widget.todoNameController.text,
       tags: BuiltList(_tags),
       addedDate: DateTime.now(),
-      dueDate: _dueDate,
+      notificationDate: _notificationDate,
     );
+
+    if (todo.notificationDate != null) {
+      scheduleNotification(todo);
+    }
+
+    return todo;
   }
 }
 
