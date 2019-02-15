@@ -4,7 +4,7 @@ class DateFormatter {
   DateFormatter._();
 
   static String formatFullWithTime(DateTime date) {
-    final formatter = DateFormat('H:mm - EEEE, d.M.y');
+    final formatter = DateFormat('H:mm - EEEE, dd.MM.y');
 
     return formatter.format(date);
   }
@@ -18,7 +18,7 @@ class DateFormatter {
   }
 
   static String formatFull(DateTime date) {
-    final formatter = DateFormat('EEEE, d.M.y');
+    final formatter = DateFormat('EEEE, dd.MM.y');
 
     return formatter.format(date);
   }
