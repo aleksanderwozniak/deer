@@ -138,14 +138,15 @@ class TodoDao {
     var newId;
 
     if (currentFilter == 'All') {
-      oldId = oldIndex;
-      newId = newIndex;
+      final currentList = _data.value.where((it) => it.status == TodoStatus.active);
+      oldId = _data.value.indexOf(currentList.elementAt(oldIndex));
+      newId = _data.value.indexOf(currentList.elementAt(newIndex));
     } else if (currentFilter == 'Favorite') {
-      final currentList = _data.value.where((it) => it.isFavorite);
+      final currentList = _data.value.where((it) => it.isFavorite && it.status == TodoStatus.active);
       oldId = _data.value.indexOf(currentList.elementAt(oldIndex));
       newId = _data.value.indexOf(currentList.elementAt(newIndex));
     } else {
-      final currentList = _data.value.where((it) => it.tags.contains(currentFilter));
+      final currentList = _data.value.where((it) => it.tags.contains(currentFilter) && it.status == TodoStatus.active);
       oldId = _data.value.indexOf(currentList.elementAt(oldIndex));
       newId = _data.value.indexOf(currentList.elementAt(newIndex));
     }
