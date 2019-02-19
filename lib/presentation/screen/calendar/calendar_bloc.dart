@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:built_collection/built_collection.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'calendar_actions.dart';
@@ -40,6 +41,9 @@ class CalendarBloc {
     switch (action.field) {
       case Field.selectedDate:
         state.selectedDate = action.value;
+        break;
+      case Field.scheduledTodos:
+        state.scheduledTodos = ListBuilder(action.value);
         break;
     }
 

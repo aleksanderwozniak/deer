@@ -9,13 +9,18 @@ part of calendar_state;
 class _$CalendarState extends CalendarState {
   @override
   final DateTime selectedDate;
+  @override
+  final BuiltList<TodoEntity> scheduledTodos;
 
   factory _$CalendarState([void updates(CalendarStateBuilder b)]) =>
       (new CalendarStateBuilder()..update(updates)).build();
 
-  _$CalendarState._({this.selectedDate}) : super._() {
+  _$CalendarState._({this.selectedDate, this.scheduledTodos}) : super._() {
     if (selectedDate == null) {
       throw new BuiltValueNullFieldError('CalendarState', 'selectedDate');
+    }
+    if (scheduledTodos == null) {
+      throw new BuiltValueNullFieldError('CalendarState', 'scheduledTodos');
     }
   }
 
@@ -29,18 +34,21 @@ class _$CalendarState extends CalendarState {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is CalendarState && selectedDate == other.selectedDate;
+    return other is CalendarState &&
+        selectedDate == other.selectedDate &&
+        scheduledTodos == other.scheduledTodos;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, selectedDate.hashCode));
+    return $jf($jc($jc(0, selectedDate.hashCode), scheduledTodos.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('CalendarState')
-          ..add('selectedDate', selectedDate))
+          ..add('selectedDate', selectedDate)
+          ..add('scheduledTodos', scheduledTodos))
         .toString();
   }
 }
@@ -54,11 +62,18 @@ class CalendarStateBuilder
   set selectedDate(DateTime selectedDate) =>
       _$this._selectedDate = selectedDate;
 
+  ListBuilder<TodoEntity> _scheduledTodos;
+  ListBuilder<TodoEntity> get scheduledTodos =>
+      _$this._scheduledTodos ??= new ListBuilder<TodoEntity>();
+  set scheduledTodos(ListBuilder<TodoEntity> scheduledTodos) =>
+      _$this._scheduledTodos = scheduledTodos;
+
   CalendarStateBuilder();
 
   CalendarStateBuilder get _$this {
     if (_$v != null) {
       _selectedDate = _$v.selectedDate;
+      _scheduledTodos = _$v.scheduledTodos?.toBuilder();
       _$v = null;
     }
     return this;
@@ -79,7 +94,23 @@ class CalendarStateBuilder
 
   @override
   _$CalendarState build() {
-    final _$result = _$v ?? new _$CalendarState._(selectedDate: selectedDate);
+    _$CalendarState _$result;
+    try {
+      _$result = _$v ??
+          new _$CalendarState._(
+              selectedDate: selectedDate,
+              scheduledTodos: scheduledTodos.build());
+    } catch (_) {
+      String _$failedField;
+      try {
+        _$failedField = 'scheduledTodos';
+        scheduledTodos.build();
+      } catch (e) {
+        throw new BuiltValueNestedFieldError(
+            'CalendarState', _$failedField, e.toString());
+      }
+      rethrow;
+    }
     replace(_$result);
     return _$result;
   }
