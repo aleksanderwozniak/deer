@@ -33,6 +33,9 @@ dependencies:
   image_picker:
   photo_view:
 
+  # calendar
+  flutter_calendar_carousel:
+
   # platform
   shared_preferences:
 

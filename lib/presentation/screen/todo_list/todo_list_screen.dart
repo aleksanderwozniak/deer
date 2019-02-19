@@ -4,6 +4,7 @@ import 'package:deer/domain/entity/todo_entity.dart';
 import 'package:deer/presentation/app.dart';
 import 'package:deer/presentation/colorful_app.dart';
 import 'package:deer/presentation/screen/archive_list/archive_list_screen.dart';
+import 'package:deer/presentation/screen/calendar/calendar_screen.dart';
 import 'package:deer/presentation/screen/privacy.dart';
 import 'package:deer/presentation/screen/todo_detail/todo_detail_screen.dart';
 import 'package:deer/presentation/screen/todo_list/todo_list_actions.dart';
@@ -28,7 +29,7 @@ import 'todo_list_state.dart';
 
 typedef void _AddTaskCallback(TodoEntity task);
 
-enum MenuEntry { colors, privacy }
+enum MenuEntry { calendar, colors, privacy }
 
 class TodoListScreen extends StatefulWidget {
   final String title;
@@ -111,6 +112,12 @@ class _TodoListScreenState extends State<TodoListScreen> {
     ));
   }
 
+  void _showCalendar() {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => CalendarScreen(),
+    ));
+  }
+
   void _selectColorTheme() {
     showDialog(
       context: context,
@@ -171,6 +178,9 @@ class _TodoListScreenState extends State<TodoListScreen> {
 
   void _onMenuEntryTapped(MenuEntry entry) {
     switch (entry) {
+      case MenuEntry.calendar:
+        _showCalendar();
+        break;
       case MenuEntry.colors:
         _selectColorTheme();
         break;
@@ -217,6 +227,10 @@ class _TodoListScreenState extends State<TodoListScreen> {
         leading: PopupMenuButton(
           onSelected: _onMenuEntryTapped,
           itemBuilder: (BuildContext context) => <PopupMenuEntry<MenuEntry>>[
+                const PopupMenuItem<MenuEntry>(
+                  value: MenuEntry.calendar,
+                  child: Text('Calendar View'),
+                ),
                 const PopupMenuItem<MenuEntry>(
                   value: MenuEntry.colors,
                   child: Text('Color Theme'),
