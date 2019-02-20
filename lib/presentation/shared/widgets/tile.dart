@@ -7,14 +7,14 @@ class TodoTile extends StatelessWidget {
   final TodoEntity todo;
   final VoidCallback onTileTap;
   final VoidCallback onFavoriteTap;
-  final bool hasNotification;
+  final bool showNotification;
 
   const TodoTile({
     Key key,
     @required this.todo,
     @required this.onTileTap,
     this.onFavoriteTap,
-    this.hasNotification = false,
+    this.showNotification,
   })  : assert(todo != null),
         assert(onTileTap != null),
         super(key: key);
@@ -26,7 +26,7 @@ class TodoTile extends StatelessWidget {
       TodoAvatar(
         text: todo.name,
         isLarge: false,
-        hasNotification: hasNotification,
+        showNotification: showNotification ?? todo.notificationDate != null,
       ),
       const SizedBox(width: 8.0),
       Expanded(

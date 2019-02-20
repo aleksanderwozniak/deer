@@ -320,7 +320,6 @@ class _TodoListScreenState extends State<TodoListScreen> {
                           todo: todo,
                           onTileTap: () => _showDetails(todo),
                           onFavoriteTap: () => _favoriteTodo(todo),
-                          hasNotification: todo.notificationDate != null,
                         ),
                       );
                     }).toList(),

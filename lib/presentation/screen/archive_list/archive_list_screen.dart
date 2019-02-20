@@ -108,7 +108,7 @@ class _ArchiveListScreenState extends State<ArchiveListScreen> {
                           todo: todo,
                           onTileTap: () => _showDetails(todo),
                           onFavoriteTap: null,
-                          hasNotification: false,
+                          showNotification: false,
                         );
                       },
                     ),

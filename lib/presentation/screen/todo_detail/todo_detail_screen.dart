@@ -167,7 +167,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
           TodoAvatar(
             text: state.todo.name,
             isLarge: true,
-            hasNotification: state.todo.notificationDate != null && widget.editable,
+            showNotification: state.todo.notificationDate != null && widget.editable,
           ),
           const SizedBox(height: 16.0),
           Padding(

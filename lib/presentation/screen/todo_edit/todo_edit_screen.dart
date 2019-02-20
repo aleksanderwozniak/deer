@@ -49,7 +49,8 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
 
   void _selectDate(TodoEditState state) async {
     // set initialDate to tomorrow by default
-    final tomorrow = DateTime.now().add(Duration(days: 1));
+    final now = DateTime.now();
+    final tomorrow = DateTime(now.year, now.month, now.day).add(Duration(days: 1));
 
     final date = await showDatePicker(
       context: context,
