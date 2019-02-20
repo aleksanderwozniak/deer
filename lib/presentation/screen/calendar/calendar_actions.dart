@@ -10,4 +10,4 @@ class UpdateField {
   final dynamic value;
 }
 
-enum Field { selectedDate, scheduledTodos }
+enum Field { selectedDate }

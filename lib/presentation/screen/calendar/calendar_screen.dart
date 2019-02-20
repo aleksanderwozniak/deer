@@ -6,7 +6,6 @@ import 'package:deer/presentation/screen/calendar/calendar_state.dart';
 import 'package:deer/presentation/screen/todo_detail/todo_detail_screen.dart';
 import 'package:deer/presentation/shared/widgets/tile.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_calendar_carousel/classes/event_list.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 
 class CalendarScreen extends StatefulWidget {
@@ -17,19 +16,11 @@ class CalendarScreen extends StatefulWidget {
 class _CalendarScreenState extends State<CalendarScreen> {
   // Place variables here
   CalendarBloc _bloc;
-  EventList _mockEvents;
 
   @override
   void initState() {
     super.initState();
     _bloc = CalendarBloc();
-
-    _mockEvents = EventList(
-      events: {
-        DateTime(2019, 2, 24): ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'],
-        DateTime(2019, 2, 26): ['1', '2'],
-      },
-    );
   }
 
   @override
@@ -39,14 +30,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   // Place methods here
-  void _onDayPressed<T>(DateTime date, List<T> events) {
+  void _onDayPressed(DateTime date, _) {
     _bloc.actions.add(UpdateField(field: Field.selectedDate, value: date));
-
-    final todos = events.map((e) => TodoEntity(name: e.toString())).toList();
-    _bloc.actions.add(UpdateField(field: Field.scheduledTodos, value: todos));
-
-    // debug print
-    events.forEach((e) => print(e.toString()));
   }
 
   void _showDetails(TodoEntity todo) {
@@ -103,7 +88,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 16.0),
       child: CalendarCarousel(
-        markedDatesMap: _mockEvents,
+        markedDatesMap: state.todos,
         onDayPressed: _onDayPressed,
         selectedDateTime: state.selectedDate,
         iconColor: ColorfulApp.of(context).colors.dark,
