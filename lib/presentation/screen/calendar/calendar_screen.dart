@@ -4,6 +4,7 @@ import 'package:deer/presentation/screen/calendar/calendar_actions.dart';
 import 'package:deer/presentation/screen/calendar/calendar_bloc.dart';
 import 'package:deer/presentation/screen/calendar/calendar_state.dart';
 import 'package:deer/presentation/screen/todo_detail/todo_detail_screen.dart';
+import 'package:deer/presentation/shared/helper/date_formatter.dart';
 import 'package:deer/presentation/shared/widgets/tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
@@ -64,24 +65,29 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   Widget _buildBody(CalendarState state) {
-    if (state.scheduledTodos.isNotEmpty) {
-      return Column(
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          Flexible(
-            child: _buildCalendarCarousel(state),
-            flex: 2,
-            fit: FlexFit.tight,
-          ),
-          Flexible(
-            child: _buildScheduledTodos(state),
-            fit: FlexFit.loose,
-          ),
-        ],
-      );
-    } else {
-      return _buildCalendarCarousel(state);
-    }
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      children: <Widget>[
+        Flexible(
+          child: _buildCalendarCarousel(state),
+          flex: 3,
+          fit: FlexFit.tight,
+        ),
+        Text(
+          DateFormatter.formatFull(state.selectedDate),
+          style: TextStyle().copyWith(fontSize: 18.0),
+        ),
+        Flexible(
+          child: state.scheduledTodos.isNotEmpty
+              ? _buildScheduledTodos(state)
+              : Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12.0),
+                  child: Text('No scheduled Todos for this day'),
+                ),
+          fit: FlexFit.loose,
+        ),
+      ],
+    );
   }
 
   Widget _buildCalendarCarousel(CalendarState state) {
