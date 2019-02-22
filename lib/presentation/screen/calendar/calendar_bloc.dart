@@ -4,7 +4,6 @@ import 'package:built_collection/built_collection.dart';
 import 'package:collection/collection.dart';
 import 'package:deer/domain/entity/todo_entity.dart';
 import 'package:deer/presentation/app.dart';
-import 'package:flutter_calendar_carousel/classes/event_list.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'calendar_actions.dart';
@@ -40,11 +39,11 @@ class CalendarBloc {
       final todos = data.where((todo) => todo.dueDate != null);
       final events = groupBy(todos, (TodoEntity todo) => todo.dueDate);
 
-      _state.add(_state.value.rebuild((b) => b..todos = EventList(events: events)));
+      _state.add(_state.value.rebuild((b) => b..todos = MapBuilder(events)));
     });
 
     state.listen((data) {
-      _state.add(_state.value.rebuild((b) => b..scheduledTodos = ListBuilder(b.todos.getEvents(b.selectedDate))));
+      _state.add(_state.value.rebuild((b) => b..scheduledTodos = ListBuilder(b.todos[b.selectedDate] ?? [])));
     });
   }
 

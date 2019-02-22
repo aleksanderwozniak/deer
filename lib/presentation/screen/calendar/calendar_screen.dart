@@ -7,7 +7,7 @@ import 'package:deer/presentation/screen/todo_detail/todo_detail_screen.dart';
 import 'package:deer/presentation/shared/helper/date_formatter.dart';
 import 'package:deer/presentation/shared/widgets/tile.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 class CalendarScreen extends StatefulWidget {
   @override
@@ -31,7 +31,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   // Place methods here
-  void _onDayPressed(DateTime date, _) {
+  void _onDaySelected(DateTime date) {
     _bloc.actions.add(UpdateField(field: Field.selectedDate, value: date));
   }
 
@@ -68,58 +68,25 @@ class _CalendarScreenState extends State<CalendarScreen> {
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: <Widget>[
-        Flexible(
-          child: _buildCalendarCarousel(state),
-          flex: 3,
-          fit: FlexFit.tight,
-        ),
+        _buildCalendar(state),
+        const SizedBox(height: 4.0),
         Text(
           DateFormatter.formatFull(state.selectedDate),
-          style: TextStyle().copyWith(fontSize: 18.0),
+          style: TextStyle().copyWith(fontSize: 16.0),
         ),
-        Flexible(
-          child: state.scheduledTodos.isNotEmpty
-              ? _buildScheduledTodos(state)
-              : Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12.0),
-                  child: Text('No scheduled Todos for this day'),
-                ),
-          fit: FlexFit.loose,
-        ),
+        const SizedBox(height: 4.0),
+        Expanded(child: _buildScheduledTodos(state)),
       ],
     );
   }
 
-  Widget _buildCalendarCarousel(CalendarState state) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16.0),
-      child: CalendarCarousel(
-        markedDatesMap: state.todos,
-        onDayPressed: _onDayPressed,
-        selectedDateTime: state.selectedDate,
-        iconColor: ColorfulApp.of(context).colors.dark,
-        todayButtonColor: ColorfulApp.of(context).colors.pale,
-        selectedDayButtonColor: ColorfulApp.of(context).colors.medium,
-        customGridViewPhysics: NeverScrollableScrollPhysics(),
-        // TODO: Use those to customize date indicators
-        markedDateWidget: Container(
-          width: 6.0,
-          height: 6.0,
-          margin: const EdgeInsets.symmetric(horizontal: 0.3),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: ColorfulApp.of(context).colors.bleak,
-            // color: AppColors.black1,
-          ),
-        ),
-        // markedDateMoreCustomDecoration: BoxDecoration(
-        //   borderRadius: BorderRadius.circular(6.0),
-        //   color: Colors.black,
-        // ),
-        // markedDateShowIcon: true,
-        // markedDateIconMaxShown: 0,
-        // markedDateMoreShowTotal: true,
-      ),
+  Widget _buildCalendar(CalendarState state) {
+    return TableCalendar(
+      onDaySelected: _onDaySelected,
+      events: state.todos?.toMap(),
+      selectedColor: ColorfulApp.of(context).colors.medium,
+      todayColor: ColorfulApp.of(context).colors.pale,
+      eventMarkerColor: ColorfulApp.of(context).colors.bleak,
     );
   }
 

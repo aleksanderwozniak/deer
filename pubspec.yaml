@@ -34,7 +34,7 @@ dependencies:
   photo_view:
 
   # calendar
-  flutter_calendar_carousel:
+  table_calendar: 
 
   # platform
   shared_preferences:

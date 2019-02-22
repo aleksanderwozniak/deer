@@ -12,7 +12,7 @@ class _$CalendarState extends CalendarState {
   @override
   final BuiltList<TodoEntity> scheduledTodos;
   @override
-  final EventList<TodoEntity> todos;
+  final BuiltMap<DateTime, List<TodoEntity>> todos;
 
   factory _$CalendarState([void updates(CalendarStateBuilder b)]) =>
       (new CalendarStateBuilder()..update(updates)).build();
@@ -77,9 +77,11 @@ class CalendarStateBuilder
   set scheduledTodos(ListBuilder<TodoEntity> scheduledTodos) =>
       _$this._scheduledTodos = scheduledTodos;
 
-  EventList<TodoEntity> _todos;
-  EventList<TodoEntity> get todos => _$this._todos;
-  set todos(EventList<TodoEntity> todos) => _$this._todos = todos;
+  MapBuilder<DateTime, List<TodoEntity>> _todos;
+  MapBuilder<DateTime, List<TodoEntity>> get todos =>
+      _$this._todos ??= new MapBuilder<DateTime, List<TodoEntity>>();
+  set todos(MapBuilder<DateTime, List<TodoEntity>> todos) =>
+      _$this._todos = todos;
 
   CalendarStateBuilder();
 
@@ -87,7 +89,7 @@ class CalendarStateBuilder
     if (_$v != null) {
       _selectedDate = _$v.selectedDate;
       _scheduledTodos = _$v.scheduledTodos?.toBuilder();
-      _todos = _$v.todos;
+      _todos = _$v.todos?.toBuilder();
       _$v = null;
     }
     return this;
@@ -114,12 +116,14 @@ class CalendarStateBuilder
           new _$CalendarState._(
               selectedDate: selectedDate,
               scheduledTodos: scheduledTodos.build(),
-              todos: todos);
+              todos: todos.build());
     } catch (_) {
       String _$failedField;
       try {
         _$failedField = 'scheduledTodos';
         scheduledTodos.build();
+        _$failedField = 'todos';
+        todos.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             'CalendarState', _$failedField, e.toString());
