@@ -5,6 +5,8 @@ import 'package:deer/presentation/screen/calendar/calendar_bloc.dart';
 import 'package:deer/presentation/screen/calendar/calendar_state.dart';
 import 'package:deer/presentation/screen/todo_detail/todo_detail_screen.dart';
 import 'package:deer/presentation/shared/helper/date_formatter.dart';
+import 'package:deer/presentation/shared/resources.dart';
+import 'package:deer/presentation/shared/widgets/box.dart';
 import 'package:deer/presentation/shared/widgets/tile.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -67,14 +69,18 @@ class _CalendarScreenState extends State<CalendarScreen> {
   Widget _buildBody(CalendarState state) {
     return Column(
       mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         _buildCalendar(state),
-        const SizedBox(height: 4.0),
-        Text(
-          DateFormatter.formatFull(state.selectedDate),
-          style: TextStyle().copyWith(fontSize: 16.0),
+        const SizedBox(height: 8.0),
+        ShadedBox(
+          child: Text(
+            DateFormatter.formatFull(state.selectedDate),
+            style: TextStyle().copyWith(fontSize: 16.0),
+            textAlign: TextAlign.center,
+          ),
         ),
-        const SizedBox(height: 4.0),
+        const SizedBox(height: 2.0),
         Expanded(child: _buildScheduledTodos(state)),
       ],
     );
@@ -87,17 +93,32 @@ class _CalendarScreenState extends State<CalendarScreen> {
       selectedColor: ColorfulApp.of(context).colors.medium,
       todayColor: ColorfulApp.of(context).colors.pale,
       eventMarkerColor: ColorfulApp.of(context).colors.bleak,
+      iconColor: ColorfulApp.of(context).colors.dark,
+      centerHeaderTitle: false,
+      formatToggleVisible: true,
+      formatToggleDecoration: BoxDecoration(
+        border: Border.all(width: 0.0, color: ColorfulApp.of(context).colors.bleak),
+        borderRadius: BorderRadius.circular(16.0),
+        color: ColorfulApp.of(context).colors.pale,
+      ),
+      formatTogglePadding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 11.0),
+      formatToggleTextStyle: TextStyle().copyWith(color: AppColors.white1, fontSize: 13.0),
     );
   }
 
   Widget _buildScheduledTodos(CalendarState state) {
-    return ListView(
-      children: state.scheduledTodos
-          .map((todo) => TodoTile(
-                todo: todo,
-                onTileTap: () => _showDetails(todo),
-              ))
-          .toList(),
+    return Container(
+      decoration: BoxDecoration(
+        gradient: ColorfulApp.of(context).colors.brightGradient,
+      ),
+      child: ListView(
+        children: state.scheduledTodos
+            .map((todo) => TodoTile(
+                  todo: todo,
+                  onTileTap: () => _showDetails(todo),
+                ))
+            .toList(),
+      ),
     );
   }
 }
