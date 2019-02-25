@@ -7,10 +7,10 @@ import 'package:deer/presentation/screen/calendar/calendar_screen.dart';
 import 'package:deer/presentation/screen/privacy.dart';
 import 'package:deer/presentation/screen/todo_detail/todo_detail_screen.dart';
 import 'package:deer/presentation/screen/todo_list/todo_list_actions.dart';
-import 'package:deer/presentation/shared/resources.dart';
 import 'package:deer/presentation/shared/widgets/box_decoration.dart';
 import 'package:deer/presentation/shared/widgets/buttons.dart';
 import 'package:deer/presentation/shared/widgets/dialogs.dart';
+import 'package:deer/presentation/shared/widgets/dismissible.dart';
 import 'package:deer/presentation/shared/widgets/dropdown.dart' as CustomDropdown;
 import 'package:deer/presentation/shared/widgets/label.dart';
 import 'package:deer/presentation/shared/widgets/reorderable_list.dart' as CustomList;
@@ -309,8 +309,8 @@ class _TodoListScreenState extends State<TodoListScreen> {
                     children: state.todos.map((todo) {
                       return Dismissible(
                         key: Key(todo.addedDate.toIso8601String()),
-                        background: _buildDismissibleBackground(leftToRight: true),
-                        secondaryBackground: _buildDismissibleBackground(leftToRight: false),
+                        background: buildDismissibleBackground(context: context, leftToRight: true),
+                        secondaryBackground: buildDismissibleBackground(context: context, leftToRight: false),
                         onDismissed: (_) => _archiveTodo(todo),
                         child: TodoTile(
                           todo: todo,
@@ -327,24 +327,6 @@ class _TodoListScreenState extends State<TodoListScreen> {
             todoNameController: _todoNameController,
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildDismissibleBackground({@required bool leftToRight}) {
-    final alignment = leftToRight ? Alignment.centerLeft : Alignment.centerRight;
-    final colors =
-        leftToRight ? [ColorfulApp.of(context).colors.bright, AppColors.white1] : [AppColors.white1, ColorfulApp.of(context).colors.bright];
-
-    return Container(
-      child: Text(
-        'Done',
-        style: TextStyle().copyWith(color: AppColors.white1, fontSize: 20.0),
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-      alignment: alignment,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(colors: colors),
       ),
     );
   }

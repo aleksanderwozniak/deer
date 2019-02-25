@@ -7,9 +7,11 @@ import 'package:deer/presentation/screen/todo_detail/todo_detail_screen.dart';
 import 'package:deer/presentation/shared/helper/date_formatter.dart';
 import 'package:deer/presentation/shared/resources.dart';
 import 'package:deer/presentation/shared/widgets/box.dart';
+import 'package:deer/presentation/shared/widgets/dismissible.dart';
 import 'package:deer/presentation/shared/widgets/label.dart';
 import 'package:deer/presentation/shared/widgets/tile.dart';
 import 'package:deer/presentation/shared/widgets/todo_adder.dart';
+import 'package:deer/utils/notification_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -55,7 +57,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   void _addTodo(TodoEntity todo) {
-    _bloc.actions.add(AddTodo(todo));
+    _bloc.actions.add(PerformOnTodo(operation: Operation.add, todo: todo));
 
     // Auto-scrolls to bottom of the ListView
     if (todo.name.trim().isNotEmpty) {
@@ -70,6 +72,15 @@ class _CalendarScreenState extends State<CalendarScreen> {
         );
       });
     }
+  }
+
+  void _favoriteTodo(TodoEntity todo) {
+    _bloc.actions.add(PerformOnTodo(operation: Operation.favorite, todo: todo));
+  }
+
+  void _archiveTodo(TodoEntity todo) {
+    cancelNotification(todo);
+    _bloc.actions.add(PerformOnTodo(operation: Operation.archive, todo: todo));
   }
 
   @override
@@ -139,21 +150,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   Widget _buildScheduledTodos(CalendarState state) {
     final children = <Widget>[
       Expanded(
-        child: state.scheduledTodos.length == 0
-            ? Center(
-                child: SingleChildScrollView(
-                  child: buildCentralLabel(text: 'Todo list is empty!', context: context),
-                ),
-              )
-            : ListView(
-                controller: _listScrollController,
-                children: state.scheduledTodos
-                    .map((todo) => TodoTile(
-                          todo: todo,
-                          onTileTap: () => _showDetails(todo),
-                        ))
-                    .toList(),
-              ),
+        child: state.scheduledTodos.length == 0 ? _buildPlaceholder() : _buildListView(state),
       ),
     ];
 
@@ -177,5 +174,33 @@ class _CalendarScreenState extends State<CalendarScreen> {
         children: children,
       ),
     );
+  }
+
+  Widget _buildPlaceholder() {
+    return Center(
+      child: SingleChildScrollView(
+        child: buildCentralLabel(text: 'Todo list is empty!', context: context),
+      ),
+    );
+  }
+
+  Widget _buildListView(CalendarState state) {
+    return ListView.builder(
+        controller: _listScrollController,
+        itemCount: state.scheduledTodos.length,
+        itemBuilder: (context, index) {
+          final todo = state.scheduledTodos[index];
+          return Dismissible(
+            key: Key(todo.addedDate.toIso8601String()),
+            background: buildDismissibleBackground(context: context, leftToRight: true),
+            secondaryBackground: buildDismissibleBackground(context: context, leftToRight: false),
+            onDismissed: (_) => _archiveTodo(todo),
+            child: TodoTile(
+              todo: todo,
+              onTileTap: () => _showDetails(todo),
+              onFavoriteTap: () => _favoriteTodo(todo),
+            ),
+          );
+        });
   }
 }

@@ -13,8 +13,15 @@ class UpdateField {
 
 enum Field { selectedDate, calendarFormat }
 
-class AddTodo {
+class PerformOnTodo {
   final TodoEntity todo;
+  final Operation operation;
 
-  const AddTodo(this.todo) : assert(todo != null);
+  const PerformOnTodo({
+    @required this.todo,
+    @required this.operation,
+  })  : assert(todo != null),
+        assert(operation != null);
 }
+
+enum Operation { add, archive, favorite }

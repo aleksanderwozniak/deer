@@ -31,8 +31,8 @@ class CalendarBloc {
         case UpdateField:
           _onUpdateField(action);
           break;
-        case AddTodo:
-          _onAddTodo(action);
+        case PerformOnTodo:
+          _onPerform(action);
           break;
         default:
           assert(false);
@@ -47,7 +47,10 @@ class CalendarBloc {
     });
 
     state.listen((data) {
-      _state.add(_state.value.rebuild((b) => b..scheduledTodos = ListBuilder(b.todos[b.selectedDate] ?? [])));
+      _state.add(_state.value.rebuild((b) => b
+        ..scheduledTodos = ListBuilder(
+          b.todos[b.selectedDate] ?? [],
+        )));
     });
   }
 
@@ -74,13 +77,47 @@ class CalendarBloc {
     _state.add(state.build());
   }
 
-  void _onAddTodo(AddTodo action) {
-    _state.add(_state.value.rebuild((b) => b..todoNameHasError = isBlank(action.todo.name)));
+  void _onPerform(PerformOnTodo action) {
+    switch (action.operation) {
+      case Operation.add:
+        _onAdd(action.todo);
+        break;
+      case Operation.favorite:
+        _onFavorite(action.todo);
+        break;
+      case Operation.archive:
+        _onArchive(action.todo);
+        break;
+      default:
+        assert(false);
+    }
+  }
+
+  void _onAdd(TodoEntity todo) {
+    _state.add(_state.value.rebuild(
+      (b) => b..todoNameHasError = isBlank(todo.name),
+    ));
 
     if (_state.value.todoNameHasError) {
       return;
     }
 
-    dependencies.todoInteractor.add(action.todo);
+    dependencies.todoInteractor.add(todo);
+  }
+
+  void _onFavorite(TodoEntity todo) {
+    dependencies.todoInteractor.update(
+      todo.rebuild((b) => b..isFavorite = !b.isFavorite),
+    );
+  }
+
+  void _onArchive(TodoEntity todo) {
+    dependencies.todoInteractor.archiveTodo(
+      todo.rebuild(
+        (b) => b
+          ..status = TodoStatus.finished
+          ..finishedDate = DateTime.now(),
+      ),
+    );
   }
 }
