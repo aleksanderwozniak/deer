@@ -7,8 +7,11 @@ import 'package:deer/presentation/screen/todo_detail/todo_detail_screen.dart';
 import 'package:deer/presentation/shared/helper/date_formatter.dart';
 import 'package:deer/presentation/shared/resources.dart';
 import 'package:deer/presentation/shared/widgets/box.dart';
+import 'package:deer/presentation/shared/widgets/label.dart';
 import 'package:deer/presentation/shared/widgets/tile.dart';
+import 'package:deer/presentation/shared/widgets/todo_adder.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class CalendarScreen extends StatefulWidget {
@@ -19,11 +22,15 @@ class CalendarScreen extends StatefulWidget {
 class _CalendarScreenState extends State<CalendarScreen> {
   // Place variables here
   CalendarBloc _bloc;
+  TextEditingController _todoNameController;
+  ScrollController _listScrollController;
 
   @override
   void initState() {
     super.initState();
     _bloc = CalendarBloc();
+    _todoNameController = TextEditingController();
+    _listScrollController = ScrollController();
   }
 
   @override
@@ -37,10 +44,32 @@ class _CalendarScreenState extends State<CalendarScreen> {
     _bloc.actions.add(UpdateField(field: Field.selectedDate, value: date));
   }
 
+  void _onFormatChanged(CalendarFormat format) {
+    _bloc.actions.add(UpdateField(field: Field.calendarFormat, value: format));
+  }
+
   void _showDetails(TodoEntity todo) {
     Navigator.of(context).push(MaterialPageRoute(
       builder: (context) => TodoDetailScreen(todo: todo, editable: true),
     ));
+  }
+
+  void _addTodo(TodoEntity todo) {
+    _bloc.actions.add(AddTodo(todo));
+
+    // Auto-scrolls to bottom of the ListView
+    if (todo.name.trim().isNotEmpty) {
+      // Because sometimes last item is skipped (see below)
+      final lastItemExtent = 60.0;
+
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        _listScrollController.animateTo(
+          _listScrollController.position.maxScrollExtent + lastItemExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      });
+    }
   }
 
   @override
@@ -89,6 +118,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   Widget _buildCalendar(CalendarState state) {
     return TableCalendar(
       onDaySelected: _onDaySelected,
+      onFormatChanged: _onFormatChanged,
       events: state.todos?.toMap(),
       selectedColor: ColorfulApp.of(context).colors.medium,
       todayColor: ColorfulApp.of(context).colors.pale,
@@ -107,17 +137,44 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   Widget _buildScheduledTodos(CalendarState state) {
+    final children = <Widget>[
+      Expanded(
+        child: state.scheduledTodos.length == 0
+            ? Center(
+                child: SingleChildScrollView(
+                  child: buildCentralLabel(text: 'Todo list is empty!', context: context),
+                ),
+              )
+            : ListView(
+                controller: _listScrollController,
+                children: state.scheduledTodos
+                    .map((todo) => TodoTile(
+                          todo: todo,
+                          onTileTap: () => _showDetails(todo),
+                        ))
+                    .toList(),
+              ),
+      ),
+    ];
+
+    if (state.format == CalendarFormat.week) {
+      children.add(
+        TodoAdder(
+          onAdd: _addTodo,
+          showError: state.todoNameHasError,
+          todoNameController: _todoNameController,
+          scheduledDate: state.selectedDate,
+        ),
+      );
+    }
+
     return Container(
       decoration: BoxDecoration(
         gradient: ColorfulApp.of(context).colors.brightGradient,
       ),
-      child: ListView(
-        children: state.scheduledTodos
-            .map((todo) => TodoTile(
-                  todo: todo,
-                  onTileTap: () => _showDetails(todo),
-                ))
-            .toList(),
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        children: children,
       ),
     );
   }

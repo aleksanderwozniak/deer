@@ -13,11 +13,20 @@ class _$CalendarState extends CalendarState {
   final BuiltList<TodoEntity> scheduledTodos;
   @override
   final BuiltMap<DateTime, List<TodoEntity>> todos;
+  @override
+  final CalendarFormat format;
+  @override
+  final bool todoNameHasError;
 
   factory _$CalendarState([void updates(CalendarStateBuilder b)]) =>
       (new CalendarStateBuilder()..update(updates)).build();
 
-  _$CalendarState._({this.selectedDate, this.scheduledTodos, this.todos})
+  _$CalendarState._(
+      {this.selectedDate,
+      this.scheduledTodos,
+      this.todos,
+      this.format,
+      this.todoNameHasError})
       : super._() {
     if (selectedDate == null) {
       throw new BuiltValueNullFieldError('CalendarState', 'selectedDate');
@@ -27,6 +36,12 @@ class _$CalendarState extends CalendarState {
     }
     if (todos == null) {
       throw new BuiltValueNullFieldError('CalendarState', 'todos');
+    }
+    if (format == null) {
+      throw new BuiltValueNullFieldError('CalendarState', 'format');
+    }
+    if (todoNameHasError == null) {
+      throw new BuiltValueNullFieldError('CalendarState', 'todoNameHasError');
     }
   }
 
@@ -43,13 +58,19 @@ class _$CalendarState extends CalendarState {
     return other is CalendarState &&
         selectedDate == other.selectedDate &&
         scheduledTodos == other.scheduledTodos &&
-        todos == other.todos;
+        todos == other.todos &&
+        format == other.format &&
+        todoNameHasError == other.todoNameHasError;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc($jc(0, selectedDate.hashCode), scheduledTodos.hashCode),
-        todos.hashCode));
+    return $jf($jc(
+        $jc(
+            $jc($jc($jc(0, selectedDate.hashCode), scheduledTodos.hashCode),
+                todos.hashCode),
+            format.hashCode),
+        todoNameHasError.hashCode));
   }
 
   @override
@@ -57,7 +78,9 @@ class _$CalendarState extends CalendarState {
     return (newBuiltValueToStringHelper('CalendarState')
           ..add('selectedDate', selectedDate)
           ..add('scheduledTodos', scheduledTodos)
-          ..add('todos', todos))
+          ..add('todos', todos)
+          ..add('format', format)
+          ..add('todoNameHasError', todoNameHasError))
         .toString();
   }
 }
@@ -83,6 +106,15 @@ class CalendarStateBuilder
   set todos(MapBuilder<DateTime, List<TodoEntity>> todos) =>
       _$this._todos = todos;
 
+  CalendarFormat _format;
+  CalendarFormat get format => _$this._format;
+  set format(CalendarFormat format) => _$this._format = format;
+
+  bool _todoNameHasError;
+  bool get todoNameHasError => _$this._todoNameHasError;
+  set todoNameHasError(bool todoNameHasError) =>
+      _$this._todoNameHasError = todoNameHasError;
+
   CalendarStateBuilder();
 
   CalendarStateBuilder get _$this {
@@ -90,6 +122,8 @@ class CalendarStateBuilder
       _selectedDate = _$v.selectedDate;
       _scheduledTodos = _$v.scheduledTodos?.toBuilder();
       _todos = _$v.todos?.toBuilder();
+      _format = _$v.format;
+      _todoNameHasError = _$v.todoNameHasError;
       _$v = null;
     }
     return this;
@@ -116,7 +150,9 @@ class CalendarStateBuilder
           new _$CalendarState._(
               selectedDate: selectedDate,
               scheduledTodos: scheduledTodos.build(),
-              todos: todos.build());
+              todos: todos.build(),
+              format: format,
+              todoNameHasError: todoNameHasError);
     } catch (_) {
       String _$failedField;
       try {
