@@ -10,7 +10,7 @@ description: A new Flutter project.
 version: 1.0.4+5
 
 environment:
-  sdk: ">=2.0.0-dev.68.0 <3.0.0"
+  sdk: ">=2.1.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -32,6 +32,9 @@ dependencies:
   # images
   image_picker:
   photo_view:
+
+  # calendar
+  table_calendar: 
 
   # platform
   shared_preferences:

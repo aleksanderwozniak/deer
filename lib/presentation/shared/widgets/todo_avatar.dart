@@ -1,23 +1,23 @@
-import 'package:flutter/material.dart';
 import 'package:deer/presentation/colorful_app.dart';
 import 'package:deer/presentation/shared/resources.dart';
+import 'package:flutter/material.dart';
 
 class TodoAvatar extends StatelessWidget {
   final String text;
   final bool isLarge;
-  final bool hasNotification;
+  final bool showNotification;
 
   const TodoAvatar({
     Key key,
     @required this.text,
     this.isLarge = false,
-    this.hasNotification = false,
+    this.showNotification = false,
   })  : assert(text != null),
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    if (hasNotification) {
+    if (showNotification) {
       return _buildStack(context);
     } else {
       return _buildCircle(context);
