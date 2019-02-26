@@ -38,6 +38,7 @@ dependencies:
 
   # platform
   shared_preferences:
+  keyboard_visibility:
 
   # util
   tuple:

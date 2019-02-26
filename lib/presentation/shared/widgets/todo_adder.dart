@@ -9,12 +9,18 @@ import 'package:deer/presentation/shared/widgets/buttons.dart';
 import 'package:deer/presentation/shared/widgets/tag_action_chip.dart';
 import 'package:deer/utils/notification_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:keyboard_visibility/keyboard_visibility.dart';
+import 'package:rxdart/rxdart.dart';
 
-typedef void _AddTaskCallback(TodoEntity task);
+typedef void _OnTaskAdded(TodoEntity task);
+typedef void _OnFormatChanged(TodoAdderFormat format);
+
+enum TodoAdderFormat { folded, expanded, keyboardVisible }
 
 class TodoAdder extends StatefulWidget {
   final TextEditingController todoNameController;
-  final _AddTaskCallback onAdd;
+  final _OnTaskAdded onAdd;
+  final _OnFormatChanged onFormatChanged;
   final bool showError;
   final DateTime scheduledDate;
 
@@ -23,6 +29,7 @@ class TodoAdder extends StatefulWidget {
     @required this.todoNameController,
     @required this.onAdd,
     @required this.showError,
+    this.onFormatChanged,
     this.scheduledDate,
   })  : assert(todoNameController != null),
         assert(onAdd != null),
@@ -40,27 +47,53 @@ class _TodoAdderState extends State<TodoAdder> {
   final int _switchFocusMillis = 0;
 
   int _millis;
-  bool _isExpanded;
   double _height;
   DateTime _notificationDate;
   List<String> _tags;
   FocusNode _focusNode;
+  BehaviorSubject<TodoAdderFormat> _expansionFormatSubject;
+  KeyboardVisibilityNotification _keyboardNotification;
+  int _keyboardSubscriptionId;
 
   @override
   void initState() {
     super.initState();
-    _isExpanded = false;
+    _expansionFormatSubject = BehaviorSubject(seedValue: TodoAdderFormat.folded);
     _tags = [];
     _height = _collapsedHeight;
     _millis = _expansionMillis;
-
     _focusNode = FocusNode();
-    _focusNode.addListener(() {
-      if (_focusNode.hasFocus) {
+
+    _keyboardNotification = KeyboardVisibilityNotification();
+    _keyboardSubscriptionId = _keyboardNotification.addNewListener(
+      onShow: () {
         _millis = _switchFocusMillis;
-        _animate(showExpansion: false);
+        _expansionFormatSubject.add(TodoAdderFormat.keyboardVisible);
+      },
+      onHide: () {
+        _millis = _expansionMillis;
+
+        if (_expansionFormatSubject.value == TodoAdderFormat.keyboardVisible) {
+          _expansionFormatSubject.add(TodoAdderFormat.folded);
+        }
+      },
+    );
+
+    _expansionFormatSubject.stream.distinct().listen((format) {
+      _animate(format);
+
+      if (widget.onFormatChanged != null) {
+        widget.onFormatChanged(format);
       }
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _expansionFormatSubject.close();
+    _keyboardNotification.removeListener(_keyboardSubscriptionId);
+    _focusNode.dispose();
   }
 
   void _setupNotification() async {
@@ -104,28 +137,21 @@ class _TodoAdderState extends State<TodoAdder> {
     }
   }
 
-  void _animate({bool showExpansion}) {
-    _isExpanded = showExpansion ?? !_isExpanded;
-
-    if (_isExpanded) {
-      _millis = _expansionMillis;
-      if (_focusNode.hasFocus) {
-        _focusNode.unfocus();
-        FocusScope.of(context).requestFocus(FocusNode());
-        Future.delayed(const Duration(milliseconds: 150), () {
-          _runAnimation();
-        });
-      } else {
-        _runAnimation();
-      }
+  void _animate(TodoAdderFormat format) {
+    if (format != TodoAdderFormat.keyboardVisible && _focusNode.hasFocus) {
+      _focusNode.unfocus();
+      FocusScope.of(context).requestFocus(FocusNode());
+      Future.delayed(const Duration(milliseconds: 150), () {
+        _runAnimation(format);
+      });
     } else {
-      _runAnimation();
+      _runAnimation(format);
     }
   }
 
-  void _runAnimation() {
+  void _runAnimation(TodoAdderFormat format) {
     setState(() {
-      _height = _isExpanded ? _expandedHeight : _collapsedHeight;
+      _height = format == TodoAdderFormat.expanded ? _expandedHeight : _collapsedHeight;
     });
   }
 
@@ -142,15 +168,14 @@ class _TodoAdderState extends State<TodoAdder> {
       ),
     ];
 
-    if (_isExpanded) {
+    if (_expansionFormatSubject.value == TodoAdderFormat.expanded) {
       children.add(_buildBody());
     }
 
-    // TODO: this might be in a wrong place, although it works perfectly
     return WillPopScope(
       onWillPop: () {
-        if (_isExpanded) {
-          _animate(showExpansion: false);
+        if (_expansionFormatSubject.value != TodoAdderFormat.folded) {
+          _expansionFormatSubject.add(TodoAdderFormat.folded);
         } else {
           return Future(() => true);
         }
@@ -180,11 +205,13 @@ class _TodoAdderState extends State<TodoAdder> {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onVerticalDragStart: (_) {
-        _animate();
+        _expansionFormatSubject.add(
+          _expansionFormatSubject.value == TodoAdderFormat.expanded ? TodoAdderFormat.folded : TodoAdderFormat.expanded,
+        );
       },
       child: Center(
         child: Icon(
-          _isExpanded ? Icons.arrow_drop_down : Icons.arrow_drop_up,
+          _expansionFormatSubject.value == TodoAdderFormat.expanded ? Icons.arrow_drop_down : Icons.arrow_drop_up,
           color: ColorfulApp.of(context).colors.dark,
         ),
       ),

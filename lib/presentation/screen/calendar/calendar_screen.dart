@@ -83,6 +83,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
     _bloc.actions.add(PerformOnTodo(operation: Operation.archive, todo: todo));
   }
 
+  void _onTodoAdderFormatChanged(TodoAdderFormat format) {
+    print('Current TodoAdderFormat: $format');
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
@@ -135,6 +139,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
       todayColor: ColorfulApp.of(context).colors.pale,
       eventMarkerColor: ColorfulApp.of(context).colors.bleak,
       iconColor: ColorfulApp.of(context).colors.dark,
+      calendarFormat: state.format,
       centerHeaderTitle: false,
       formatToggleVisible: true,
       formatToggleDecoration: BoxDecoration(
@@ -158,6 +163,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
       children.add(
         TodoAdder(
           onAdd: _addTodo,
+          onFormatChanged: _onTodoAdderFormatChanged,
           showError: state.todoNameHasError,
           todoNameController: _todoNameController,
           scheduledDate: state.selectedDate,

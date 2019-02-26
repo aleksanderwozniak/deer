@@ -19,7 +19,7 @@ abstract class CalendarState implements Built<CalendarState, CalendarStateBuilde
     DateTime selectedDate,
     BuiltList<TodoEntity> scheduledTodos,
     BuiltMap<DateTime, List<TodoEntity>> todos,
-    CalendarFormat format = CalendarFormat.month,
+    CalendarFormat format = CalendarFormat.week,
     bool todoNameHasError = false,
   }) =>
       _$CalendarState._(
