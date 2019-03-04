@@ -68,7 +68,10 @@ class CalendarBloc {
         state.selectedDate = action.value;
         break;
       case Field.calendarFormat:
-        state.format = action.value;
+        state.calendarFormat = action.value;
+        break;
+      case Field.calendarHeaderVisible:
+        state.calendarHeaderVisible = action.value;
         break;
       default:
         assert(false);

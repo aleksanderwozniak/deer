@@ -14,7 +14,9 @@ class _$CalendarState extends CalendarState {
   @override
   final BuiltMap<DateTime, List<TodoEntity>> todos;
   @override
-  final CalendarFormat format;
+  final CalendarFormat calendarFormat;
+  @override
+  final bool calendarHeaderVisible;
   @override
   final bool todoNameHasError;
 
@@ -25,7 +27,8 @@ class _$CalendarState extends CalendarState {
       {this.selectedDate,
       this.scheduledTodos,
       this.todos,
-      this.format,
+      this.calendarFormat,
+      this.calendarHeaderVisible,
       this.todoNameHasError})
       : super._() {
     if (selectedDate == null) {
@@ -37,8 +40,12 @@ class _$CalendarState extends CalendarState {
     if (todos == null) {
       throw new BuiltValueNullFieldError('CalendarState', 'todos');
     }
-    if (format == null) {
-      throw new BuiltValueNullFieldError('CalendarState', 'format');
+    if (calendarFormat == null) {
+      throw new BuiltValueNullFieldError('CalendarState', 'calendarFormat');
+    }
+    if (calendarHeaderVisible == null) {
+      throw new BuiltValueNullFieldError(
+          'CalendarState', 'calendarHeaderVisible');
     }
     if (todoNameHasError == null) {
       throw new BuiltValueNullFieldError('CalendarState', 'todoNameHasError');
@@ -59,7 +66,8 @@ class _$CalendarState extends CalendarState {
         selectedDate == other.selectedDate &&
         scheduledTodos == other.scheduledTodos &&
         todos == other.todos &&
-        format == other.format &&
+        calendarFormat == other.calendarFormat &&
+        calendarHeaderVisible == other.calendarHeaderVisible &&
         todoNameHasError == other.todoNameHasError;
   }
 
@@ -67,9 +75,11 @@ class _$CalendarState extends CalendarState {
   int get hashCode {
     return $jf($jc(
         $jc(
-            $jc($jc($jc(0, selectedDate.hashCode), scheduledTodos.hashCode),
-                todos.hashCode),
-            format.hashCode),
+            $jc(
+                $jc($jc($jc(0, selectedDate.hashCode), scheduledTodos.hashCode),
+                    todos.hashCode),
+                calendarFormat.hashCode),
+            calendarHeaderVisible.hashCode),
         todoNameHasError.hashCode));
   }
 
@@ -79,7 +89,8 @@ class _$CalendarState extends CalendarState {
           ..add('selectedDate', selectedDate)
           ..add('scheduledTodos', scheduledTodos)
           ..add('todos', todos)
-          ..add('format', format)
+          ..add('calendarFormat', calendarFormat)
+          ..add('calendarHeaderVisible', calendarHeaderVisible)
           ..add('todoNameHasError', todoNameHasError))
         .toString();
   }
@@ -106,9 +117,15 @@ class CalendarStateBuilder
   set todos(MapBuilder<DateTime, List<TodoEntity>> todos) =>
       _$this._todos = todos;
 
-  CalendarFormat _format;
-  CalendarFormat get format => _$this._format;
-  set format(CalendarFormat format) => _$this._format = format;
+  CalendarFormat _calendarFormat;
+  CalendarFormat get calendarFormat => _$this._calendarFormat;
+  set calendarFormat(CalendarFormat calendarFormat) =>
+      _$this._calendarFormat = calendarFormat;
+
+  bool _calendarHeaderVisible;
+  bool get calendarHeaderVisible => _$this._calendarHeaderVisible;
+  set calendarHeaderVisible(bool calendarHeaderVisible) =>
+      _$this._calendarHeaderVisible = calendarHeaderVisible;
 
   bool _todoNameHasError;
   bool get todoNameHasError => _$this._todoNameHasError;
@@ -122,7 +139,8 @@ class CalendarStateBuilder
       _selectedDate = _$v.selectedDate;
       _scheduledTodos = _$v.scheduledTodos?.toBuilder();
       _todos = _$v.todos?.toBuilder();
-      _format = _$v.format;
+      _calendarFormat = _$v.calendarFormat;
+      _calendarHeaderVisible = _$v.calendarHeaderVisible;
       _todoNameHasError = _$v.todoNameHasError;
       _$v = null;
     }
@@ -151,7 +169,8 @@ class CalendarStateBuilder
               selectedDate: selectedDate,
               scheduledTodos: scheduledTodos.build(),
               todos: todos.build(),
-              format: format,
+              calendarFormat: calendarFormat,
+              calendarHeaderVisible: calendarHeaderVisible,
               todoNameHasError: todoNameHasError);
     } catch (_) {
       String _$failedField;

@@ -46,7 +46,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     _bloc.actions.add(UpdateField(field: Field.selectedDate, value: date));
   }
 
-  void _onFormatChanged(CalendarFormat format) {
+  void _onCalendarFormatChanged(CalendarFormat format) {
     _bloc.actions.add(UpdateField(field: Field.calendarFormat, value: format));
   }
 
@@ -81,6 +81,13 @@ class _CalendarScreenState extends State<CalendarScreen> {
   void _archiveTodo(TodoEntity todo) {
     cancelNotification(todo);
     _bloc.actions.add(PerformOnTodo(operation: Operation.archive, todo: todo));
+  }
+
+  void _onTodoAdderFormatChanged(TodoAdderFormat format) {
+    _bloc.actions.add(UpdateField(
+      field: Field.calendarHeaderVisible,
+      value: format == TodoAdderFormat.folded,
+    ));
   }
 
   @override
@@ -129,12 +136,14 @@ class _CalendarScreenState extends State<CalendarScreen> {
   Widget _buildCalendar(CalendarState state) {
     return TableCalendar(
       onDaySelected: _onDaySelected,
-      onFormatChanged: _onFormatChanged,
+      onFormatChanged: _onCalendarFormatChanged,
       events: state.todos?.toMap(),
       selectedColor: ColorfulApp.of(context).colors.medium,
       todayColor: ColorfulApp.of(context).colors.pale,
       eventMarkerColor: ColorfulApp.of(context).colors.bleak,
       iconColor: ColorfulApp.of(context).colors.dark,
+      calendarFormat: state.calendarFormat,
+      headerVisible: state.calendarHeaderVisible,
       centerHeaderTitle: false,
       formatToggleVisible: true,
       formatToggleDecoration: BoxDecoration(
@@ -154,10 +163,11 @@ class _CalendarScreenState extends State<CalendarScreen> {
       ),
     ];
 
-    if (state.format == CalendarFormat.week) {
+    if (state.calendarFormat == CalendarFormat.week) {
       children.add(
         TodoAdder(
           onAdd: _addTodo,
+          onFormatChanged: _onTodoAdderFormatChanged,
           showError: state.todoNameHasError,
           todoNameController: _todoNameController,
           scheduledDate: state.selectedDate,
