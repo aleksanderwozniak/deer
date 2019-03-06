@@ -21,10 +21,8 @@ class TodoDetailBloc {
   StreamSubscription _notificationSubscription;
 
   TodoDetailBloc({@required TodoEntity todo})
-      : _state = BehaviorSubject<TodoDetailState>(
-          seedValue: TodoDetailState(
-            todo: todo,
-          ),
+      : _state = BehaviorSubject<TodoDetailState>.seeded(
+          TodoDetailState(todo: todo),
         ) {
     _actions.stream.listen((action) {
       switch (action.runtimeType) {

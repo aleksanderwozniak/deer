@@ -142,7 +142,12 @@ class _CalendarScreenState extends State<CalendarScreen> {
       todayColor: ColorfulApp.of(context).colors.pale,
       eventMarkerColor: ColorfulApp.of(context).colors.bleak,
       iconColor: ColorfulApp.of(context).colors.dark,
-      calendarFormat: state.calendarFormat,
+      initialCalendarFormat: state.calendarFormat,
+      availableCalendarFormats: const [
+        CalendarFormat.week,
+        CalendarFormat.twoWeeks,
+        CalendarFormat.month,
+      ],
       headerVisible: state.calendarHeaderVisible,
       centerHeaderTitle: false,
       formatToggleVisible: true,
@@ -163,7 +168,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
       ),
     ];
 
-    if (state.calendarFormat == CalendarFormat.week) {
+    if (state.calendarFormat != CalendarFormat.month) {
       children.add(
         TodoAdder(
           onAdd: _addTodo,

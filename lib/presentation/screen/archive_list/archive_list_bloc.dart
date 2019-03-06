@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:built_collection/built_collection.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:deer/domain/entity/todo_entity.dart';
 import 'package:deer/domain/interactor/task.dart';
 import 'package:deer/presentation/app.dart';
+import 'package:rxdart/rxdart.dart';
 
 import 'archive_list_actions.dart';
 import 'archive_list_state.dart';
@@ -15,8 +15,8 @@ class ArchiveListBloc {
 
   ArchiveListState get initialState => _state.value;
   Stream<ArchiveListState> get state => _state.stream.distinct();
-  final _state = BehaviorSubject<ArchiveListState>(
-    seedValue: ArchiveListState(),
+  final _state = BehaviorSubject<ArchiveListState>.seeded(
+    ArchiveListState(),
   );
 
   StreamSubscription<List<TodoEntity>> _archivedTodos;
