@@ -12,12 +12,13 @@ class InMemory<T> {
 
   Stream<T> stream() {
     if (_subject == null) {
-      _subject = BehaviorSubject(
-          seedValue: seedValue,
-          onCancel: () {
-            _subject.close();
-            _subject = null;
-          });
+      _subject = BehaviorSubject.seeded(
+        seedValue,
+        onCancel: () {
+          _subject.close();
+          _subject = null;
+        },
+      );
     }
 
     return _subject.distinct();

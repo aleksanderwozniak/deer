@@ -17,9 +17,13 @@ class CalendarBloc {
   CalendarState get initialState => _state.value;
   Stream<CalendarState> get state => _state.stream.distinct();
 
-  final _state = BehaviorSubject<CalendarState>(
-    seedValue: CalendarState(
-      selectedDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
+  final _state = BehaviorSubject<CalendarState>.seeded(
+    CalendarState(
+      selectedDate: DateTime(
+        DateTime.now().year,
+        DateTime.now().month,
+        DateTime.now().day,
+      ),
     ),
   );
 

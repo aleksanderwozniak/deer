@@ -58,7 +58,7 @@ class _TodoAdderState extends State<TodoAdder> {
   @override
   void initState() {
     super.initState();
-    _expansionFormatSubject = BehaviorSubject(seedValue: TodoAdderFormat.folded);
+    _expansionFormatSubject = BehaviorSubject.seeded(TodoAdderFormat.folded);
     _tags = [];
     _height = _collapsedHeight;
     _millis = _expansionMillis;

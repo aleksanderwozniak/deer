@@ -17,8 +17,8 @@ class TodoListBloc {
 
   TodoListState get initialState => _state.value;
   Stream<TodoListState> get state => _state.stream.distinct();
-  final _state = BehaviorSubject<TodoListState>(
-    seedValue: TodoListState(),
+  final _state = BehaviorSubject<TodoListState>.seeded(
+    TodoListState(),
   );
 
   StreamSubscription<Task> _diskAccessSubscription;

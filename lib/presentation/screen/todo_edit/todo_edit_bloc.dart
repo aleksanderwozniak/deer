@@ -19,8 +19,8 @@ class TodoEditBloc {
   final BehaviorSubject<TodoEditState> _state;
 
   TodoEditBloc({@required TodoEntity todo})
-      : _state = BehaviorSubject<TodoEditState>(
-          seedValue: TodoEditState(todo: todo),
+      : _state = BehaviorSubject<TodoEditState>.seeded(
+          TodoEditState(todo: todo),
         ) {
     _actions.stream.listen((action) {
       switch (action.runtimeType) {

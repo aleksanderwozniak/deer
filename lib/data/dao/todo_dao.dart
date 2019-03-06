@@ -20,7 +20,7 @@ class TodoDao {
 
   Stream<String> get filter => _filter.stream();
 
-  final _data = InMemory<BuiltList<TodoEntity>>();
+  final _data = InMemory<BuiltList<TodoEntity>>(seedValue: BuiltList());
   final _filter = InMemory<String>();
 
   TodoDao() {
