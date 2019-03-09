@@ -114,12 +114,24 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   Widget _buildBody(CalendarState state) {
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: <Widget>[
-        _buildCalendar(state),
-        const SizedBox(height: 8.0),
+    final children = [
+      _buildCalendar(state),
+      const SizedBox(height: 4.0),
+    ];
+
+    if (state.calendarFormat == CalendarFormat.month) {
+      // TODO
+      children.add(
+        Expanded(
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: ColorfulApp.of(context).colors.brightGradient,
+            ),
+          ),
+        ),
+      );
+    } else {
+      children.addAll([
         ShadedBox(
           child: Text(
             DateFormatter.formatFull(state.selectedDate),
@@ -129,7 +141,13 @@ class _CalendarScreenState extends State<CalendarScreen> {
         ),
         const SizedBox(height: 2.0),
         Expanded(child: _buildScheduledTodos(state)),
-      ],
+      ]);
+    }
+
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: children,
     );
   }
 
@@ -162,31 +180,24 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   Widget _buildScheduledTodos(CalendarState state) {
-    final children = <Widget>[
-      Expanded(
-        child: state.scheduledTodos.length == 0 ? _buildPlaceholder() : _buildListView(state),
-      ),
-    ];
-
-    if (state.calendarFormat != CalendarFormat.month) {
-      children.add(
-        TodoAdder(
-          onAdd: _addTodo,
-          onFormatChanged: _onTodoAdderFormatChanged,
-          showError: state.todoNameHasError,
-          todoNameController: _todoNameController,
-          scheduledDate: state.selectedDate,
-        ),
-      );
-    }
-
     return Container(
       decoration: BoxDecoration(
         gradient: ColorfulApp.of(context).colors.brightGradient,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.max,
-        children: children,
+        children: <Widget>[
+          Expanded(
+            child: state.scheduledTodos.length == 0 ? _buildPlaceholder() : _buildListView(state),
+          ),
+          TodoAdder(
+            onAdd: _addTodo,
+            onFormatChanged: _onTodoAdderFormatChanged,
+            showError: state.todoNameHasError,
+            todoNameController: _todoNameController,
+            scheduledDate: state.selectedDate,
+          ),
+        ],
       ),
     );
   }
