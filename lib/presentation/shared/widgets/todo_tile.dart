@@ -8,6 +8,7 @@ class TodoTile extends StatelessWidget {
   final VoidCallback onTileTap;
   final VoidCallback onFavoriteTap;
   final bool showNotification;
+  final bool isFinished;
 
   const TodoTile({
     Key key,
@@ -15,6 +16,7 @@ class TodoTile extends StatelessWidget {
     @required this.onTileTap,
     this.onFavoriteTap,
     this.showNotification,
+    this.isFinished = false,
   })  : assert(todo != null),
         assert(onTileTap != null),
         super(key: key);
@@ -27,6 +29,7 @@ class TodoTile extends StatelessWidget {
         text: todo.name,
         isLarge: false,
         showNotification: showNotification ?? todo.notificationDate != null,
+        isFinished: isFinished,
       ),
       const SizedBox(width: 8.0),
       Expanded(

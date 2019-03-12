@@ -11,8 +11,8 @@ import 'package:deer/presentation/shared/widgets/buttons.dart';
 import 'package:deer/presentation/shared/widgets/dialogs.dart';
 import 'package:deer/presentation/shared/widgets/dismissible.dart';
 import 'package:deer/presentation/shared/widgets/label.dart';
-import 'package:deer/presentation/shared/widgets/tile.dart';
 import 'package:deer/presentation/shared/widgets/todo_adder.dart';
+import 'package:deer/presentation/shared/widgets/todo_tile.dart';
 import 'package:deer/utils/notification_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -323,6 +323,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
           return TodoTile(
             todo: todo,
             onTileTap: () => _showDetails(todo, editable: false),
+            showNotification: false,
+            isFinished: true,
           );
         });
   }

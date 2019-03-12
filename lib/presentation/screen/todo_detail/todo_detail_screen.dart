@@ -168,6 +168,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
             text: state.todo.name,
             isLarge: true,
             showNotification: state.todo.notificationDate != null && widget.editable,
+            isFinished: !widget.editable,
           ),
           const SizedBox(height: 16.0),
           Padding(
