@@ -87,9 +87,15 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   void _onTodoAdderFormatChanged(TodoAdderFormat format) {
     _bloc.actions.add(UpdateField(
-      field: Field.calendarHeaderVisible,
+      field: Field.calendarVisible,
       value: format == TodoAdderFormat.folded,
     ));
+  }
+
+  void _onDateHeaderTapped(bool calendarVisible) {
+    if (calendarVisible) {
+      _bloc.actions.add(ToggleArchive());
+    }
   }
 
   void _showConfirmationDialog() {
@@ -137,10 +143,14 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   Widget _buildBody(CalendarState state) {
-    final children = [
-      _buildCalendar(state),
-      const SizedBox(height: 4.0),
-    ];
+    final List<Widget> children = [];
+
+    if (state.calendarVisible) {
+      children.addAll([
+        _buildCalendar(state),
+        const SizedBox(height: 4.0),
+      ]);
+    }
 
     if (state.calendarFormat == CalendarFormat.month) {
       // TODO
@@ -177,13 +187,13 @@ class _CalendarScreenState extends State<CalendarScreen> {
       todayColor: ColorfulApp.of(context).colors.pale,
       eventMarkerColor: ColorfulApp.of(context).colors.bleak,
       iconColor: ColorfulApp.of(context).colors.dark,
+      initialDate: state.selectedDate,
       initialCalendarFormat: state.calendarFormat,
       availableCalendarFormats: const [
         CalendarFormat.week,
         CalendarFormat.twoWeeks,
         CalendarFormat.month,
       ],
-      headerVisible: state.calendarHeaderVisible,
       centerHeaderTitle: false,
       formatToggleVisible: true,
       formatToggleDecoration: BoxDecoration(
@@ -200,7 +210,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     final highlightStyle = TextStyle().copyWith(fontSize: 16.0, fontWeight: FontWeight.bold);
 
     return GestureDetector(
-      onTap: () => _bloc.actions.add(ToggleArchive()),
+      onTap: () => _onDateHeaderTapped(state.calendarVisible),
       child: Container(
         height: 50.0,
         child: ShadedBox(

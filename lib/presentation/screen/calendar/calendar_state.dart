@@ -14,7 +14,7 @@ abstract class CalendarState implements Built<CalendarState, CalendarStateBuilde
   BuiltMap<DateTime, List<TodoEntity>> get activeEvents;
   BuiltMap<DateTime, List<TodoEntity>> get archivedEvents;
   CalendarFormat get calendarFormat;
-  bool get calendarHeaderVisible;
+  bool get calendarVisible;
   bool get todoNameHasError;
   bool get archiveVisible;
 
@@ -26,7 +26,7 @@ abstract class CalendarState implements Built<CalendarState, CalendarStateBuilde
     BuiltMap<DateTime, List<TodoEntity>> activeEvents,
     BuiltMap<DateTime, List<TodoEntity>> archivedEvents,
     CalendarFormat calendarFormat = CalendarFormat.week,
-    bool calendarHeaderVisible = true,
+    bool calendarVisible = true,
     bool todoNameHasError = false,
     bool archiveVisible = false,
   }) =>
@@ -37,7 +37,7 @@ abstract class CalendarState implements Built<CalendarState, CalendarStateBuilde
         activeEvents: activeEvents ?? BuiltMap(),
         archivedEvents: archivedEvents ?? BuiltMap(),
         calendarFormat: calendarFormat,
-        calendarHeaderVisible: calendarHeaderVisible,
+        calendarVisible: calendarVisible,
         todoNameHasError: todoNameHasError,
         archiveVisible: archiveVisible,
       );

@@ -11,7 +11,7 @@ class UpdateField {
   final dynamic value;
 }
 
-enum Field { selectedDate, calendarFormat, calendarHeaderVisible }
+enum Field { selectedDate, calendarFormat, calendarVisible }
 
 class PerformOnTodo {
   final TodoEntity todo;

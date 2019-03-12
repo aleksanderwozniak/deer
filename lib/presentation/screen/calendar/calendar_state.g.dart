@@ -20,7 +20,7 @@ class _$CalendarState extends CalendarState {
   @override
   final CalendarFormat calendarFormat;
   @override
-  final bool calendarHeaderVisible;
+  final bool calendarVisible;
   @override
   final bool todoNameHasError;
   @override
@@ -36,7 +36,7 @@ class _$CalendarState extends CalendarState {
       this.activeEvents,
       this.archivedEvents,
       this.calendarFormat,
-      this.calendarHeaderVisible,
+      this.calendarVisible,
       this.todoNameHasError,
       this.archiveVisible})
       : super._() {
@@ -58,9 +58,8 @@ class _$CalendarState extends CalendarState {
     if (calendarFormat == null) {
       throw new BuiltValueNullFieldError('CalendarState', 'calendarFormat');
     }
-    if (calendarHeaderVisible == null) {
-      throw new BuiltValueNullFieldError(
-          'CalendarState', 'calendarHeaderVisible');
+    if (calendarVisible == null) {
+      throw new BuiltValueNullFieldError('CalendarState', 'calendarVisible');
     }
     if (todoNameHasError == null) {
       throw new BuiltValueNullFieldError('CalendarState', 'todoNameHasError');
@@ -87,7 +86,7 @@ class _$CalendarState extends CalendarState {
         activeEvents == other.activeEvents &&
         archivedEvents == other.archivedEvents &&
         calendarFormat == other.calendarFormat &&
-        calendarHeaderVisible == other.calendarHeaderVisible &&
+        calendarVisible == other.calendarVisible &&
         todoNameHasError == other.todoNameHasError &&
         archiveVisible == other.archiveVisible;
   }
@@ -107,7 +106,7 @@ class _$CalendarState extends CalendarState {
                             activeEvents.hashCode),
                         archivedEvents.hashCode),
                     calendarFormat.hashCode),
-                calendarHeaderVisible.hashCode),
+                calendarVisible.hashCode),
             todoNameHasError.hashCode),
         archiveVisible.hashCode));
   }
@@ -121,7 +120,7 @@ class _$CalendarState extends CalendarState {
           ..add('activeEvents', activeEvents)
           ..add('archivedEvents', archivedEvents)
           ..add('calendarFormat', calendarFormat)
-          ..add('calendarHeaderVisible', calendarHeaderVisible)
+          ..add('calendarVisible', calendarVisible)
           ..add('todoNameHasError', todoNameHasError)
           ..add('archiveVisible', archiveVisible))
         .toString();
@@ -166,10 +165,10 @@ class CalendarStateBuilder
   set calendarFormat(CalendarFormat calendarFormat) =>
       _$this._calendarFormat = calendarFormat;
 
-  bool _calendarHeaderVisible;
-  bool get calendarHeaderVisible => _$this._calendarHeaderVisible;
-  set calendarHeaderVisible(bool calendarHeaderVisible) =>
-      _$this._calendarHeaderVisible = calendarHeaderVisible;
+  bool _calendarVisible;
+  bool get calendarVisible => _$this._calendarVisible;
+  set calendarVisible(bool calendarVisible) =>
+      _$this._calendarVisible = calendarVisible;
 
   bool _todoNameHasError;
   bool get todoNameHasError => _$this._todoNameHasError;
@@ -191,7 +190,7 @@ class CalendarStateBuilder
       _activeEvents = _$v.activeEvents?.toBuilder();
       _archivedEvents = _$v.archivedEvents?.toBuilder();
       _calendarFormat = _$v.calendarFormat;
-      _calendarHeaderVisible = _$v.calendarHeaderVisible;
+      _calendarVisible = _$v.calendarVisible;
       _todoNameHasError = _$v.todoNameHasError;
       _archiveVisible = _$v.archiveVisible;
       _$v = null;
@@ -224,7 +223,7 @@ class CalendarStateBuilder
               activeEvents: activeEvents.build(),
               archivedEvents: archivedEvents.build(),
               calendarFormat: calendarFormat,
-              calendarHeaderVisible: calendarHeaderVisible,
+              calendarVisible: calendarVisible,
               todoNameHasError: todoNameHasError,
               archiveVisible: archiveVisible);
     } catch (_) {
