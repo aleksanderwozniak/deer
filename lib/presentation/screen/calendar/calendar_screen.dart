@@ -199,47 +199,54 @@ class _CalendarScreenState extends State<CalendarScreen> {
   Widget _buildDateHeader(CalendarState state) {
     final highlightStyle = TextStyle().copyWith(fontSize: 16.0, fontWeight: FontWeight.bold);
 
-    return Stack(
-      children: [
-        GestureDetector(
-          onTap: () => _bloc.actions.add(ToggleArchive()),
-          child: ShadedBox(
-            child: Center(
-              child: Text(
-                DateFormatter.formatFull(state.selectedDate),
-                style: TextStyle().copyWith(fontSize: 16.0),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ),
-        ),
-        Positioned(
-          bottom: 4,
-          right: 10,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
+    return GestureDetector(
+      onTap: () => _bloc.actions.add(ToggleArchive()),
+      child: Container(
+        height: 50.0,
+        child: ShadedBox(
+          padding: null,
+          child: Stack(
             children: <Widget>[
-              Text(
-                '${state.activeTodos.length}',
-                style: state.archiveVisible ? TextStyle() : highlightStyle,
+              Positioned(
+                top: 16,
+                left: 0,
+                right: 0,
+                child: Text(
+                  DateFormatter.formatFull(state.selectedDate),
+                  style: TextStyle().copyWith(fontSize: 16.0),
+                  textAlign: TextAlign.center,
+                ),
               ),
-              Text(' / '),
-              Text(
-                '${state.archivedTodos.length}',
-                style: state.archiveVisible ? highlightStyle : TextStyle(),
+              Positioned(
+                bottom: 6,
+                left: 12,
+                child: Text(
+                  '${state.archiveVisible ? 'Archive' : 'Active'}',
+                  style: TextStyle().copyWith(fontSize: 15.0),
+                ),
+              ),
+              Positioned(
+                bottom: 6,
+                right: 12,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text(
+                      '${state.activeTodos.length}',
+                      style: state.archiveVisible ? TextStyle() : highlightStyle,
+                    ),
+                    Text(' / '),
+                    Text(
+                      '${state.archivedTodos.length}',
+                      style: state.archiveVisible ? highlightStyle : TextStyle(),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
         ),
-        Positioned(
-          bottom: 4,
-          left: 10,
-          child: Text(
-            '${state.archiveVisible ? 'Archive' : 'Active'}',
-            style: TextStyle().copyWith(fontSize: 15.0),
-          ),
-        ),
-      ],
+      ),
     );
   }
 
