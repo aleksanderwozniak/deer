@@ -48,6 +48,10 @@ class TodoInteractor {
     return Observable.fromFuture(todoRepository.clearArchive()).startWith(Task.running());
   }
 
+  Stream<Task> clearDailyArchive(DateTime day) {
+    return Observable.fromFuture(todoRepository.clearDailyArchive(day)).startWith(Task.running());
+  }
+
   Stream<Task> clearNotifications() {
     return Observable.fromFuture(todoRepository.clearNotifications()).startWith(Task.running());
   }

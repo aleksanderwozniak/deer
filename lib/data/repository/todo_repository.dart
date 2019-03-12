@@ -54,6 +54,11 @@ class TodoRepository {
     return result ? Task.successful() : Task.failed();
   }
 
+  Future<Task> clearDailyArchive(DateTime day) async {
+    final result = await dao.clearDailyFinished(day);
+    return result ? Task.successful() : Task.failed();
+  }
+
   Future<Task> clearNotifications() async {
     final result = await dao.clearNotifications();
     return result ? Task.successful() : Task.failed();

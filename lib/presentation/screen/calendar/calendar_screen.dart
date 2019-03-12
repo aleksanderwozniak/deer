@@ -102,7 +102,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   text: 'Yes',
                   onPressed: () {
                     Navigator.pop(context);
-                    _bloc.actions.add(ClearArchive());
+                    _bloc.actions.add(ClearDailyArchive());
                   }),
               FlatRoundButton(
                 text: 'No',

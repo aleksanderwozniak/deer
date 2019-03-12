@@ -28,4 +28,4 @@ enum Operation { add, archive, favorite }
 
 class ToggleArchive {}
 
-class ClearArchive {}
+class ClearDailyArchive {}

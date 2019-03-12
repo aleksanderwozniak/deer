@@ -41,8 +41,8 @@ class CalendarBloc {
         case ToggleArchive:
           _onToggle();
           break;
-        case ClearArchive:
-          _onClearArchive();
+        case ClearDailyArchive:
+          _onClearDailyArchive();
           break;
         default:
           assert(false);
@@ -147,7 +147,7 @@ class CalendarBloc {
     _state.add(_state.value.rebuild((b) => b..archiveVisible = !b.archiveVisible));
   }
 
-  void _onClearArchive() {
-    // TODO
+  void _onClearDailyArchive() {
+    dependencies.todoInteractor.clearDailyArchive(_state.value.selectedDate);
   }
 }
