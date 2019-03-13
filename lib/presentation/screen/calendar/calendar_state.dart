@@ -9,27 +9,36 @@ part 'calendar_state.g.dart';
 
 abstract class CalendarState implements Built<CalendarState, CalendarStateBuilder> {
   DateTime get selectedDate;
-  BuiltList<TodoEntity> get scheduledTodos;
-  BuiltMap<DateTime, List<TodoEntity>> get todos;
+  BuiltList<TodoEntity> get activeTodos;
+  BuiltList<TodoEntity> get archivedTodos;
+  BuiltMap<DateTime, List<TodoEntity>> get activeEvents;
+  BuiltMap<DateTime, List<TodoEntity>> get archivedEvents;
   CalendarFormat get calendarFormat;
-  bool get calendarHeaderVisible;
+  bool get calendarVisible;
   bool get todoNameHasError;
+  bool get archiveVisible;
 
   CalendarState._();
   factory CalendarState({
     DateTime selectedDate,
-    BuiltList<TodoEntity> scheduledTodos,
-    BuiltMap<DateTime, List<TodoEntity>> todos,
+    BuiltList<TodoEntity> activeTodos,
+    BuiltList<TodoEntity> archivedTodos,
+    BuiltMap<DateTime, List<TodoEntity>> activeEvents,
+    BuiltMap<DateTime, List<TodoEntity>> archivedEvents,
     CalendarFormat calendarFormat = CalendarFormat.week,
-    bool calendarHeaderVisible = true,
+    bool calendarVisible = true,
     bool todoNameHasError = false,
+    bool archiveVisible = false,
   }) =>
       _$CalendarState._(
         selectedDate: selectedDate,
-        scheduledTodos: scheduledTodos ?? BuiltList(),
-        todos: todos ?? BuiltMap(),
+        activeTodos: activeTodos ?? BuiltList(),
+        archivedTodos: archivedTodos ?? BuiltList(),
+        activeEvents: activeEvents ?? BuiltMap(),
+        archivedEvents: archivedEvents ?? BuiltMap(),
         calendarFormat: calendarFormat,
-        calendarHeaderVisible: calendarHeaderVisible,
+        calendarVisible: calendarVisible,
         todoNameHasError: todoNameHasError,
+        archiveVisible: archiveVisible,
       );
 }

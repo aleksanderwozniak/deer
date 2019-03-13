@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:deer/presentation/shared/resources.dart';
+import 'package:flutter/material.dart';
 
 class BottomBox extends StatelessWidget {
   final Widget child;
@@ -30,10 +30,12 @@ class BottomBox extends StatelessWidget {
 
 class ShadedBox extends StatelessWidget {
   final Widget child;
+  final EdgeInsets padding;
 
   const ShadedBox({
     Key key,
     @required this.child,
+    this.padding = const EdgeInsets.symmetric(vertical: 16.0, horizontal: 12.0),
   })  : assert(child != null),
         super(key: key);
 
@@ -45,7 +47,7 @@ class ShadedBox extends StatelessWidget {
         // boxShadow: [BoxShadow(color: Colors.black38, blurRadius: 4.0)],
         color: AppColors.white1,
       ),
-      padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 12.0),
+      padding: padding,
       child: child,
     );
   }

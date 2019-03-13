@@ -7,10 +7,12 @@ import 'package:deer/presentation/screen/todo_detail/todo_detail_screen.dart';
 import 'package:deer/presentation/shared/helper/date_formatter.dart';
 import 'package:deer/presentation/shared/resources.dart';
 import 'package:deer/presentation/shared/widgets/box.dart';
+import 'package:deer/presentation/shared/widgets/buttons.dart';
+import 'package:deer/presentation/shared/widgets/dialogs.dart';
 import 'package:deer/presentation/shared/widgets/dismissible.dart';
 import 'package:deer/presentation/shared/widgets/label.dart';
-import 'package:deer/presentation/shared/widgets/tile.dart';
 import 'package:deer/presentation/shared/widgets/todo_adder.dart';
+import 'package:deer/presentation/shared/widgets/todo_tile.dart';
 import 'package:deer/utils/notification_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -50,9 +52,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
     _bloc.actions.add(UpdateField(field: Field.calendarFormat, value: format));
   }
 
-  void _showDetails(TodoEntity todo) {
+  void _showDetails(TodoEntity todo, {bool editable = true}) {
     Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => TodoDetailScreen(todo: todo, editable: true),
+      builder: (context) => TodoDetailScreen(todo: todo, editable: editable),
     ));
   }
 
@@ -85,9 +87,36 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   void _onTodoAdderFormatChanged(TodoAdderFormat format) {
     _bloc.actions.add(UpdateField(
-      field: Field.calendarHeaderVisible,
+      field: Field.calendarVisible,
       value: format == TodoAdderFormat.folded,
     ));
+  }
+
+  void _onDateHeaderTapped(bool calendarVisible) {
+    if (calendarVisible) {
+      _bloc.actions.add(ToggleArchive());
+    }
+  }
+
+  void _showConfirmationDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => RoundedAlertDialog(
+            title: 'Do you want to clear the Archive?',
+            actions: <Widget>[
+              FlatRoundButton(
+                  text: 'Yes',
+                  onPressed: () {
+                    Navigator.pop(context);
+                    _bloc.actions.add(ClearDailyArchive());
+                  }),
+              FlatRoundButton(
+                text: 'No',
+                onPressed: () => Navigator.pop(context),
+              ),
+            ],
+          ),
+    );
   }
 
   @override
@@ -114,22 +143,38 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   Widget _buildBody(CalendarState state) {
+    final List<Widget> children = [];
+
+    if (state.calendarVisible) {
+      children.addAll([
+        _buildCalendar(state),
+        const SizedBox(height: 4.0),
+      ]);
+    }
+
+    if (state.calendarFormat == CalendarFormat.month) {
+      // TODO
+      children.add(
+        Expanded(
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: ColorfulApp.of(context).colors.brightGradient,
+            ),
+          ),
+        ),
+      );
+    } else {
+      children.addAll([
+        _buildDateHeader(state),
+        const SizedBox(height: 2.0),
+        Expanded(child: _buildContent(state)),
+      ]);
+    }
+
     return Column(
       mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: <Widget>[
-        _buildCalendar(state),
-        const SizedBox(height: 8.0),
-        ShadedBox(
-          child: Text(
-            DateFormatter.formatFull(state.selectedDate),
-            style: TextStyle().copyWith(fontSize: 16.0),
-            textAlign: TextAlign.center,
-          ),
-        ),
-        const SizedBox(height: 2.0),
-        Expanded(child: _buildScheduledTodos(state)),
-      ],
+      children: children,
     );
   }
 
@@ -137,18 +182,18 @@ class _CalendarScreenState extends State<CalendarScreen> {
     return TableCalendar(
       onDaySelected: _onDaySelected,
       onFormatChanged: _onCalendarFormatChanged,
-      events: state.todos?.toMap(),
+      events: state.activeEvents?.toMap(),
       selectedColor: ColorfulApp.of(context).colors.medium,
       todayColor: ColorfulApp.of(context).colors.pale,
       eventMarkerColor: ColorfulApp.of(context).colors.bleak,
       iconColor: ColorfulApp.of(context).colors.dark,
+      initialDate: state.selectedDate,
       initialCalendarFormat: state.calendarFormat,
       availableCalendarFormats: const [
         CalendarFormat.week,
         CalendarFormat.twoWeeks,
         CalendarFormat.month,
       ],
-      headerVisible: state.calendarHeaderVisible,
       centerHeaderTitle: false,
       formatToggleVisible: true,
       formatToggleDecoration: BoxDecoration(
@@ -161,24 +206,81 @@ class _CalendarScreenState extends State<CalendarScreen> {
     );
   }
 
-  Widget _buildScheduledTodos(CalendarState state) {
-    final children = <Widget>[
-      Expanded(
-        child: state.scheduledTodos.length == 0 ? _buildPlaceholder() : _buildListView(state),
-      ),
-    ];
+  Widget _buildDateHeader(CalendarState state) {
+    final highlightStyle = TextStyle().copyWith(fontSize: 16.0, fontWeight: FontWeight.bold);
 
-    if (state.calendarFormat != CalendarFormat.month) {
-      children.add(
-        TodoAdder(
-          onAdd: _addTodo,
-          onFormatChanged: _onTodoAdderFormatChanged,
-          showError: state.todoNameHasError,
-          todoNameController: _todoNameController,
-          scheduledDate: state.selectedDate,
+    return GestureDetector(
+      onTap: () => _onDateHeaderTapped(state.calendarVisible),
+      child: Container(
+        height: 50.0,
+        child: ShadedBox(
+          padding: null,
+          child: Stack(
+            children: <Widget>[
+              Positioned(
+                top: 16,
+                left: 0,
+                right: 0,
+                child: Text(
+                  DateFormatter.formatFull(state.selectedDate),
+                  style: TextStyle().copyWith(fontSize: 16.0),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              Positioned(
+                bottom: 6,
+                left: 12,
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(),
+                    borderRadius: BorderRadius.circular(16.0),
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  child: Text(
+                    '${state.archiveVisible ? 'Active' : 'Archive'}',
+                    style: TextStyle().copyWith(fontSize: 13.0),
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: 6,
+                right: 12,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text(
+                      '${state.activeTodos.length}',
+                      style: state.archiveVisible ? TextStyle() : highlightStyle,
+                    ),
+                    Text(' / '),
+                    Text(
+                      '${state.archivedTodos.length}',
+                      style: state.archiveVisible ? highlightStyle : TextStyle(),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildContent(CalendarState state) {
+    List<Widget> children = [];
+
+    if (state.archiveVisible) {
+      children.add(
+        Expanded(child: state.archivedTodos.length == 0 ? _buildPlaceholder('Archive is empty!') : _buildArchivedList(state)),
+      );
+    } else {
+      children.add(
+        Expanded(child: state.activeTodos.length == 0 ? _buildPlaceholder('Todo list is empty!') : _buildActiveList(state)),
       );
     }
+
+    children.add(_buildBottom(state));
 
     return Container(
       decoration: BoxDecoration(
@@ -191,20 +293,37 @@ class _CalendarScreenState extends State<CalendarScreen> {
     );
   }
 
-  Widget _buildPlaceholder() {
+  Widget _buildBottom(CalendarState state) {
+    if (state.archiveVisible) {
+      return BottomButton(
+        text: 'Clear',
+        onPressed: _showConfirmationDialog,
+      );
+    } else {
+      return TodoAdder(
+        onAdd: _addTodo,
+        onFormatChanged: _onTodoAdderFormatChanged,
+        showError: state.todoNameHasError,
+        todoNameController: _todoNameController,
+        scheduledDate: state.selectedDate,
+      );
+    }
+  }
+
+  Widget _buildPlaceholder(String text) {
     return Center(
       child: SingleChildScrollView(
-        child: buildCentralLabel(text: 'Todo list is empty!', context: context),
+        child: buildCentralLabel(text: text, context: context),
       ),
     );
   }
 
-  Widget _buildListView(CalendarState state) {
+  Widget _buildActiveList(CalendarState state) {
     return ListView.builder(
         controller: _listScrollController,
-        itemCount: state.scheduledTodos.length,
+        itemCount: state.activeTodos.length,
         itemBuilder: (context, index) {
-          final todo = state.scheduledTodos[index];
+          final todo = state.activeTodos[index];
           return Dismissible(
             key: Key(todo.addedDate.toIso8601String()),
             background: buildDismissibleBackground(context: context, leftToRight: true),
@@ -215,6 +334,21 @@ class _CalendarScreenState extends State<CalendarScreen> {
               onTileTap: () => _showDetails(todo),
               onFavoriteTap: () => _favoriteTodo(todo),
             ),
+          );
+        });
+  }
+
+  Widget _buildArchivedList(CalendarState state) {
+    return ListView.builder(
+        controller: _listScrollController,
+        itemCount: state.archivedTodos.length,
+        itemBuilder: (context, index) {
+          final todo = state.archivedTodos[index];
+          return TodoTile(
+            todo: todo,
+            onTileTap: () => _showDetails(todo, editable: false),
+            showNotification: false,
+            isFinished: true,
           );
         });
   }

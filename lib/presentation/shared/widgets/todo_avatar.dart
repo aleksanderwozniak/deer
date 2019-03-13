@@ -5,12 +5,14 @@ import 'package:flutter/material.dart';
 class TodoAvatar extends StatelessWidget {
   final String text;
   final bool isLarge;
+  final bool isFinished;
   final bool showNotification;
 
   const TodoAvatar({
     Key key,
     @required this.text,
     this.isLarge = false,
+    this.isFinished = false,
     this.showNotification = false,
   })  : assert(text != null),
         super(key: key);
@@ -58,16 +60,24 @@ class TodoAvatar extends StatelessWidget {
         ),
         color: isLarge ? ColorfulApp.of(context).colors.pale : AppColors.white1,
       ),
-      child: Center(child: _buildContentInCircle()),
+      child: Center(child: _buildContentInCircle(context)),
     );
   }
 
-  Widget _buildContentInCircle() {
-    final fontSize = isLarge ? 28.0 : 16.0;
+  Widget _buildContentInCircle(BuildContext context) {
+    final size = isLarge ? 28.0 : 16.0;
 
-    return Text(
-      text[0].toUpperCase(),
-      style: TextStyle().copyWith(fontSize: fontSize),
-    );
+    if (isFinished) {
+      return Icon(
+        Icons.done,
+        size: size * 1.3,
+        color: ColorfulApp.of(context).colors.bleak,
+      );
+    } else {
+      return Text(
+        text[0].toUpperCase(),
+        style: TextStyle().copyWith(fontSize: size),
+      );
+    }
   }
 }

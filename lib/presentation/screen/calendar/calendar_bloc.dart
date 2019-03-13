@@ -38,23 +38,38 @@ class CalendarBloc {
         case PerformOnTodo:
           _onPerform(action);
           break;
+        case ToggleArchive:
+          _onToggle();
+          break;
+        case ClearDailyArchive:
+          _onClearDailyArchive();
+          break;
         default:
           assert(false);
       }
     });
 
-    _todosSubscription = dependencies.todoInteractor.active.listen((data) {
+    _todosSubscription = dependencies.todoInteractor.all.listen((data) {
       final todos = data.where((todo) => todo.dueDate != null);
-      final events = groupBy(todos, (TodoEntity todo) => todo.dueDate);
+      final active = todos.where((todo) => todo.status == TodoStatus.active);
+      final archived = todos.where((todo) => todo.status == TodoStatus.finished);
 
-      _state.add(_state.value.rebuild((b) => b..todos = MapBuilder(events)));
+      final activeEvents = groupBy(active, (TodoEntity todo) => todo.dueDate);
+      final archivedEvents = groupBy(archived, (TodoEntity todo) => todo.dueDate);
+
+      _state.add(_state.value.rebuild(
+        (b) => b
+          ..activeEvents = MapBuilder(activeEvents)
+          ..archivedEvents = MapBuilder(archivedEvents),
+      ));
     });
 
     state.listen((data) {
-      _state.add(_state.value.rebuild((b) => b
-        ..scheduledTodos = ListBuilder(
-          b.todos[b.selectedDate] ?? [],
-        )));
+      _state.add(_state.value.rebuild(
+        (b) => b
+          ..activeTodos = ListBuilder(b.activeEvents[b.selectedDate] ?? [])
+          ..archivedTodos = ListBuilder(b.archivedEvents[b.selectedDate] ?? []),
+      ));
     });
   }
 
@@ -74,8 +89,8 @@ class CalendarBloc {
       case Field.calendarFormat:
         state.calendarFormat = action.value;
         break;
-      case Field.calendarHeaderVisible:
-        state.calendarHeaderVisible = action.value;
+      case Field.calendarVisible:
+        state.calendarVisible = action.value;
         break;
       default:
         assert(false);
@@ -126,5 +141,13 @@ class CalendarBloc {
           ..finishedDate = DateTime.now(),
       ),
     );
+  }
+
+  void _onToggle() {
+    _state.add(_state.value.rebuild((b) => b..archiveVisible = !b.archiveVisible));
+  }
+
+  void _onClearDailyArchive() {
+    dependencies.todoInteractor.clearDailyArchive(_state.value.selectedDate);
   }
 }

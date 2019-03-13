@@ -168,6 +168,14 @@ class TodoDao {
     return _saveToDisk();
   }
 
+  Future<bool> clearDailyFinished(DateTime day) {
+    final data = _data.value.toBuilder();
+    data.removeWhere((e) => e.status == TodoStatus.finished && e.dueDate == day);
+    _data.add(data.build());
+
+    return _saveToDisk();
+  }
+
   Future<bool> clearNotifications() async {
     bool cacheDirty = false;
     final data = _data.value.toBuilder();
