@@ -230,9 +230,16 @@ class _CalendarScreenState extends State<CalendarScreen> {
               Positioned(
                 bottom: 6,
                 left: 12,
-                child: Text(
-                  '${state.archiveVisible ? 'Archive' : 'Active'}',
-                  style: TextStyle().copyWith(fontSize: 15.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(),
+                    borderRadius: BorderRadius.circular(16.0),
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  child: Text(
+                    '${state.archiveVisible ? 'Active' : 'Archive'}',
+                    style: TextStyle().copyWith(fontSize: 13.0),
+                  ),
                 ),
               ),
               Positioned(
