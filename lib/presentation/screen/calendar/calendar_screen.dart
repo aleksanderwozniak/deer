@@ -44,7 +44,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   // Place methods here
-  void _onDaySelected(DateTime date) {
+  void _onDaySelected(DateTime date, _) {
     _bloc.actions.add(UpdateField(field: Field.selectedDate, value: date));
   }
 
@@ -183,26 +183,32 @@ class _CalendarScreenState extends State<CalendarScreen> {
       onDaySelected: _onDaySelected,
       onFormatChanged: _onCalendarFormatChanged,
       events: state.activeEvents?.toMap(),
-      selectedColor: ColorfulApp.of(context).colors.medium,
-      todayColor: ColorfulApp.of(context).colors.pale,
-      eventMarkerColor: ColorfulApp.of(context).colors.bleak,
-      iconColor: ColorfulApp.of(context).colors.dark,
+      formatAnimation: FormatAnimation.slide,
+      availableGestures: AvailableGestures.all,
+      calendarStyle: CalendarStyle(
+        selectedColor: ColorfulApp.of(context).colors.medium,
+        todayColor: ColorfulApp.of(context).colors.pale,
+        markersColor: ColorfulApp.of(context).colors.bleak,
+      ),
+      headerStyle: HeaderStyle(
+        iconColor: ColorfulApp.of(context).colors.dark,
+        centerHeaderTitle: false,
+        formatButtonVisible: true,
+        formatButtonDecoration: BoxDecoration(
+          border: Border.all(width: 0.0, color: ColorfulApp.of(context).colors.bleak),
+          borderRadius: BorderRadius.circular(16.0),
+          color: ColorfulApp.of(context).colors.pale,
+        ),
+        formatButtonPadding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 11.0),
+        formatButtonTextStyle: TextStyle().copyWith(color: AppColors.white1, fontSize: 13.0),
+      ),
       initialDate: state.selectedDate,
       initialCalendarFormat: state.calendarFormat,
-      availableCalendarFormats: const [
-        CalendarFormat.week,
-        CalendarFormat.twoWeeks,
-        CalendarFormat.month,
-      ],
-      centerHeaderTitle: false,
-      formatToggleVisible: true,
-      formatToggleDecoration: BoxDecoration(
-        border: Border.all(width: 0.0, color: ColorfulApp.of(context).colors.bleak),
-        borderRadius: BorderRadius.circular(16.0),
-        color: ColorfulApp.of(context).colors.pale,
-      ),
-      formatTogglePadding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 11.0),
-      formatToggleTextStyle: TextStyle().copyWith(color: AppColors.white1, fontSize: 13.0),
+      availableCalendarFormats: const {
+        CalendarFormat.month: 'Month',
+        CalendarFormat.twoWeeks: '2 weeks',
+        CalendarFormat.week: 'Week',
+      },
     );
   }
 

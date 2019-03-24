@@ -11,6 +11,7 @@ import 'package:deer/utils/notification_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 
 typedef void _OnTaskAdded(TodoEntity task);
 typedef void _OnFormatChanged(TodoAdderFormat format);
@@ -180,40 +181,40 @@ class _TodoAdderState extends State<TodoAdder> {
           return Future(() => true);
         }
       },
-      child: AnimatedContainer(
-        duration: Duration(milliseconds: _millis),
-        height: _height,
-        constraints: BoxConstraints(minHeight: _height),
-        curve: Curves.easeOut,
-        decoration: BoxDecoration(
-          boxShadow: [BoxShadow(color: Colors.black54, blurRadius: 10.0)],
-          color: AppColors.white1,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(24.0),
-            topRight: Radius.circular(24.0),
-          ),
+      child: SimpleGestureDetector(
+        onSwipeUp: () => _expansionFormatSubject.add(TodoAdderFormat.expanded),
+        onSwipeDown: () => _expansionFormatSubject.add(TodoAdderFormat.folded),
+        swipeConfig: SimpleSwipeConfig(
+          verticalThreshold: 20.0,
+          swipeDetectionMoment: SwipeDetectionMoment.onUpdate,
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: children,
+        child: AnimatedContainer(
+          duration: Duration(milliseconds: _millis),
+          height: _height,
+          constraints: BoxConstraints(minHeight: _height),
+          curve: Curves.easeOut,
+          decoration: BoxDecoration(
+            boxShadow: [BoxShadow(color: Colors.black54, blurRadius: 10.0)],
+            color: AppColors.white1,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(24.0),
+              topRight: Radius.circular(24.0),
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: children,
+          ),
         ),
       ),
     );
   }
 
   Widget _buildHeader() {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onVerticalDragStart: (_) {
-        _expansionFormatSubject.add(
-          _expansionFormatSubject.value == TodoAdderFormat.expanded ? TodoAdderFormat.folded : TodoAdderFormat.expanded,
-        );
-      },
-      child: Center(
-        child: Icon(
-          _expansionFormatSubject.value == TodoAdderFormat.expanded ? Icons.arrow_drop_down : Icons.arrow_drop_up,
-          color: ColorfulApp.of(context).colors.dark,
-        ),
+    return Center(
+      child: Icon(
+        _expansionFormatSubject.value == TodoAdderFormat.expanded ? Icons.arrow_drop_down : Icons.arrow_drop_up,
+        color: ColorfulApp.of(context).colors.dark,
       ),
     );
   }

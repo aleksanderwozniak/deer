@@ -36,6 +36,9 @@ dependencies:
   # calendar
   table_calendar: 
 
+  # gestures
+  simple_gesture_detector:
+
   # platform
   shared_preferences:
   keyboard_visibility:
