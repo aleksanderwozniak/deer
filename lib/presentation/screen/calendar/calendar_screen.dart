@@ -5,7 +5,6 @@ import 'package:deer/presentation/screen/calendar/calendar_bloc.dart';
 import 'package:deer/presentation/screen/calendar/calendar_state.dart';
 import 'package:deer/presentation/screen/todo_detail/todo_detail_screen.dart';
 import 'package:deer/presentation/shared/helper/date_formatter.dart';
-import 'package:deer/presentation/shared/resources.dart';
 import 'package:deer/presentation/shared/widgets/box.dart';
 import 'package:deer/presentation/shared/widgets/buttons.dart';
 import 'package:deer/presentation/shared/widgets/dialogs.dart';
@@ -48,7 +47,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     _bloc.actions.add(UpdateField(field: Field.selectedDate, value: date));
   }
 
-  void _onCalendarFormatChanged(CalendarFormat format) {
+  void _onVisibleDaysChanged(_, __, CalendarFormat format) {
     _bloc.actions.add(UpdateField(field: Field.calendarFormat, value: format));
   }
 
@@ -152,24 +151,16 @@ class _CalendarScreenState extends State<CalendarScreen> {
       ]);
     }
 
-    if (state.calendarFormat == CalendarFormat.month) {
-      // TODO
-      children.add(
-        Expanded(
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: ColorfulApp.of(context).colors.brightGradient,
-            ),
-          ),
+    children.addAll([
+      _buildDateHeader(state),
+      const SizedBox(height: 2.0),
+      Expanded(
+        child: _buildContent(
+          state,
+          bottomVisible: state.calendarFormat != CalendarFormat.month,
         ),
-      );
-    } else {
-      children.addAll([
-        _buildDateHeader(state),
-        const SizedBox(height: 2.0),
-        Expanded(child: _buildContent(state)),
-      ]);
-    }
+      ),
+    ]);
 
     return Column(
       mainAxisSize: MainAxisSize.max,
@@ -181,34 +172,26 @@ class _CalendarScreenState extends State<CalendarScreen> {
   Widget _buildCalendar(CalendarState state) {
     return TableCalendar(
       onDaySelected: _onDaySelected,
-      onFormatChanged: _onCalendarFormatChanged,
+      onVisibleDaysChanged: _onVisibleDaysChanged,
       events: state.activeEvents?.toMap(),
-      formatAnimation: FormatAnimation.slide,
-      availableGestures: AvailableGestures.all,
       calendarStyle: CalendarStyle(
         selectedColor: ColorfulApp.of(context).colors.medium,
         todayColor: ColorfulApp.of(context).colors.pale,
         markersColor: ColorfulApp.of(context).colors.bleak,
+        weekendStyle: TextStyle().copyWith(color: ColorfulApp.of(context).colors.medium),
+        outsideWeekendStyle: TextStyle().copyWith(color: ColorfulApp.of(context).colors.bright.withOpacity(0.8)),
+      ),
+      daysOfWeekStyle: DaysOfWeekStyle(
+        weekendStyle: TextStyle().copyWith(color: ColorfulApp.of(context).colors.bright),
       ),
       headerStyle: HeaderStyle(
-        iconColor: ColorfulApp.of(context).colors.dark,
-        centerHeaderTitle: false,
-        formatButtonVisible: true,
-        formatButtonDecoration: BoxDecoration(
-          border: Border.all(width: 0.0, color: ColorfulApp.of(context).colors.bleak),
-          borderRadius: BorderRadius.circular(16.0),
-          color: ColorfulApp.of(context).colors.pale,
-        ),
-        formatButtonPadding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 11.0),
-        formatButtonTextStyle: TextStyle().copyWith(color: AppColors.white1, fontSize: 13.0),
+        leftChevronIcon: Icon(Icons.chevron_left, color: ColorfulApp.of(context).colors.dark),
+        rightChevronIcon: Icon(Icons.chevron_right, color: ColorfulApp.of(context).colors.dark),
+        formatButtonVisible: false,
+        centerHeaderTitle: true,
       ),
-      initialDate: state.selectedDate,
+      selectedDay: state.selectedDate,
       initialCalendarFormat: state.calendarFormat,
-      availableCalendarFormats: const {
-        CalendarFormat.month: 'Month',
-        CalendarFormat.twoWeeks: '2 weeks',
-        CalendarFormat.week: 'Week',
-      },
     );
   }
 
@@ -238,7 +221,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 left: 12,
                 child: Container(
                   decoration: BoxDecoration(
-                    border: Border.all(),
+                    border: Border.all(color: ColorfulApp.of(context).colors.bleak),
                     borderRadius: BorderRadius.circular(16.0),
                   ),
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -273,20 +256,26 @@ class _CalendarScreenState extends State<CalendarScreen> {
     );
   }
 
-  Widget _buildContent(CalendarState state) {
+  Widget _buildContent(CalendarState state, {bool bottomVisible = true}) {
     List<Widget> children = [];
 
     if (state.archiveVisible) {
       children.add(
-        Expanded(child: state.archivedTodos.length == 0 ? _buildPlaceholder('Archive is empty!') : _buildArchivedList(state)),
+        Expanded(
+          child: state.archivedTodos.length == 0 ? _buildPlaceholder('Archive is empty!') : _buildArchivedList(state),
+        ),
       );
     } else {
       children.add(
-        Expanded(child: state.activeTodos.length == 0 ? _buildPlaceholder('Todo list is empty!') : _buildActiveList(state)),
+        Expanded(
+          child: state.activeTodos.length == 0 ? _buildPlaceholder('Todo list is empty!') : _buildActiveList(state),
+        ),
       );
     }
 
-    children.add(_buildBottom(state));
+    if (bottomVisible) {
+      children.add(_buildBottom(state));
+    }
 
     return Container(
       decoration: BoxDecoration(
@@ -326,36 +315,38 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   Widget _buildActiveList(CalendarState state) {
     return ListView.builder(
-        controller: _listScrollController,
-        itemCount: state.activeTodos.length,
-        itemBuilder: (context, index) {
-          final todo = state.activeTodos[index];
-          return Dismissible(
-            key: Key(todo.addedDate.toIso8601String()),
-            background: buildDismissibleBackground(context: context, leftToRight: true),
-            secondaryBackground: buildDismissibleBackground(context: context, leftToRight: false),
-            onDismissed: (_) => _archiveTodo(todo),
-            child: TodoTile(
-              todo: todo,
-              onTileTap: () => _showDetails(todo),
-              onFavoriteTap: () => _favoriteTodo(todo),
-            ),
-          );
-        });
+      controller: _listScrollController,
+      itemCount: state.activeTodos.length,
+      itemBuilder: (context, index) {
+        final todo = state.activeTodos[index];
+        return Dismissible(
+          key: Key(todo.addedDate.toIso8601String()),
+          background: buildDismissibleBackground(context: context, leftToRight: true),
+          secondaryBackground: buildDismissibleBackground(context: context, leftToRight: false),
+          onDismissed: (_) => _archiveTodo(todo),
+          child: TodoTile(
+            todo: todo,
+            onTileTap: () => _showDetails(todo),
+            onFavoriteTap: () => _favoriteTodo(todo),
+          ),
+        );
+      },
+    );
   }
 
   Widget _buildArchivedList(CalendarState state) {
     return ListView.builder(
-        controller: _listScrollController,
-        itemCount: state.archivedTodos.length,
-        itemBuilder: (context, index) {
-          final todo = state.archivedTodos[index];
-          return TodoTile(
-            todo: todo,
-            onTileTap: () => _showDetails(todo, editable: false),
-            showNotification: false,
-            isFinished: true,
-          );
-        });
+      controller: _listScrollController,
+      itemCount: state.archivedTodos.length,
+      itemBuilder: (context, index) {
+        final todo = state.archivedTodos[index];
+        return TodoTile(
+          todo: todo,
+          onTileTap: () => _showDetails(todo, editable: false),
+          showNotification: false,
+          isFinished: true,
+        );
+      },
+    );
   }
 }

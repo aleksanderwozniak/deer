@@ -182,11 +182,12 @@ class _TodoAdderState extends State<TodoAdder> {
         }
       },
       child: SimpleGestureDetector(
-        onSwipeUp: () => _expansionFormatSubject.add(TodoAdderFormat.expanded),
-        onSwipeDown: () => _expansionFormatSubject.add(TodoAdderFormat.folded),
+        onVerticalSwipe: (direction) => direction == SwipeDirection.up
+            ? _expansionFormatSubject.add(TodoAdderFormat.expanded)
+            : _expansionFormatSubject.add(TodoAdderFormat.folded),
         swipeConfig: SimpleSwipeConfig(
           verticalThreshold: 20.0,
-          swipeDetectionMoment: SwipeDetectionMoment.onUpdate,
+          swipeDetectionBehavior: SwipeDetectionBehavior.continuousDistinct,
         ),
         child: AnimatedContainer(
           duration: Duration(milliseconds: _millis),
