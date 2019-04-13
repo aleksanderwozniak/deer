@@ -1,26 +1,18 @@
 import 'package:deer/domain/entity/tags.dart';
 import 'package:deer/domain/entity/todo_entity.dart';
-import 'package:deer/presentation/app.dart';
 import 'package:deer/presentation/colorful_app.dart';
 import 'package:deer/presentation/screen/archive_list/archive_list_screen.dart';
-import 'package:deer/presentation/screen/calendar/calendar_screen.dart';
-import 'package:deer/presentation/screen/privacy.dart';
 import 'package:deer/presentation/screen/todo_detail/todo_detail_screen.dart';
 import 'package:deer/presentation/screen/todo_list/todo_list_actions.dart';
 import 'package:deer/presentation/shared/widgets/box_decoration.dart';
-import 'package:deer/presentation/shared/widgets/buttons.dart';
-import 'package:deer/presentation/shared/widgets/dialogs.dart';
 import 'package:deer/presentation/shared/widgets/dismissible.dart';
 import 'package:deer/presentation/shared/widgets/dropdown.dart' as CustomDropdown;
 import 'package:deer/presentation/shared/widgets/label.dart';
-import 'package:deer/presentation/shared/widgets/reorderable_list.dart' as CustomList;
 import 'package:deer/presentation/shared/widgets/todo_adder.dart';
 import 'package:deer/presentation/shared/widgets/todo_tile.dart';
 import 'package:deer/utils/notification_utils.dart';
-import 'package:deer/utils/string_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'todo_list_bloc.dart';
 import 'todo_list_state.dart';
@@ -28,12 +20,6 @@ import 'todo_list_state.dart';
 enum MenuEntry { calendar, colors, privacy }
 
 class TodoListScreen extends StatefulWidget {
-  final String title;
-
-  const TodoListScreen({Key key, this.title})
-      : assert(title != null),
-        super(key: key);
-
   @override
   _TodoListScreenState createState() => _TodoListScreenState();
 }
@@ -50,16 +36,6 @@ class _TodoListScreenState extends State<TodoListScreen> {
     _bloc = TodoListBloc();
     _todoNameController = TextEditingController();
     _listScrollController = ScrollController();
-
-    final initSettings = InitializationSettings(
-      AndroidInitializationSettings('deer_logo'),
-      IOSInitializationSettings(),
-    );
-
-    notificationManager.initialize(
-      initSettings,
-      onSelectNotification: onSelectNotification,
-    );
   }
 
   @override
@@ -108,99 +84,6 @@ class _TodoListScreenState extends State<TodoListScreen> {
     ));
   }
 
-  void _showCalendar() {
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => CalendarScreen(),
-    ));
-  }
-
-  void _selectColorTheme() {
-    showDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (context) => SimpleDialog(
-            title: Text(
-              'Select Color Theme',
-              style: TextStyle().copyWith(fontSize: 18.0),
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12.0),
-              side: BorderSide(width: 1.0, color: ColorfulApp.of(context).colors.bleak),
-            ),
-            children: ColorfulTheme.values
-                .skip(1)
-                .map((color) => SimpleDialogOption(
-                      child: _buildColorDialogOption(
-                        text: capitalize(enumToString(color)),
-                        mainColor: ColorfulApp.of(context).themeDataFromEnum(color).pale,
-                        borderColor: ColorfulApp.of(context).themeDataFromEnum(color).dark,
-                      ),
-                      onPressed: () => ColorfulApp.of(context).updateColorTheme(color),
-                    ))
-                .toList(),
-          ),
-    );
-  }
-
-  void _showPrivacyPolicyDialog() {
-    showDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (context) => RoundedAlertDialog(
-            title: 'Privacy Policy',
-            content: SingleChildScrollView(
-              child: Text(shortPrivacyPolicy, textAlign: TextAlign.center),
-            ),
-            actions: <Widget>[
-              FlatRoundButton(
-                text: 'Read more',
-                onPressed: _showFullPrivacyPolicy,
-              ),
-              FlatRoundButton(
-                text: 'Close',
-                onPressed: () => Navigator.pop(context),
-              ),
-            ],
-          ),
-    );
-  }
-
-  void _showFullPrivacyPolicy() {
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => PrivacyScreen(),
-      fullscreenDialog: true,
-    ));
-  }
-
-  void _onMenuEntryTapped(MenuEntry entry) {
-    switch (entry) {
-      case MenuEntry.calendar:
-        _showCalendar();
-        break;
-      case MenuEntry.colors:
-        _selectColorTheme();
-        break;
-      case MenuEntry.privacy:
-        _showPrivacyPolicyDialog();
-        break;
-    }
-  }
-
-  Future onSelectNotification(String payload) async {
-    // Payload should never be null; check just to be sure
-    if (payload != null) {
-      final todos = await dependencies.todoInteractor.active.first;
-      final notificationTodo = todos.firstWhere((e) => e.addedDate.toIso8601String().compareTo(payload) == 0);
-
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => TodoDetailScreen(todo: notificationTodo, editable: true),
-        ),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
@@ -217,26 +100,9 @@ class _TodoListScreenState extends State<TodoListScreen> {
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(color: ColorfulApp.of(context).colors.dark),
-        title: Text(widget.title),
+        title: Text('All Todos'),
         centerTitle: true,
         bottom: _buildFilter(state),
-        leading: PopupMenuButton(
-          onSelected: _onMenuEntryTapped,
-          itemBuilder: (BuildContext context) => <PopupMenuEntry<MenuEntry>>[
-                const PopupMenuItem<MenuEntry>(
-                  value: MenuEntry.calendar,
-                  child: Text('Calendar View'),
-                ),
-                const PopupMenuItem<MenuEntry>(
-                  value: MenuEntry.colors,
-                  child: Text('Color Theme'),
-                ),
-                const PopupMenuItem<MenuEntry>(
-                  value: MenuEntry.privacy,
-                  child: Text('Privacy Policy'),
-                ),
-              ],
-        ),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.done_all),
@@ -301,12 +167,11 @@ class _TodoListScreenState extends State<TodoListScreen> {
                       child: buildCentralLabel(text: 'Todo list is empty!', context: context),
                     ),
                   )
-                : CustomList.ReorderableListView(
-                    scrollController: _listScrollController,
-                    onReorder: (oldIndex, newIndex) {
-                      _bloc.actions.add(ReorderTodo(oldIndex: oldIndex, newIndex: newIndex));
-                    },
-                    children: state.todos.map((todo) {
+                : ListView.builder(
+                    controller: _listScrollController,
+                    itemCount: state.todos.length,
+                    itemBuilder: (context, index) {
+                      final todo = state.todos[index];
                       return Dismissible(
                         key: Key(todo.addedDate.toIso8601String()),
                         background: buildDismissibleBackground(context: context, leftToRight: true),
@@ -318,35 +183,13 @@ class _TodoListScreenState extends State<TodoListScreen> {
                           onFavoriteTap: () => _favoriteTodo(todo),
                         ),
                       );
-                    }).toList(),
+                    },
                   ),
           ),
           TodoAdder(
             onAdd: _addTodo,
             showError: state.todoNameHasError,
             todoNameController: _todoNameController,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildColorDialogOption({String text, Color mainColor, Color borderColor}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 3.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          Text(text),
-          Expanded(child: const SizedBox(width: 8.0)),
-          Container(
-            width: 16.0,
-            height: 16.0,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: mainColor,
-              border: Border.all(color: borderColor),
-            ),
           ),
         ],
       ),

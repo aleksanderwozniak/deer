@@ -36,32 +36,62 @@ class AppColors {
   static const Color white1 = Colors.white;
   static const Color black1 = Colors.black;
 
-  static const LinearGradient salmonGradient = LinearGradient(
+  static const LinearGradient salmonGradient1 = LinearGradient(
     colors: [AppColors.white1, AppColors.salmon1],
     begin: AlignmentDirectional.topCenter,
     end: AlignmentDirectional.bottomCenter,
   );
 
-  static const LinearGradient indigoGradient = LinearGradient(
+  static const LinearGradient salmonGradient2 = LinearGradient(
+    colors: [AppColors.salmon1, AppColors.salmon2],
+    begin: AlignmentDirectional.topCenter,
+    end: AlignmentDirectional.bottomCenter,
+  );
+
+  static const LinearGradient indigoGradient1 = LinearGradient(
     colors: [AppColors.white1, AppColors.indigo1],
     begin: AlignmentDirectional.topCenter,
     end: AlignmentDirectional.bottomCenter,
   );
 
-  static const LinearGradient mintGradient = LinearGradient(
+  static const LinearGradient indigoGradient2 = LinearGradient(
+    colors: [AppColors.indigo1, AppColors.indigo2],
+    begin: AlignmentDirectional.topCenter,
+    end: AlignmentDirectional.bottomCenter,
+  );
+
+  static const LinearGradient mintGradient1 = LinearGradient(
     colors: [AppColors.white1, AppColors.mint1],
     begin: AlignmentDirectional.topCenter,
     end: AlignmentDirectional.bottomCenter,
   );
 
-  static const LinearGradient arcticBlueGradient = LinearGradient(
+  static const LinearGradient mintGradient2 = LinearGradient(
+    colors: [AppColors.mint1, AppColors.mint2],
+    begin: AlignmentDirectional.topCenter,
+    end: AlignmentDirectional.bottomCenter,
+  );
+
+  static const LinearGradient arcticBlueGradient1 = LinearGradient(
     colors: [AppColors.white1, AppColors.arcticBlue1],
     begin: AlignmentDirectional.topCenter,
     end: AlignmentDirectional.bottomCenter,
   );
 
-  static const LinearGradient goldenGradient = LinearGradient(
+  static const LinearGradient arcticBlueGradient2 = LinearGradient(
+    colors: [AppColors.arcticBlue1, AppColors.arcticBlue2],
+    begin: AlignmentDirectional.topCenter,
+    end: AlignmentDirectional.bottomCenter,
+  );
+
+  static const LinearGradient goldenGradient1 = LinearGradient(
     colors: [AppColors.white1, AppColors.golden1],
+    begin: AlignmentDirectional.topCenter,
+    end: AlignmentDirectional.bottomCenter,
+  );
+
+  static const LinearGradient goldenGradient2 = LinearGradient(
+    colors: [AppColors.golden1, AppColors.golden2],
     begin: AlignmentDirectional.topCenter,
     end: AlignmentDirectional.bottomCenter,
   );
