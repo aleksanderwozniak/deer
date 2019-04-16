@@ -1,10 +1,11 @@
 import 'package:deer/presentation/app.dart';
 import 'package:deer/presentation/colorful_app.dart';
-import 'package:deer/presentation/screen/archive_list/archive_list_screen.dart';
 import 'package:deer/presentation/screen/calendar/calendar_screen.dart';
+import 'package:deer/presentation/screen/home/home_state.dart';
 import 'package:deer/presentation/screen/privacy.dart';
 import 'package:deer/presentation/screen/todo_detail/todo_detail_screen.dart';
 import 'package:deer/presentation/screen/todo_list/todo_list_screen.dart';
+import 'package:deer/presentation/shared/resources.dart';
 import 'package:deer/presentation/shared/widgets/box.dart';
 import 'package:deer/presentation/shared/widgets/buttons.dart';
 import 'package:deer/presentation/shared/widgets/dialogs.dart';
@@ -14,6 +15,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_page_indicator/flutter_page_indicator.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+
+import 'home_actions.dart';
+import 'home_bloc.dart';
+
+const List<_MenuPage> _menuPages = [
+  _MenuPage(title: 'Calendar', description: 'Quickly preview and prepare your schedule', icon: Icons.event),
+  _MenuPage(title: 'All Todos', description: 'Display all active Todos', icon: Icons.list),
+  _MenuPage(title: 'Settings', description: 'Customize Deer to your liking', icon: Icons.settings),
+];
 
 class HomeScreen extends StatefulWidget {
   final String title;
@@ -26,12 +36,12 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   // Place variables here
-  int _currentIndex;
-  Map<String, String> _descriptions;
+  HomeBloc _bloc;
 
   @override
   void initState() {
     super.initState();
+    _bloc = HomeBloc();
 
     final initSettings = InitializationSettings(
       AndroidInitializationSettings('deer_logo'),
@@ -40,19 +50,32 @@ class _HomeScreenState extends State<HomeScreen> {
 
     notificationManager.initialize(
       initSettings,
-      onSelectNotification: onSelectNotification,
+      onSelectNotification: _onSelectNotification,
     );
+  }
 
-    _currentIndex = 0;
-    _descriptions = {
-      'Calendar': 'Quickly preview and prepare your schedule',
-      'All Todos': 'Display all active Todos',
-      'Archive': 'Display complete Archive',
-      'Settings': 'Customize Deer to your liking',
-    };
+  @override
+  void dispose() {
+    _bloc.dispose();
+    super.dispose();
   }
 
   // Place methods here
+  Future _onSelectNotification(String payload) async {
+    // Payload should never be null; check just to be sure
+    if (payload != null) {
+      final todos = await dependencies.todoInteractor.active.first;
+      final notificationTodo = todos.firstWhere((e) => e.addedDate.toIso8601String().compareTo(payload) == 0);
+
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => TodoDetailScreen(todo: notificationTodo, editable: true),
+        ),
+      );
+    }
+  }
+
   void _navigate(int index) {
     switch (index) {
       case 0:
@@ -62,9 +85,6 @@ class _HomeScreenState extends State<HomeScreen> {
         _showAllTodos();
         break;
       case 2:
-        _showArchive();
-        break;
-      case 3:
         _selectColorTheme();
         break;
       default:
@@ -84,36 +104,36 @@ class _HomeScreenState extends State<HomeScreen> {
     ));
   }
 
-  void _showArchive() {
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => ArchiveListScreen(),
-    ));
-  }
-
   void _selectColorTheme() {
     showDialog(
       context: context,
       barrierDismissible: true,
-      builder: (context) => SimpleDialog(
-            title: Text(
-              'Select Color Theme',
-              style: TextStyle().copyWith(fontSize: 18.0),
+      builder: (context) => RoundedAlertDialog(
+            actions: <Widget>[
+              FlatRoundButton(
+                text: 'Close',
+                onTap: () => Navigator.pop(context),
+              ),
+            ],
+            title: 'Select Color Theme',
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: ColorfulTheme.values
+                  .skip(1)
+                  .map((color) => InkWell(
+                        borderRadius: BorderRadius.circular(24.0),
+                        highlightColor: ColorfulApp.of(context).themeDataFromEnum(color).pale.withOpacity(0.4),
+                        splashColor: ColorfulApp.of(context).themeDataFromEnum(color).medium.withOpacity(0.4),
+                        onTap: () => ColorfulApp.of(context).updateColorTheme(color),
+                        child: _buildColorDialogTile(
+                          text: capitalize(enumToStringSingle(color)),
+                          mainColor: ColorfulApp.of(context).themeDataFromEnum(color).pale,
+                          borderColor: ColorfulApp.of(context).themeDataFromEnum(color).bleak,
+                        ),
+                      ))
+                  .toList(),
             ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12.0),
-              side: BorderSide(width: 1.0, color: ColorfulApp.of(context).colors.bleak),
-            ),
-            children: ColorfulTheme.values
-                .skip(1)
-                .map((color) => SimpleDialogOption(
-                      child: _buildColorDialogOption(
-                        text: capitalize(enumToString(color)),
-                        mainColor: ColorfulApp.of(context).themeDataFromEnum(color).pale,
-                        borderColor: ColorfulApp.of(context).themeDataFromEnum(color).dark,
-                      ),
-                      onPressed: () => ColorfulApp.of(context).updateColorTheme(color),
-                    ))
-                .toList(),
           ),
     );
   }
@@ -130,11 +150,11 @@ class _HomeScreenState extends State<HomeScreen> {
             actions: <Widget>[
               FlatRoundButton(
                 text: 'Read more',
-                onPressed: _showFullPrivacyPolicy,
+                onTap: _showFullPrivacyPolicy,
               ),
               FlatRoundButton(
                 text: 'Close',
-                onPressed: () => Navigator.pop(context),
+                onTap: () => Navigator.pop(context),
               ),
             ],
           ),
@@ -146,43 +166,6 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (context) => PrivacyScreen(),
       fullscreenDialog: true,
     ));
-  }
-
-  Future onSelectNotification(String payload) async {
-    // Payload should never be null; check just to be sure
-    if (payload != null) {
-      final todos = await dependencies.todoInteractor.active.first;
-      final notificationTodo = todos.firstWhere((e) => e.addedDate.toIso8601String().compareTo(payload) == 0);
-
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => TodoDetailScreen(todo: notificationTodo, editable: true),
-        ),
-      );
-    }
-  }
-
-  Widget _buildColorDialogOption({String text, Color mainColor, Color borderColor}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 3.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          Text(text),
-          Expanded(child: const SizedBox(width: 8.0)),
-          Container(
-            width: 16.0,
-            height: 16.0,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: mainColor,
-              border: Border.all(color: borderColor),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 
   @override
@@ -205,14 +188,13 @@ class _HomeScreenState extends State<HomeScreen> {
     // Build your root view here
     return Column(
       mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        Expanded(child: const SizedBox(height: 36.0)),
+        Expanded(flex: 2, child: const SizedBox()),
         _buildCarousel(),
-        const SizedBox(height: 36.0),
+        Expanded(child: const SizedBox()),
         _buildDescription(),
-        Expanded(child: const SizedBox(height: 36.0)),
+        Expanded(flex: 3, child: const SizedBox()),
         _buildFooter(),
       ],
     );
@@ -222,14 +204,14 @@ class _HomeScreenState extends State<HomeScreen> {
     return SizedBox(
       height: 320,
       child: Swiper(
-        onIndexChanged: (id) => setState(() => _currentIndex = id),
-        itemCount: _descriptions.length,
+        onIndexChanged: (id) => _bloc.actions.add(UpdatePageIndex(id)),
+        itemCount: _menuPages.length,
         outer: true,
         itemBuilder: (BuildContext context, int index) {
           return Center(
             child: SizedBox(
               width: 250,
-              child: _buildItem(index),
+              child: _buildCard(index),
             ),
           );
         },
@@ -245,7 +227,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildItem(int index) {
+  Widget _buildCard(int index) {
     return Padding(
       padding: const EdgeInsets.all(6.0),
       child: Card(
@@ -258,30 +240,68 @@ class _HomeScreenState extends State<HomeScreen> {
           child: InkWell(
             borderRadius: BorderRadius.circular(16.0),
             onTap: () => _navigate(index),
-            child: Container(),
+            child: _buildCardContent(index),
           ),
         ),
       ),
     );
   }
 
+  Widget _buildCardContent(int index) {
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: <Widget>[
+        Container(
+          height: 140,
+          width: 140,
+          margin: const EdgeInsets.all(16.0),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: ColorfulApp.of(context).colors.bleak,
+              width: 3.5,
+            ),
+            gradient: RadialGradient(
+              radius: 0.75,
+              colors: [
+                AppColors.white1,
+                ColorfulApp.of(context).colors.pale,
+              ],
+            ),
+          ),
+          child: Icon(
+            _menuPages.elementAt(index).icon,
+            size: 64,
+            color: ColorfulApp.of(context).colors.bleak,
+          ),
+        ),
+        Text(
+          _menuPages.elementAt(index).title,
+          textAlign: TextAlign.center,
+          style: TextStyle().copyWith(color: ColorfulApp.of(context).colors.bleak, fontSize: 22.0),
+        ),
+      ],
+    );
+  }
+
   Widget _buildDescription() {
+    return StreamBuilder(
+      initialData: _bloc.initialState,
+      stream: _bloc.state,
+      builder: (context, snapshot) {
+        return _buildDescriptionContent(snapshot.data);
+      },
+    );
+  }
+
+  Widget _buildDescriptionContent(HomeState state) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12.0),
-      child: Column(
-        children: <Widget>[
-          Text(
-            _descriptions.keys.elementAt(_currentIndex),
-            textAlign: TextAlign.center,
-            style: TextStyle().copyWith(fontSize: 22.0),
-          ),
-          const SizedBox(height: 16.0),
-          Text(
-            _descriptions.values.elementAt(_currentIndex),
-            textAlign: TextAlign.center,
-            style: TextStyle().copyWith(fontSize: 16.0),
-          ),
-        ],
+      child: Text(
+        _menuPages.elementAt(state.pageIndex).description,
+        textAlign: TextAlign.center,
+        style: TextStyle().copyWith(color: ColorfulApp.of(context).colors.bleak, fontSize: 16.0),
       ),
     );
   }
@@ -304,4 +324,38 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
+  Widget _buildColorDialogTile({String text, Color mainColor, Color borderColor}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 9.0, horizontal: 15.0),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          Text(text),
+          Expanded(child: const SizedBox(width: 8.0)),
+          Container(
+            width: 16.0,
+            height: 16.0,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: mainColor,
+              border: Border.all(color: borderColor),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MenuPage {
+  final String title;
+  final String description;
+  final IconData icon;
+
+  const _MenuPage({
+    this.title,
+    this.description,
+    this.icon,
+  });
 }

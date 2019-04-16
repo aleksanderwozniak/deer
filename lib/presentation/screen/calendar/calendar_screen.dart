@@ -38,8 +38,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   @override
   void dispose() {
-    super.dispose();
     _bloc.dispose();
+    super.dispose();
   }
 
   // Place methods here
@@ -105,13 +105,13 @@ class _CalendarScreenState extends State<CalendarScreen> {
             actions: <Widget>[
               FlatRoundButton(
                   text: 'Yes',
-                  onPressed: () {
+                  onTap: () {
                     Navigator.pop(context);
                     _bloc.actions.add(ClearDailyArchive());
                   }),
               FlatRoundButton(
                 text: 'No',
-                onPressed: () => Navigator.pop(context),
+                onTap: () => Navigator.pop(context),
               ),
             ],
           ),

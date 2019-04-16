@@ -1,4 +1,3 @@
-import 'package:deer/presentation/colorful_app.dart';
 import 'package:flutter/material.dart';
 
 class RoundedAlertDialog extends StatelessWidget {
@@ -20,10 +19,7 @@ class RoundedAlertDialog extends StatelessWidget {
         title,
         style: TextStyle().copyWith(fontSize: 16.0),
       ),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.0),
-        side: BorderSide(width: 1.0, color: ColorfulApp.of(context).colors.bleak),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
       content: content,
       actions: actions,
     );

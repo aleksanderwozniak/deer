@@ -47,8 +47,8 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
 
   @override
   void dispose() {
-    super.dispose();
     _bloc.dispose();
+    super.dispose();
   }
 
   // Place methods here

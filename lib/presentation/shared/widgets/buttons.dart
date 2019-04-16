@@ -31,28 +31,38 @@ class RoundButton extends StatelessWidget {
 
 class FlatRoundButton extends StatelessWidget {
   final String text;
-  final VoidCallback onPressed;
+  final VoidCallback onTap;
   final double radius;
   final TextStyle style;
 
   FlatRoundButton({
     Key key,
     @required this.text,
-    @required this.onPressed,
+    @required this.onTap,
     this.radius = 8.0,
     this.style,
   })  : assert(text != null),
-        assert(onPressed != null),
+        assert(onTap != null),
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return FlatButton(
-      child: Text(text, style: style),
-      onPressed: onPressed,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(radius),
+    return InkWell(
+      highlightColor: ColorfulApp.of(context).colors.pale.withOpacity(0.4),
+      splashColor: ColorfulApp.of(context).colors.medium.withOpacity(0.4),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+        child: Text(
+          text,
+          style: style ??
+              TextStyle().copyWith(
+                color: ColorfulApp.of(context).colors.medium,
+                fontWeight: FontWeight.w500,
+              ),
+        ),
       ),
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(radius),
     );
   }
 }

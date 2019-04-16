@@ -17,8 +17,6 @@ import 'package:flutter/scheduler.dart';
 import 'todo_list_bloc.dart';
 import 'todo_list_state.dart';
 
-enum MenuEntry { calendar, colors, privacy }
-
 class TodoListScreen extends StatefulWidget {
   @override
   _TodoListScreenState createState() => _TodoListScreenState();
@@ -40,8 +38,8 @@ class _TodoListScreenState extends State<TodoListScreen> {
 
   @override
   void dispose() {
-    super.dispose();
     _bloc.dispose();
+    super.dispose();
   }
 
   // Place methods here
