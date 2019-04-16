@@ -1,6 +1,6 @@
 import 'package:deer/dependencies.dart';
 import 'package:deer/presentation/colorful_app.dart';
-import 'package:deer/presentation/screen/todo_list/todo_list_screen.dart';
+import 'package:deer/presentation/screen/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
@@ -20,7 +20,7 @@ class App extends StatelessWidget {
     _notificationManager = notificationManager;
   }
 
-  final String _title = 'Todos';
+  final String _title = 'Deer';
 
   // This widget is the root of your application.
   @override
@@ -31,7 +31,7 @@ class App extends StatelessWidget {
           title: _title,
           theme: theme,
           // debugShowCheckedModeBanner: false, // removes debug ribbon
-          home: TodoListScreen(title: _title),
+          home: HomeScreen(title: _title),
         );
       },
     );

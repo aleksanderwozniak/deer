@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:deer/presentation/shared/resources.dart';
 import 'package:deer/utils/string_utils.dart';
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 typedef Widget AppBuilder(BuildContext context, ThemeData data);
 
@@ -116,6 +116,9 @@ class ColorThemeData {
   LinearGradient get brightGradient => _brightGradient;
   LinearGradient _brightGradient;
 
+  LinearGradient get mediumGradient => _mediumGradient;
+  LinearGradient _mediumGradient;
+
   ThemeData get theme => ThemeData(
         accentColor: _medium,
         cursorColor: _bleak,
@@ -137,7 +140,8 @@ class ColorThemeData {
         _medium = AppColors.indigo3,
         _bleak = AppColors.indigo4,
         _dark = AppColors.indigo5,
-        _brightGradient = AppColors.indigoGradient;
+        _brightGradient = AppColors.indigoGradient1,
+        _mediumGradient = AppColors.indigoGradient2;
 
   ColorThemeData.salmon()
       : _currentTheme = ColorfulTheme.salmon,
@@ -146,7 +150,8 @@ class ColorThemeData {
         _medium = AppColors.salmon3,
         _bleak = AppColors.salmon4,
         _dark = AppColors.salmon5,
-        _brightGradient = AppColors.salmonGradient;
+        _brightGradient = AppColors.salmonGradient1,
+        _mediumGradient = AppColors.salmonGradient2;
 
   ColorThemeData.indigo()
       : _currentTheme = ColorfulTheme.indigo,
@@ -155,7 +160,8 @@ class ColorThemeData {
         _medium = AppColors.indigo3,
         _bleak = AppColors.indigo4,
         _dark = AppColors.indigo5,
-        _brightGradient = AppColors.indigoGradient;
+        _brightGradient = AppColors.indigoGradient1,
+        _mediumGradient = AppColors.indigoGradient2;
 
   ColorThemeData.mint()
       : _currentTheme = ColorfulTheme.mint,
@@ -164,7 +170,8 @@ class ColorThemeData {
         _medium = AppColors.mint3,
         _bleak = AppColors.mint4,
         _dark = AppColors.mint5,
-        _brightGradient = AppColors.mintGradient;
+        _brightGradient = AppColors.mintGradient1,
+        _mediumGradient = AppColors.mintGradient2;
 
   ColorThemeData.arcticBlue()
       : _currentTheme = ColorfulTheme.arcticBlue,
@@ -173,7 +180,8 @@ class ColorThemeData {
         _medium = AppColors.arcticBlue3,
         _bleak = AppColors.arcticBlue4,
         _dark = AppColors.arcticBlue5,
-        _brightGradient = AppColors.arcticBlueGradient;
+        _brightGradient = AppColors.arcticBlueGradient1,
+        _mediumGradient = AppColors.arcticBlueGradient2;
 
   ColorThemeData.golden()
       : _currentTheme = ColorfulTheme.golden,
@@ -182,5 +190,6 @@ class ColorThemeData {
         _medium = AppColors.golden3,
         _bleak = AppColors.golden4,
         _dark = AppColors.golden5,
-        _brightGradient = AppColors.goldenGradient;
+        _brightGradient = AppColors.goldenGradient1,
+        _mediumGradient = AppColors.goldenGradient2;
 }

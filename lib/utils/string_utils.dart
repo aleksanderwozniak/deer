@@ -2,6 +2,10 @@ String enumToString(dynamic input) {
   return input.toString().split('.').last;
 }
 
+String enumToStringSingle(dynamic input) {
+  return enumToString(input).split(RegExp('[A-Z]')).first;
+}
+
 T stringToEnum<T>(String input, List<T> values) {
   return values.firstWhere((e) => input == enumToString(e), orElse: () => null);
 }

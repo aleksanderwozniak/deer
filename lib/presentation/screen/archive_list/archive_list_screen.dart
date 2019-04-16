@@ -29,8 +29,8 @@ class _ArchiveListScreenState extends State<ArchiveListScreen> {
 
   @override
   void dispose() {
-    super.dispose();
     _bloc.dispose();
+    super.dispose();
   }
 
   // Place methods here
@@ -52,13 +52,13 @@ class _ArchiveListScreenState extends State<ArchiveListScreen> {
             actions: <Widget>[
               FlatRoundButton(
                   text: 'Yes',
-                  onPressed: () {
+                  onTap: () {
                     Navigator.pop(context);
                     _clearArchive();
                   }),
               FlatRoundButton(
                 text: 'No',
-                onPressed: () => Navigator.pop(context),
+                onTap: () => Navigator.pop(context),
               ),
             ],
           ),

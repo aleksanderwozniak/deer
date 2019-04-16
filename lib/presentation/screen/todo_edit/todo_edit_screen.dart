@@ -47,6 +47,12 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
     _descriptionFocusNode = FocusNode();
   }
 
+  @override
+  void dispose() {
+    _bloc.dispose();
+    super.dispose();
+  }
+
   void _selectDate(TodoEditState state) async {
     // set initialDate to tomorrow by default
     final now = DateTime.now();
@@ -101,11 +107,11 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
             actions: <Widget>[
               FlatRoundButton(
                 text: 'Gallery',
-                onPressed: () => Navigator.pop(context, ImageSource.gallery),
+                onTap: () => Navigator.pop(context, ImageSource.gallery),
               ),
               FlatRoundButton(
                 text: 'Camera',
-                onPressed: () => Navigator.pop(context, ImageSource.camera),
+                onTap: () => Navigator.pop(context, ImageSource.camera),
               ),
             ],
           ),
@@ -143,11 +149,11 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
             actions: <Widget>[
               FlatRoundButton(
                   text: 'Remove',
-                  onPressed: () {
+                  onTap: () {
                     _bloc.actions.add(SetImage(image: null));
                     Navigator.pop(context);
                   }),
-              FlatRoundButton(text: 'Cancel', onPressed: () => Navigator.pop(context)),
+              FlatRoundButton(text: 'Cancel', onTap: () => Navigator.pop(context)),
             ],
           ),
     );
@@ -167,7 +173,8 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
     if (!state.todoNameHasError) {
       if (state.todo.notificationDate == null) {
         cancelNotification(state.todo);
-      } else if (widget.todo.notificationDate == null || widget.todo.notificationDate.compareTo(state.todo.notificationDate) != 0) {
+      } else if (widget.todo.notificationDate == null ||
+          widget.todo.notificationDate.compareTo(state.todo.notificationDate) != 0) {
         // Schedule a notification only when date has been set to a new (different) value
         scheduleNotification(state.todo);
       }

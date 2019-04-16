@@ -36,6 +36,12 @@ dependencies:
   # calendar
   table_calendar: 
 
+  # gestures
+  simple_gesture_detector:
+
+  # carousel
+  flutter_swiper: 
+
   # platform
   shared_preferences:
   keyboard_visibility:

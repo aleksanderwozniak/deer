@@ -8,13 +8,13 @@ import 'package:deer/domain/entity/todo_entity.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TodoDao {
-  Stream<List<TodoEntity>> get all => _data.stream().map((it) => it.toList());
+  Stream<List<TodoEntity>> get all => _data.stream().asBroadcastStream().map((it) => it.toList());
 
-  Stream<List<TodoEntity>> get active => _data.stream().map(
+  Stream<List<TodoEntity>> get active => _data.stream().asBroadcastStream().map(
         (it) => it.where((e) => e.status == TodoStatus.active).toList(),
       );
 
-  Stream<List<TodoEntity>> get finished => _data.stream().map(
+  Stream<List<TodoEntity>> get finished => _data.stream().asBroadcastStream().map(
         (it) => it.where((e) => e.status == TodoStatus.finished).toList(),
       );
 
