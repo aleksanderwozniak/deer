@@ -272,6 +272,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
             child: _TextField(
               focusNode: _descriptionFocusNode,
               maxLines: null,
+              inputAction: TextInputAction.newline,
               value: state.todo.description,
               hint: 'Todo\'s description',
               onChanged: (value) => _bloc.actions.add(UpdateField(key: FieldKey.description, value: value)),
