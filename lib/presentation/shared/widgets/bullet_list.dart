@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:deer/domain/entity/bullet_entity.dart';
 import 'package:deer/presentation/colorful_app.dart';
+import 'package:flutter/material.dart';
+import 'package:link_text/link_text.dart';
 
 class BulletList extends StatelessWidget {
   final List<BulletEntity> entries;
@@ -25,22 +26,21 @@ class BulletList extends StatelessWidget {
   }
 
   Widget _buildTile(BuildContext context, BulletEntity bullet) {
-    final style = bullet.checked
-        ? TextStyle().copyWith(
-            color: ColorfulApp.of(context).colors.medium,
-            decoration: TextDecoration.lineThrough,
-          )
-        : TextStyle();
+    final checkedStyle = TextStyle().copyWith(
+      color: ColorfulApp.of(context).colors.medium,
+      decoration: TextDecoration.lineThrough,
+    );
 
     final children = [
       icon ?? _buildDefaultIcon(context),
       const SizedBox(width: 12.0),
       Expanded(
-        child: Text(
-          bullet.text,
-          maxLines: null,
-          style: entryStyle ?? style,
-        ),
+        child: bullet.checked
+            ? Text(
+                bullet.text,
+                style: checkedStyle,
+              )
+            : LinkText(text: bullet.text),
       ),
     ];
 
