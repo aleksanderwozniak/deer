@@ -12,6 +12,7 @@ import 'package:deer/presentation/shared/widgets/todo_avatar.dart';
 import 'package:deer/utils/notification_utils.dart';
 import 'package:deer/utils/string_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:link_text/link_text.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:tuple/tuple.dart';
 
@@ -197,8 +198,8 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
           const SizedBox(height: 8.0),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: Text(
-              state.todo.description,
+            child: LinkText(
+              text: state.todo.description,
               textAlign: TextAlign.justify,
             ),
           ),

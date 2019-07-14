@@ -36,6 +36,9 @@ dependencies:
   # calendar
   table_calendar: 
 
+  # url
+  link_text:
+
   # gestures
   simple_gesture_detector:
 
