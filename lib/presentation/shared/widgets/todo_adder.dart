@@ -177,6 +177,7 @@ class _TodoAdderState extends State<TodoAdder> {
       onWillPop: () {
         if (_expansionFormatSubject.value != TodoAdderFormat.folded) {
           _expansionFormatSubject.add(TodoAdderFormat.folded);
+          return Future(() => false);
         } else {
           return Future(() => true);
         }

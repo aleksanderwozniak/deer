@@ -8,11 +8,12 @@
 
     <!-- MARK: Comment out for public release builds, as it is not needed -->
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     
     <!-- Use if Vibration pattern will be customized -->
     <!-- <uses-permission android:name="android.permission.VIBRATE" /> -->
 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    
     <application
         android:name="io.flutter.app.FlutterApplication"
         android:label="Deer"
