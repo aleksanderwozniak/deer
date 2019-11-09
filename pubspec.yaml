@@ -19,38 +19,38 @@ dependencies:
     sdk: flutter
 
   # stream
-  rxdart:
+  rxdart: ^0.21.0
 
   # value
-  built_value: 
-  built_collection:
-  collection:
+  built_value: ^6.3.2
+  built_collection: ^4.2.0
+  collection: ^1.14.11
 
   # notification
-  flutter_local_notifications:
+  flutter_local_notifications: ^0.6.0
 
   # images
-  image_picker:
-  photo_view:
+  image_picker: ^0.6.1+11
+  photo_view: ^0.4.2
 
   # calendar
-  table_calendar: 
+  table_calendar: ^2.2.0
 
   # url
-  link_text:
+  link_text: ^0.1.1
 
   # gestures
-  simple_gesture_detector:
+  simple_gesture_detector: ^0.1.3
 
   # carousel
-  flutter_swiper: 
+  flutter_swiper: ^1.1.6
 
   # platform
-  shared_preferences:
-  keyboard_visibility:
+  shared_preferences: ^0.5.1+2
+  keyboard_visibility: ^0.5.2
 
   # util
-  tuple:
+  tuple: ^1.0.2
 
 dependency_overrides:
   analyzer: 

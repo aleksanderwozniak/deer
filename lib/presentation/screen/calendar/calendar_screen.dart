@@ -27,6 +27,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   CalendarBloc _bloc;
   TextEditingController _todoNameController;
   ScrollController _listScrollController;
+  CalendarController _calendarController;
 
   @override
   void initState() {
@@ -34,11 +35,15 @@ class _CalendarScreenState extends State<CalendarScreen> {
     _bloc = CalendarBloc();
     _todoNameController = TextEditingController();
     _listScrollController = ScrollController();
+    _calendarController = CalendarController();
   }
 
   @override
   void dispose() {
     _bloc.dispose();
+    _todoNameController.dispose();
+    _listScrollController.dispose();
+    _calendarController.dispose();
     super.dispose();
   }
 
@@ -101,20 +106,20 @@ class _CalendarScreenState extends State<CalendarScreen> {
     showDialog(
       context: context,
       builder: (context) => RoundedAlertDialog(
-            title: 'Do you want to clear the Archive?',
-            actions: <Widget>[
-              FlatRoundButton(
-                  text: 'Yes',
-                  onTap: () {
-                    Navigator.pop(context);
-                    _bloc.actions.add(ClearDailyArchive());
-                  }),
-              FlatRoundButton(
-                text: 'No',
-                onTap: () => Navigator.pop(context),
-              ),
-            ],
+        title: 'Do you want to clear the Archive?',
+        actions: <Widget>[
+          FlatRoundButton(
+              text: 'Yes',
+              onTap: () {
+                Navigator.pop(context);
+                _bloc.actions.add(ClearDailyArchive());
+              }),
+          FlatRoundButton(
+            text: 'No',
+            onTap: () => Navigator.pop(context),
           ),
+        ],
+      ),
     );
   }
 
@@ -171,6 +176,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   Widget _buildCalendar(CalendarState state) {
     return TableCalendar(
+      calendarController: _calendarController,
       onDaySelected: _onDaySelected,
       onVisibleDaysChanged: _onVisibleDaysChanged,
       events: state.activeEvents?.toMap(),
@@ -189,8 +195,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
         rightChevronIcon: Icon(Icons.chevron_right, color: ColorfulApp.of(context).colors.dark),
         formatButtonVisible: false,
         centerHeaderTitle: true,
+        headerPadding: const EdgeInsets.symmetric(vertical: 5.0),
       ),
-      selectedDay: state.selectedDate,
+      initialSelectedDay: state.selectedDate,
       initialCalendarFormat: state.calendarFormat,
     );
   }
