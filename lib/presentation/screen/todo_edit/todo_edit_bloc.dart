@@ -56,7 +56,8 @@ class TodoEditBloc {
         state.todo.bulletPoints = ListBuilder(action.value);
         break;
       case FieldKey.dueDate:
-        state.todo.dueDate = action.value;
+        final DateTime date = action.value;
+        state.todo.dueDate = date != null ? DateTime.utc(date.year, date.month, date.day, 12) : null;
         break;
       case FieldKey.notificationDate:
         state.todo.notificationDate = action.value;
