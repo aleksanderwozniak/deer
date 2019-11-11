@@ -12,7 +12,8 @@ class _$ArchiveListState extends ArchiveListState {
   @override
   final Task clearTask;
 
-  factory _$ArchiveListState([void updates(ArchiveListStateBuilder b)]) =>
+  factory _$ArchiveListState(
+          [void Function(ArchiveListStateBuilder) updates]) =>
       (new ArchiveListStateBuilder()..update(updates)).build();
 
   _$ArchiveListState._({this.archivedTodos, this.clearTask}) : super._() {
@@ -25,7 +26,7 @@ class _$ArchiveListState extends ArchiveListState {
   }
 
   @override
-  ArchiveListState rebuild(void updates(ArchiveListStateBuilder b)) =>
+  ArchiveListState rebuild(void Function(ArchiveListStateBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -88,7 +89,7 @@ class ArchiveListStateBuilder
   }
 
   @override
-  void update(void updates(ArchiveListStateBuilder b)) {
+  void update(void Function(ArchiveListStateBuilder) updates) {
     if (updates != null) updates(this);
   }
 

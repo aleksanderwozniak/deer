@@ -14,7 +14,7 @@ class _$TodoEditState extends TodoEditState {
   @override
   final bool todoNameHasError;
 
-  factory _$TodoEditState([void updates(TodoEditStateBuilder b)]) =>
+  factory _$TodoEditState([void Function(TodoEditStateBuilder) updates]) =>
       (new TodoEditStateBuilder()..update(updates)).build();
 
   _$TodoEditState._({this.todo, this.image, this.todoNameHasError})
@@ -28,7 +28,7 @@ class _$TodoEditState extends TodoEditState {
   }
 
   @override
-  TodoEditState rebuild(void updates(TodoEditStateBuilder b)) =>
+  TodoEditState rebuild(void Function(TodoEditStateBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -97,7 +97,7 @@ class TodoEditStateBuilder
   }
 
   @override
-  void update(void updates(TodoEditStateBuilder b)) {
+  void update(void Function(TodoEditStateBuilder) updates) {
     if (updates != null) updates(this);
   }
 

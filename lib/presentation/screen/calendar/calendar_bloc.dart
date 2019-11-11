@@ -4,6 +4,7 @@ import 'package:built_collection/built_collection.dart';
 import 'package:collection/collection.dart';
 import 'package:deer/domain/entity/todo_entity.dart';
 import 'package:deer/presentation/app.dart';
+import 'package:deer/utils/date_utils.dart';
 import 'package:deer/utils/string_utils.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -28,6 +29,7 @@ class CalendarBloc {
   );
 
   StreamSubscription<List<TodoEntity>> _todosSubscription;
+  StreamSubscription<CalendarState> _stateSubscription;
 
   CalendarBloc() {
     _actions.stream.listen((action) {
@@ -59,17 +61,28 @@ class CalendarBloc {
 
       _state.add(_state.value.rebuild(
         (b) => b
+          ..updateVisibleTodos = true
           ..activeEvents = MapBuilder(activeEvents)
           ..archivedEvents = MapBuilder(archivedEvents),
       ));
     });
 
-    state.listen((data) {
-      _state.add(_state.value.rebuild(
-        (b) => b
-          ..activeTodos = ListBuilder(b.activeEvents[b.selectedDate] ?? [])
-          ..archivedTodos = ListBuilder(b.archivedEvents[b.selectedDate] ?? []),
-      ));
+    _stateSubscription = state.listen((data) {
+      if (data.updateVisibleTodos) {
+        final builder = data.toBuilder();
+
+        final activeEvents = data.activeEvents.entries
+            .firstWhere((entry) => isSameDay(entry.key, data.selectedDate), orElse: () => null);
+
+        final archivedEvents = data.archivedEvents.entries
+            .firstWhere((entry) => isSameDay(entry.key, data.selectedDate), orElse: () => null);
+
+        builder.updateVisibleTodos = false;
+        builder.activeTodos = ListBuilder(activeEvents?.value ?? []);
+        builder.archivedTodos = ListBuilder(archivedEvents?.value ?? []);
+
+        _state.add(builder.build());
+      }
     });
   }
 
@@ -77,6 +90,7 @@ class CalendarBloc {
     _actions.close();
     _state.close();
     _todosSubscription.cancel();
+    _stateSubscription.cancel();
   }
 
   void _onUpdateField(UpdateField action) {
@@ -85,6 +99,7 @@ class CalendarBloc {
     switch (action.field) {
       case Field.selectedDate:
         state.selectedDate = action.value;
+        state.updateVisibleTodos = true;
         break;
       case Field.calendarFormat:
         state.calendarFormat = action.value;

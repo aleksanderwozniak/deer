@@ -30,7 +30,7 @@ class _$TodoEntity extends TodoEntity {
   @override
   final DateTime notificationDate;
 
-  factory _$TodoEntity([void updates(TodoEntityBuilder b)]) =>
+  factory _$TodoEntity([void Function(TodoEntityBuilder) updates]) =>
       (new TodoEntityBuilder()..update(updates)).build();
 
   _$TodoEntity._(
@@ -70,7 +70,7 @@ class _$TodoEntity extends TodoEntity {
   }
 
   @override
-  TodoEntity rebuild(void updates(TodoEntityBuilder b)) =>
+  TodoEntity rebuild(void Function(TodoEntityBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -215,7 +215,7 @@ class TodoEntityBuilder implements Builder<TodoEntity, TodoEntityBuilder> {
   }
 
   @override
-  void update(void updates(TodoEntityBuilder b)) {
+  void update(void Function(TodoEntityBuilder) updates) {
     if (updates != null) updates(this);
   }
 

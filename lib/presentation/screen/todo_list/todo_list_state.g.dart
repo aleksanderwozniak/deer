@@ -16,7 +16,7 @@ class _$TodoListState extends TodoListState {
   @override
   final Task diskAccessTask;
 
-  factory _$TodoListState([void updates(TodoListStateBuilder b)]) =>
+  factory _$TodoListState([void Function(TodoListStateBuilder) updates]) =>
       (new TodoListStateBuilder()..update(updates)).build();
 
   _$TodoListState._(
@@ -37,7 +37,7 @@ class _$TodoListState extends TodoListState {
   }
 
   @override
-  TodoListState rebuild(void updates(TodoListStateBuilder b)) =>
+  TodoListState rebuild(void Function(TodoListStateBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -117,7 +117,7 @@ class TodoListStateBuilder
   }
 
   @override
-  void update(void updates(TodoListStateBuilder b)) {
+  void update(void Function(TodoListStateBuilder) updates) {
     if (updates != null) updates(this);
   }
 

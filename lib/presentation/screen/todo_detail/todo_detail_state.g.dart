@@ -12,7 +12,7 @@ class _$TodoDetailState extends TodoDetailState {
   @override
   final Task updateTask;
 
-  factory _$TodoDetailState([void updates(TodoDetailStateBuilder b)]) =>
+  factory _$TodoDetailState([void Function(TodoDetailStateBuilder) updates]) =>
       (new TodoDetailStateBuilder()..update(updates)).build();
 
   _$TodoDetailState._({this.todo, this.updateTask}) : super._() {
@@ -25,7 +25,7 @@ class _$TodoDetailState extends TodoDetailState {
   }
 
   @override
-  TodoDetailState rebuild(void updates(TodoDetailStateBuilder b)) =>
+  TodoDetailState rebuild(void Function(TodoDetailStateBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -86,7 +86,7 @@ class TodoDetailStateBuilder
   }
 
   @override
-  void update(void updates(TodoDetailStateBuilder b)) {
+  void update(void Function(TodoDetailStateBuilder) updates) {
     if (updates != null) updates(this);
   }
 

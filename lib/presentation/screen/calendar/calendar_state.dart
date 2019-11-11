@@ -17,6 +17,7 @@ abstract class CalendarState implements Built<CalendarState, CalendarStateBuilde
   bool get calendarVisible;
   bool get todoNameHasError;
   bool get archiveVisible;
+  bool get updateVisibleTodos;
 
   CalendarState._();
   factory CalendarState({
@@ -29,6 +30,7 @@ abstract class CalendarState implements Built<CalendarState, CalendarStateBuilde
     bool calendarVisible = true,
     bool todoNameHasError = false,
     bool archiveVisible = false,
+    bool updateVisibleTodos = false,
   }) =>
       _$CalendarState._(
         selectedDate: selectedDate,
@@ -40,5 +42,6 @@ abstract class CalendarState implements Built<CalendarState, CalendarStateBuilde
         calendarVisible: calendarVisible,
         todoNameHasError: todoNameHasError,
         archiveVisible: archiveVisible,
+        updateVisibleTodos: updateVisibleTodos,
       );
 }

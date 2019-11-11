@@ -25,8 +25,10 @@ class _$CalendarState extends CalendarState {
   final bool todoNameHasError;
   @override
   final bool archiveVisible;
+  @override
+  final bool updateVisibleTodos;
 
-  factory _$CalendarState([void updates(CalendarStateBuilder b)]) =>
+  factory _$CalendarState([void Function(CalendarStateBuilder) updates]) =>
       (new CalendarStateBuilder()..update(updates)).build();
 
   _$CalendarState._(
@@ -38,7 +40,8 @@ class _$CalendarState extends CalendarState {
       this.calendarFormat,
       this.calendarVisible,
       this.todoNameHasError,
-      this.archiveVisible})
+      this.archiveVisible,
+      this.updateVisibleTodos})
       : super._() {
     if (selectedDate == null) {
       throw new BuiltValueNullFieldError('CalendarState', 'selectedDate');
@@ -67,10 +70,13 @@ class _$CalendarState extends CalendarState {
     if (archiveVisible == null) {
       throw new BuiltValueNullFieldError('CalendarState', 'archiveVisible');
     }
+    if (updateVisibleTodos == null) {
+      throw new BuiltValueNullFieldError('CalendarState', 'updateVisibleTodos');
+    }
   }
 
   @override
-  CalendarState rebuild(void updates(CalendarStateBuilder b)) =>
+  CalendarState rebuild(void Function(CalendarStateBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -88,7 +94,8 @@ class _$CalendarState extends CalendarState {
         calendarFormat == other.calendarFormat &&
         calendarVisible == other.calendarVisible &&
         todoNameHasError == other.todoNameHasError &&
-        archiveVisible == other.archiveVisible;
+        archiveVisible == other.archiveVisible &&
+        updateVisibleTodos == other.updateVisibleTodos;
   }
 
   @override
@@ -100,15 +107,17 @@ class _$CalendarState extends CalendarState {
                     $jc(
                         $jc(
                             $jc(
-                                $jc($jc(0, selectedDate.hashCode),
-                                    activeTodos.hashCode),
-                                archivedTodos.hashCode),
-                            activeEvents.hashCode),
-                        archivedEvents.hashCode),
-                    calendarFormat.hashCode),
-                calendarVisible.hashCode),
-            todoNameHasError.hashCode),
-        archiveVisible.hashCode));
+                                $jc(
+                                    $jc($jc(0, selectedDate.hashCode),
+                                        activeTodos.hashCode),
+                                    archivedTodos.hashCode),
+                                activeEvents.hashCode),
+                            archivedEvents.hashCode),
+                        calendarFormat.hashCode),
+                    calendarVisible.hashCode),
+                todoNameHasError.hashCode),
+            archiveVisible.hashCode),
+        updateVisibleTodos.hashCode));
   }
 
   @override
@@ -122,7 +131,8 @@ class _$CalendarState extends CalendarState {
           ..add('calendarFormat', calendarFormat)
           ..add('calendarVisible', calendarVisible)
           ..add('todoNameHasError', todoNameHasError)
-          ..add('archiveVisible', archiveVisible))
+          ..add('archiveVisible', archiveVisible)
+          ..add('updateVisibleTodos', updateVisibleTodos))
         .toString();
   }
 }
@@ -180,6 +190,11 @@ class CalendarStateBuilder
   set archiveVisible(bool archiveVisible) =>
       _$this._archiveVisible = archiveVisible;
 
+  bool _updateVisibleTodos;
+  bool get updateVisibleTodos => _$this._updateVisibleTodos;
+  set updateVisibleTodos(bool updateVisibleTodos) =>
+      _$this._updateVisibleTodos = updateVisibleTodos;
+
   CalendarStateBuilder();
 
   CalendarStateBuilder get _$this {
@@ -193,6 +208,7 @@ class CalendarStateBuilder
       _calendarVisible = _$v.calendarVisible;
       _todoNameHasError = _$v.todoNameHasError;
       _archiveVisible = _$v.archiveVisible;
+      _updateVisibleTodos = _$v.updateVisibleTodos;
       _$v = null;
     }
     return this;
@@ -207,7 +223,7 @@ class CalendarStateBuilder
   }
 
   @override
-  void update(void updates(CalendarStateBuilder b)) {
+  void update(void Function(CalendarStateBuilder) updates) {
     if (updates != null) updates(this);
   }
 
@@ -225,7 +241,8 @@ class CalendarStateBuilder
               calendarFormat: calendarFormat,
               calendarVisible: calendarVisible,
               todoNameHasError: todoNameHasError,
-              archiveVisible: archiveVisible);
+              archiveVisible: archiveVisible,
+              updateVisibleTodos: updateVisibleTodos);
     } catch (_) {
       String _$failedField;
       try {

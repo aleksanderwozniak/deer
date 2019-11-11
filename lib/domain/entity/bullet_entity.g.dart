@@ -12,7 +12,7 @@ class _$BulletEntity extends BulletEntity {
   @override
   final bool checked;
 
-  factory _$BulletEntity([void updates(BulletEntityBuilder b)]) =>
+  factory _$BulletEntity([void Function(BulletEntityBuilder) updates]) =>
       (new BulletEntityBuilder()..update(updates)).build();
 
   _$BulletEntity._({this.text, this.checked}) : super._() {
@@ -25,7 +25,7 @@ class _$BulletEntity extends BulletEntity {
   }
 
   @override
-  BulletEntity rebuild(void updates(BulletEntityBuilder b)) =>
+  BulletEntity rebuild(void Function(BulletEntityBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -85,7 +85,7 @@ class BulletEntityBuilder
   }
 
   @override
-  void update(void updates(BulletEntityBuilder b)) {
+  void update(void Function(BulletEntityBuilder) updates) {
     if (updates != null) updates(this);
   }
 

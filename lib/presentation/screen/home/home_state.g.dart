@@ -10,7 +10,7 @@ class _$HomeState extends HomeState {
   @override
   final int pageIndex;
 
-  factory _$HomeState([void updates(HomeStateBuilder b)]) =>
+  factory _$HomeState([void Function(HomeStateBuilder) updates]) =>
       (new HomeStateBuilder()..update(updates)).build();
 
   _$HomeState._({this.pageIndex}) : super._() {
@@ -20,7 +20,7 @@ class _$HomeState extends HomeState {
   }
 
   @override
-  HomeState rebuild(void updates(HomeStateBuilder b)) =>
+  HomeState rebuild(void Function(HomeStateBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -71,7 +71,7 @@ class HomeStateBuilder implements Builder<HomeState, HomeStateBuilder> {
   }
 
   @override
-  void update(void updates(HomeStateBuilder b)) {
+  void update(void Function(HomeStateBuilder) updates) {
     if (updates != null) updates(this);
   }
 
