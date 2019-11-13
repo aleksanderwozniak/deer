@@ -19,13 +19,7 @@ class CalendarBloc {
   Stream<CalendarState> get state => _state.stream.distinct();
 
   final _state = BehaviorSubject<CalendarState>.seeded(
-    CalendarState(
-      selectedDate: DateTime(
-        DateTime.now().year,
-        DateTime.now().month,
-        DateTime.now().day,
-      ),
-    ),
+    CalendarState(selectedDate: normalizedDate(DateTime.now())),
   );
 
   StreamSubscription<List<TodoEntity>> _todosSubscription;
@@ -56,8 +50,8 @@ class CalendarBloc {
       final active = todos.where((todo) => todo.status == TodoStatus.active);
       final archived = todos.where((todo) => todo.status == TodoStatus.finished);
 
-      final activeEvents = groupBy(active, (TodoEntity todo) => todo.dueDate);
-      final archivedEvents = groupBy(archived, (TodoEntity todo) => todo.dueDate);
+      final activeEvents = groupBy(active, (TodoEntity todo) => normalizedDate(todo.dueDate));
+      final archivedEvents = groupBy(archived, (TodoEntity todo) => normalizedDate(todo.dueDate));
 
       _state.add(_state.value.rebuild(
         (b) => b

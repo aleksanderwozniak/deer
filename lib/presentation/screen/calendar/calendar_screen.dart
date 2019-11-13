@@ -12,6 +12,7 @@ import 'package:deer/presentation/shared/widgets/dismissible.dart';
 import 'package:deer/presentation/shared/widgets/label.dart';
 import 'package:deer/presentation/shared/widgets/todo_adder.dart';
 import 'package:deer/presentation/shared/widgets/todo_tile.dart';
+import 'package:deer/utils/date_utils.dart';
 import 'package:deer/utils/notification_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -96,6 +97,13 @@ class _CalendarScreenState extends State<CalendarScreen> {
     ));
   }
 
+  void _onCalendarHeaderTapped(DateTime date) {
+    _calendarController.setSelectedDay(
+      normalizedDate(DateTime.now()),
+      runCallback: true,
+    );
+  }
+
   void _onDateHeaderTapped(bool calendarVisible) {
     if (calendarVisible) {
       _bloc.actions.add(ToggleArchive());
@@ -178,6 +186,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     return TableCalendar(
       calendarController: _calendarController,
       onDaySelected: _onDaySelected,
+      onHeaderTapped: _onCalendarHeaderTapped,
       onVisibleDaysChanged: _onVisibleDaysChanged,
       events: state.activeEvents?.toMap(),
       calendarStyle: CalendarStyle(
