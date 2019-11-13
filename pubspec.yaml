@@ -34,7 +34,7 @@ dependencies:
   photo_view: ^0.4.2
 
   # calendar
-  table_calendar: ^2.2.0
+  table_calendar: ^2.2.1
 
   # url
   link_text: ^0.1.1
