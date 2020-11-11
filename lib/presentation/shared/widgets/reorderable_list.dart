@@ -66,7 +66,10 @@ class ReorderableListView extends StatefulWidget {
         assert(onReorder != null),
         assert(scrollController != null),
         assert(children != null),
-        assert(children.every((Widget w) => w.key != null), 'All children of this widget must have a key.',);
+        assert(
+          children.every((Widget w) => w.key != null),
+          'All children of this widget must have a key.',
+        );
 
   /// A non-reorderable header widget to show before the list.
   ///
@@ -162,7 +165,8 @@ class _ReorderableListContent extends StatefulWidget {
   _ReorderableListContentState createState() => _ReorderableListContentState();
 }
 
-class _ReorderableListContentState extends State<_ReorderableListContent> with TickerProviderStateMixin<_ReorderableListContent> {
+class _ReorderableListContentState extends State<_ReorderableListContent>
+    with TickerProviderStateMixin<_ReorderableListContent> {
   // The extent along the [widget.scrollDirection] axis to allow a child to
   // drop into when the user reorders list children.
   //
@@ -384,8 +388,9 @@ class _ReorderableListContentState extends State<_ReorderableListContent> with T
         semanticsActions[CustomSemanticsAction(label: localizations.reorderItemToStart)] = moveToStart;
         String reorderItemBefore = localizations.reorderItemUp;
         if (widget.scrollDirection == Axis.horizontal) {
-          reorderItemBefore =
-              Directionality.of(context) == TextDirection.ltr ? localizations.reorderItemLeft : localizations.reorderItemRight;
+          reorderItemBefore = Directionality.of(context) == TextDirection.ltr
+              ? localizations.reorderItemLeft
+              : localizations.reorderItemRight;
         }
         semanticsActions[CustomSemanticsAction(label: reorderItemBefore)] = moveBefore;
       }
@@ -394,8 +399,9 @@ class _ReorderableListContentState extends State<_ReorderableListContent> with T
       if (index < widget.children.length - 1) {
         String reorderItemAfter = localizations.reorderItemDown;
         if (widget.scrollDirection == Axis.horizontal) {
-          reorderItemAfter =
-              Directionality.of(context) == TextDirection.ltr ? localizations.reorderItemRight : localizations.reorderItemLeft;
+          reorderItemAfter = Directionality.of(context) == TextDirection.ltr
+              ? localizations.reorderItemRight
+              : localizations.reorderItemLeft;
         }
         semanticsActions[CustomSemanticsAction(label: reorderItemAfter)] = moveAfter;
         semanticsActions[CustomSemanticsAction(label: localizations.reorderItemToEnd)] = moveToEnd;
@@ -506,8 +512,8 @@ class _ReorderableListContentState extends State<_ReorderableListContent> with T
           // If the target is not the original starting point, then we will accept the drop.
           return _dragging == toAccept && toAccept != toWrap.key;
         },
-        onAccept: (Key accepted) {},
-        onLeave: (Key leaving) {},
+        onAccept: (accepted) {},
+        onLeave: (leaving) {},
       );
     });
   }

@@ -49,7 +49,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   // Place methods here
-  void _onDaySelected(DateTime date, _) {
+  void _onDaySelected(DateTime date, _, __) {
     _bloc.actions.add(UpdateField(field: Field.selectedDate, value: date));
   }
 
